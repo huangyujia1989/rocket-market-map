@@ -617,7 +617,8 @@ function filteredNodes() {
     (state.ownership === 'All' || node.ownership_class === state.ownership) &&
     (state.reusability === 'All' || node.reusability_class === state.reusability) &&
     (state.propellant === 'All' || node.propellant_class === state.propellant) &&
-    (state.site === 'All' || (node.launchSites || []).includes(state.site))
+    (state.site === 'All' || (node.launchSites || []).includes(state.site)) &&
+    metricValue(node) > 0
   );
 }
 function companyAggMap(nodes) {
