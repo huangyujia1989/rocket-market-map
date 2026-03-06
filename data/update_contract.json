@@ -1,0 +1,137 @@
+{
+  "patch_version": "1.0",
+  "description": "Patch contract for AI or automation agents updating Rocket Market Map.",
+  "required_top_level_keys": [
+    "dataset_version",
+    "updated_at_utc",
+    "nodes_upsert",
+    "companies_upsert",
+    "launchSites_upsert"
+  ],
+  "top_level_keys": {
+    "dataset_version": {
+      "type": "string",
+      "example": "2026-03-15-v2.1"
+    },
+    "updated_at_utc": {
+      "type": "string",
+      "format": "ISO-8601 UTC",
+      "example": "2026-03-15T09:40:00Z"
+    },
+    "meta_updates": {
+      "type": "object",
+      "optional": true
+    },
+    "nodes_upsert": {
+      "type": "array",
+      "item_key": [
+        "id"
+      ]
+    },
+    "nodes_delete": {
+      "type": "array",
+      "optional": true,
+      "item_key": [
+        "id"
+      ]
+    },
+    "companies_upsert": {
+      "type": "array",
+      "item_key": [
+        "region",
+        "company"
+      ]
+    },
+    "companies_delete": {
+      "type": "array",
+      "optional": true,
+      "item_key": [
+        "region",
+        "company"
+      ]
+    },
+    "launchSites_upsert": {
+      "type": "object",
+      "key": "site_name"
+    },
+    "launchSites_delete": {
+      "type": "array",
+      "optional": true,
+      "item_key": [
+        "site_name"
+      ]
+    },
+    "change_log": {
+      "type": "array",
+      "optional": true,
+      "items": "human-readable update notes"
+    }
+  },
+  "node_minimum_fields": [
+    "id",
+    "region",
+    "company",
+    "vehicle",
+    "horizon_bucket",
+    "single_launch_kg",
+    "supply_2026_kg",
+    "supply_2030_kg",
+    "flights_2026_base",
+    "flights_2030_base",
+    "reusability_class",
+    "propellant_class",
+    "cost_score",
+    "sources"
+  ],
+  "recommended_node_fields": [
+    "vehicleZh",
+    "companyZh",
+    "firstFlightYear",
+    "firstFlightStatus",
+    "totalFlights",
+    "totalFlightsDisplay",
+    "gtoPayloadKg",
+    "recoveryMethod",
+    "launchSites",
+    "engines",
+    "techRoute",
+    "techRouteEn",
+    "launchHistory",
+    "plannedMissions",
+    "constellationCapable",
+    "certified",
+    "currentRealityZh",
+    "costThesisZh"
+  ],
+  "company_minimum_fields": [
+    "region",
+    "company",
+    "valuation",
+    "funding",
+    "investors"
+  ],
+  "launch_site_schema": {
+    "site_name": {
+      "lat": "number",
+      "lon": "number",
+      "country": "string",
+      "nameZh": "string(optional)"
+    }
+  },
+  "merge_rules": {
+    "meta_updates": "shallow-merge into dataset.meta",
+    "nodes_upsert": "upsert by id",
+    "companies_upsert": "upsert by region + company",
+    "launchSites_upsert": "replace or create by site_name dictionary key",
+    "arrays_inside_node": "replace whole array when provided",
+    "sources": "replace whole sources array when provided; do not append duplicate URLs",
+    "null_values": "allowed, but prefer explicit null only when disclosure truly unavailable"
+  },
+  "qa_checks_before_publish": [
+    "All nodes must have unique id values.",
+    "All company rows must have unique region + company combinations.",
+    "All launch sites referenced by nodes.launchSites must exist in launchSites dictionary.",
+    "All numeric kg fields must be >= 0 or null.",
+    "Each source entry must contain label and url."
+  ]
+}
