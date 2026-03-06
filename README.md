@@ -1,3 +1,4 @@
-# Rocket Market Map
+# Rocket Market Map bilingual stable package
 
-Static bilingual site for GitHub Pages. Upload all files to the repository root and enable Pages from `main` and `/(root)`.
+- index.html: 中文
+- en.html: English
