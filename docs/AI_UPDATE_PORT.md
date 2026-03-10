@@ -1,57 +1,62 @@
-# AI Update Port
+# AI UPDATE PORT
 
-## Canonical source of truth
+## Primary target for automated updates
 
-The website reads **one canonical dataset file**:
+The website reads this file first:
 
-- `data/rocket_market_map_2026_2030_v2.json`
+`data/rocket_market_map_2026_2030_v3.json`
 
-If an automation agent updates that file and the site is redeployed, the dashboard will reflect the change.
+If an AI automation only updates one file, update this one.
 
-## Machine-readable entry points
+## Supporting machine-readable files
 
-- `data/manifest.json`  
-  Version, canonical file path, merge mode, and stable keys.
+- `data/manifest.json`
+- `data/update_contract.json`
+- `updates/sample_patch.json`
+- `tools/apply_update.py`
 
-- `data/update_contract.json`  
-  Field contract and QA rules for agents.
+## What an AI should update
 
-- `updates/sample_patch.json`  
-  Example patch payload.
+### Vehicle / node-level changes
 
-- `tools/apply_update.py`  
-  Merge helper for patch-based updates.
+Update the matching node by `id` when any of these change:
+
+- payload
+- GTO payload
+- 2026 or 2030 supply estimate
+- maturity state
+- first flight status
+- total flight count
+- planned missions
+- launch history
+- engine data
+- route explanation fields
+
+### Company-level changes
+
+Update the matching company by `company` when any of these change:
+
+- valuation
+- funding
+- investors
+- company-level supply totals
+
+## Critical rule
+
+Do not create a second competing primary data file unless you also update:
+
+- `data/manifest.json`
+- page bootstrap path in `window.__DATA_PATH__`
 
 ## Stable keys
 
-### Nodes
-Use `id` as the stable primary key.
+- node primary key: `id`
+- company primary key: `company`
 
-### Companies
-Use composite key: `region + company`.
+## Minimal automation loop
 
-### Launch sites
-Use the site dictionary key, for example `CCSFS LC-36`.
-
-## Recommended automation flow
-
-1. Read `data/manifest.json`
-2. Read `data/update_contract.json`
-3. Generate a patch file matching the contract
-4. Run:
-
-```bash
-python tools/apply_update.py   --dataset data/rocket_market_map_2026_2030_v2.json   --patch updates/patch.json   --out data/rocket_market_map_2026_2030_v2.json   --backup-dir updates/archive
-```
-
-5. Commit the updated dataset file and deploy
-
-## Important merge rule
-
-Inside each node/company row, **arrays are replaced wholesale when present in a patch**.  
-That means if an automation agent sends a new `plannedMissions` array, it should send the full desired array, not only the delta.
-
-## Practical note
-
-GitHub Pages itself is static and does not provide a write API.  
-So the “update port” here is a **repository file contract** designed for AI agents, GitHub Actions, or any repo-writing automation.
+1. Collect new source data.
+2. Match affected node ids and company names.
+3. Update `data/rocket_market_map_2026_2030_v3.json`.
+4. Keep derived explanatory fields in sync if the strategic story changes.
+5. Redeploy the static site.

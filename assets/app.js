@@ -1,1482 +1,930 @@
+(() => {
+  const lang = document.body.dataset.lang || 'zh';
+  const isZh = lang.startsWith('zh');
 
-const LANG = window.APP_LANG || 'zh';
-const TEXT = {
-  "zh": {
-    "eyebrow": "战略投资者视角 · 更新至 2026 年 3 月 · 33 个发射节点",
-    "downloadJson": "下载数据 JSON",
-    "downloadCsv": "下载筛选结果 CSV",
-    "metricLabel": "指标口径",
-    "searchLabel": "搜索",
-    "searchPlaceholder": "搜索公司、火箭、发动机、发射场",
-    "regionLabel": "地区",
-    "bucketLabel": "时间状态",
-    "ownershipLabel": "所有制",
-    "reusabilityLabel": "复用方式",
-    "propellantLabel": "推进剂",
-    "siteLabel": "发射场",
-    "resetFilters": "重置筛选",
-    "navOverview": "总览",
-    "navLifecycle": "成熟度与节奏",
-    "navEngineering": "发动机与发射场",
-    "navExplorer": "项目与公司",
-    "navMethodology": "方法与覆盖",
-    "navSources": "来源",
-    "overviewTitle": "大局总览",
-    "overviewDesc": "先看谁在 2026 年真有现实供给，再看谁在 2030 年具备期权价值。点击图表即可联动筛选或下钻详情。",
-    "regionChartTitle": "地区供给分布",
-    "regionChartDesc": "点击地区柱条可联动其余视图。",
-    "statusChartTitle": "时间状态分布",
-    "statusChartDesc": "每个节点只属于一个时间状态桶，避免把现实供给与远期期权重复计算。",
-    "companyChartTitle": "头部公司 / 平台",
-    "companyChartDesc": "按公司口径聚合，便于观察资本、发射频率与车型组合。",
-    "heatmapTitle": "技术路线热力图",
-    "heatmapDesc": "行是复用方式，列是推进剂家族，颜色随当前指标变化。点击单元格即可筛选。",
-    "bubbleTitle": "火箭位置图：单发运力 vs. 长期成本",
-    "bubbleDesc": "X 轴是单发 LEO 运力，Y 轴是长期成本竞争力评分，气泡大小随当前指标变化。点击气泡可查看详细卡片。",
-    "lifecycleTitle": "成熟度与发射节奏",
-    "lifecycleDesc": "加入首飞时间、累计飞行次数与近期发射频率，帮助判断“能飞一次”和“能持续飞”之间的差别。",
-    "timelineTitle": "首飞时间轴",
-    "timelineDesc": "实心点代表已首飞，空心菱形代表公开口径下的计划首飞年份。点击节点查看详情。",
-    "trendTitle": "发射频次趋势",
-    "trendDesc": "默认展示当前筛选集合的年度发射次数走势；可用于判断某一篮子项目的现实节奏与未来爬坡斜率。",
-    "engineeringTitle": "发动机与发射场",
-    "engineeringDesc": "补上发动机、推力、比冲、发射场这些工程与执行层面的关键信息。",
-    "engineTableTitle": "发动机对比表",
-    "engineTableDesc": "按当前筛选项目展开。推力和比冲为公开口径或近似值，主要用于横向比较而不是精密仿真。",
-    "siteMapTitle": "发射场分布视图",
-    "siteMapDesc": "用经纬度散点展示当前可见项目的主要发射场。点击站点可进一步筛选。",
-    "explorerTitle": "项目与公司浏览",
-    "explorerDesc": "同一页里既能看节点级技术细节，也能看公司级资本与车型组合。",
-    "programTableTitle": "项目浏览",
-    "programTableDesc": "点击任一行打开详细卡片：技术路线、发动机、近期任务、资本信息与来源链接。",
-    "companyTableTitle": "公司与资本浏览",
-    "companyTableDesc": "按公司层面展示估值、融资、投资人和可支撑的火箭组合。",
-    "methodologyTitle": "方法与覆盖说明",
-    "methodologyDesc": "保留独占式分类逻辑，但界面里不再反复强调术语；重点是帮助快速形成大局判断。",
-    "requirementsTitle": "本次版本覆盖的新增需求",
-    "sourcesTitle": "来源索引",
-    "sourcesDesc": "来源以型号官方页、机构/政府发布与主流财经报道为主。点链接可跳转查看。",
-    "all": "全部",
-    "selectedMetricTotal": "当前筛选总量",
-    "topRegion": "最大地区",
-    "topNode": "最大节点",
-    "visibleNodes": "可见节点",
-    "visibleNodesMeta": "现实供给 {live} · 远期项目 {option} · 暂停 {paused}",
-    "topRegionMeta": "{value}",
-    "topNodeMeta": "{company} · {value}",
-    "metricSupply2026": "2026 可交付运力",
-    "metricSupply2030": "2030 潜在运力",
-    "metricSingle": "单发有效载荷",
-    "metricSupply2026Desc": "保守口径的 2026 年现实供给",
-    "metricSupply2030Desc": "2030 年基线情景的潜在供给",
-    "metricSingleDesc": "单次发射的 LEO / LEO 等效运力",
-    "statusCount": "节点数",
-    "statusMetric": "指标总量",
-    "count": "数量",
-    "nodes": "个节点",
-    "filterScope": "当前覆盖范围：{count} 个节点，{companies} 家公司 / 平台。",
-    "tableVehicle": "火箭 / 节点",
-    "tableCompany": "公司",
-    "tableRegion": "地区",
-    "table2026": "2026 运力",
-    "table2030": "2030 运力",
-    "tablePayload": "单发 LEO",
-    "tableGto": "GTO",
-    "tableFirstFlight": "首飞",
-    "tableFlights": "累计发射",
-    "tableStatus": "状态",
-    "tableCost": "成本评分",
-    "tableVehicles": "火箭组合",
-    "tableValuation": "估值",
-    "tableFunding": "融资",
-    "tableEngine": "发动机",
-    "tableStage": "级段",
-    "tableCount": "数量",
-    "tableThrust": "推力 (kN)",
-    "tableIsp": "比冲 (s)",
-    "tableLaunchSite": "发射场",
-    "tableMission": "近期任务",
-    "tableOrbit": "轨道",
-    "tableDate": "日期",
-    "tableSource": "来源",
-    "tableLink": "链接",
-    "tableCertification": "认证 / 市场准入",
-    "tableRecovery": "回收方式",
-    "tableTechRoute": "技术路线",
-    "openDetails": "查看详情",
-    "drawerProgram": "项目详情",
-    "drawerCompany": "公司详情",
-    "drawerOverview": "概要",
-    "drawerNarrative": "战略解读",
-    "drawerMissions": "近期计划任务",
-    "drawerEngines": "发动机明细",
-    "drawerSources": "来源链接",
-    "drawerCapital": "公司资本画像",
-    "drawerSites": "发射场",
-    "drawerNote": "注：新增的首飞时间、累计发射、发动机、任务和发射场字段为公开信息快照；对未公开披露的项目，部分参数采用近似值。",
-    "yes": "是",
-    "no": "否",
-    "actual": "已首飞",
-    "planned": "计划",
-    "none": "未披露 / 不适用",
-    "sourceCount": "来源数",
-    "trendActual": "历史 / 已发生",
-    "trendPlanned": "基线 / 计划",
-    "siteFilterActive": "当前已按发射场筛选：{site}",
-    "clearSite": "清除发射场筛选",
-    "companyCapitalHint": "点击公司行可查看更完整的估值、融资与投资人信息。",
-    "fieldCompany": "公司",
-    "fieldRegion": "地区",
-    "fieldCountry": "国家 / 区域",
-    "fieldOwnership": "所有制",
-    "fieldHorizon": "时间状态",
-    "fieldFirstFlight": "首飞时间",
-    "fieldTotalFlights": "累计发射",
-    "fieldLaunch2026": "2026 基线发射次数",
-    "fieldLaunch2030": "2030 基线发射次数",
-    "fieldSingle": "单发 LEO 运力",
-    "fieldGto": "GTO 运力",
-    "fieldReusability": "复用方式",
-    "fieldRecovery": "回收方式",
-    "fieldPropellant": "推进剂",
-    "fieldArchitecture": "架构",
-    "fieldCertification": "认证状态",
-    "fieldConstellation": "组网能力",
-    "fieldConfidence": "信息把握度",
-    "fieldValuation": "估值",
-    "fieldFunding": "融资",
-    "fieldInvestors": "主要投资人",
-    "fieldVehicles": "火箭组合",
-    "fieldSources": "来源",
-    "siteLegend": "站点标签：点击胶囊可筛选",
-    "siteAxisX": "经度",
-    "siteAxisY": "纬度",
-    "timelineAxis": "年份",
-    "trendAxis": "年度发射次数",
-    "bubbleAxisX": "单发运力（对数尺度）",
-    "bubbleAxisY": "长期成本评分",
-    "programs": "项目",
-    "companies": "公司",
-    "sourceNode": "对应节点",
-    "siteProjects": "关联项目",
-    "siteMetric": "站点承载指标总量"
-  },
-  "en": {
-    "eyebrow": "Strategic investor view · updated March 2026 · 33 launch nodes",
-    "downloadJson": "Download JSON",
-    "downloadCsv": "Download filtered CSV",
-    "metricLabel": "Metric",
-    "searchLabel": "Search",
-    "searchPlaceholder": "Search company, vehicle, engine or launch site",
-    "regionLabel": "Region",
-    "bucketLabel": "Time status",
-    "ownershipLabel": "Ownership",
-    "reusabilityLabel": "Reusability",
-    "propellantLabel": "Propellant",
-    "siteLabel": "Launch site",
-    "resetFilters": "Reset filters",
-    "navOverview": "Overview",
-    "navLifecycle": "Maturity & cadence",
-    "navEngineering": "Engines & sites",
-    "navExplorer": "Programs & companies",
-    "navMethodology": "Method",
-    "navSources": "Sources",
-    "overviewTitle": "Big picture",
-    "overviewDesc": "Start with who can really deliver launch in 2026, then compare who carries meaningful 2030 option value. Click any chart to filter or drill down.",
-    "regionChartTitle": "Regional supply split",
-    "regionChartDesc": "Click a region bar to focus the rest of the dashboard.",
-    "statusChartTitle": "Time-status split",
-    "statusChartDesc": "Each node belongs to one and only one time-status bucket, preventing double counting between live supply and future option value.",
-    "companyChartTitle": "Leading companies / platforms",
-    "companyChartDesc": "Aggregated at company level to combine launch capacity with capital context.",
-    "heatmapTitle": "Technology route heatmap",
-    "heatmapDesc": "Rows are reusability classes, columns are propellant families. Click a cell to filter.",
-    "bubbleTitle": "Vehicle map: payload vs. long-run cost position",
-    "bubbleDesc": "X-axis is single-launch LEO payload, Y-axis is strategic long-run cost score, and bubble size follows the selected metric.",
-    "lifecycleTitle": "Maturity and launch cadence",
-    "lifecycleDesc": "Adds first-flight timing, total flights and recent cadence to separate one-off demonstrations from bankable launch supply.",
-    "timelineTitle": "First-flight timeline",
-    "timelineDesc": "Solid circles are flown vehicles. Hollow diamonds are publicly targeted first-flight years. Click any node for details.",
-    "trendTitle": "Launch cadence trend",
-    "trendDesc": "By default this chart aggregates the currently visible nodes to show throughput history and near-term ramp expectations.",
-    "engineeringTitle": "Engines and launch sites",
-    "engineeringDesc": "Adds engines, thrust, ISP and launch-site footprint to the strategic view.",
-    "engineTableTitle": "Engine comparison table",
-    "engineTableDesc": "Expanded from currently visible programs. Thrust and ISP are public-data snapshots or close approximations for comparison, not simulation inputs.",
-    "siteMapTitle": "Launch-site geographic view",
-    "siteMapDesc": "Longitude/latitude scatter of the main launch sites tied to currently visible nodes. Click a site to filter.",
-    "explorerTitle": "Program and company explorer",
-    "explorerDesc": "Browse node-level technical detail and company-level capital structure in one place.",
-    "programTableTitle": "Program explorer",
-    "programTableDesc": "Click any row for a detailed brief: route, engines, planned missions, capital context and sources.",
-    "companyTableTitle": "Company and capital explorer",
-    "companyTableDesc": "Shows valuation, funding, investors and the vehicle mix each company can support.",
-    "methodologyTitle": "Method and coverage",
-    "methodologyDesc": "The exclusive classification logic is preserved, but the interface now foregrounds practical reading over jargon.",
-    "requirementsTitle": "What this version adds",
-    "sourcesTitle": "Source index",
-    "sourcesDesc": "Sources lean on official vehicle pages, agency releases and major financial reporting. Click through for the exact link.",
-    "all": "All",
-    "selectedMetricTotal": "Selected metric total",
-    "topRegion": "Top region",
-    "topNode": "Top node",
-    "visibleNodes": "Visible nodes",
-    "visibleNodesMeta": "Live {live} · Option {option} · Paused {paused}",
-    "topRegionMeta": "{value}",
-    "topNodeMeta": "{company} · {value}",
-    "metricSupply2026": "2026 deliverable kg",
-    "metricSupply2030": "2030 potential kg",
-    "metricSingle": "Single-launch kg",
-    "metricSupply2026Desc": "Conservative live supply likely deliverable in 2026",
-    "metricSupply2030Desc": "Base-case 2030 option value",
-    "metricSingleDesc": "Single-launch LEO / LEO-equivalent payload",
-    "statusCount": "Nodes",
-    "statusMetric": "Metric total",
-    "count": "Count",
-    "nodes": "nodes",
-    "filterScope": "Coverage currently visible: {count} nodes across {companies} companies / platforms.",
-    "tableVehicle": "Vehicle / node",
-    "tableCompany": "Company",
-    "tableRegion": "Region",
-    "table2026": "2026 kg",
-    "table2030": "2030 kg",
-    "tablePayload": "Single LEO",
-    "tableGto": "GTO",
-    "tableFirstFlight": "First flight",
-    "tableFlights": "Total flights",
-    "tableStatus": "Status",
-    "tableCost": "Cost score",
-    "tableVehicles": "Vehicle mix",
-    "tableValuation": "Valuation",
-    "tableFunding": "Funding",
-    "tableEngine": "Engine",
-    "tableStage": "Stage",
-    "tableCount": "Count",
-    "tableThrust": "Thrust (kN)",
-    "tableIsp": "ISP (s)",
-    "tableLaunchSite": "Launch site",
-    "tableMission": "Planned mission",
-    "tableOrbit": "Orbit",
-    "tableDate": "Date",
-    "tableSource": "Source",
-    "tableLink": "Link",
-    "tableCertification": "Certification / access",
-    "tableRecovery": "Recovery method",
-    "tableTechRoute": "Technical route",
-    "openDetails": "Open details",
-    "drawerProgram": "Program detail",
-    "drawerCompany": "Company detail",
-    "drawerOverview": "Overview",
-    "drawerNarrative": "Strategic reading",
-    "drawerMissions": "Planned missions",
-    "drawerEngines": "Engine detail",
-    "drawerSources": "Sources",
-    "drawerCapital": "Capital profile",
-    "drawerSites": "Launch sites",
-    "drawerNote": "Note: first-flight timing, flight counts, engines, planned missions and launch-site fields are public-data snapshots as of March 2026; some emerging programs use approximations where disclosure is limited.",
-    "yes": "Yes",
-    "no": "No",
-    "actual": "Flown",
-    "planned": "Planned",
-    "none": "Not disclosed / n.a.",
-    "sourceCount": "Source count",
-    "trendActual": "Historical / flown",
-    "trendPlanned": "Base case / planned",
-    "siteFilterActive": "Currently filtered by launch site: {site}",
-    "clearSite": "Clear launch-site filter",
-    "companyCapitalHint": "Click a company row for fuller valuation, funding and investor detail.",
-    "fieldCompany": "Company",
-    "fieldRegion": "Region",
-    "fieldCountry": "Country / area",
-    "fieldOwnership": "Ownership",
-    "fieldHorizon": "Time status",
-    "fieldFirstFlight": "First flight",
-    "fieldTotalFlights": "Total flights",
-    "fieldLaunch2026": "2026 base flights",
-    "fieldLaunch2030": "2030 base flights",
-    "fieldSingle": "Single-launch LEO",
-    "fieldGto": "GTO payload",
-    "fieldReusability": "Reusability",
-    "fieldRecovery": "Recovery",
-    "fieldPropellant": "Propellant",
-    "fieldArchitecture": "Architecture",
-    "fieldCertification": "Certification",
-    "fieldConstellation": "Constellation capable",
-    "fieldConfidence": "Confidence",
-    "fieldValuation": "Valuation",
-    "fieldFunding": "Funding",
-    "fieldInvestors": "Investors",
-    "fieldVehicles": "Vehicles",
-    "fieldSources": "Sources",
-    "siteLegend": "Site tags: click to filter",
-    "siteAxisX": "Longitude",
-    "siteAxisY": "Latitude",
-    "timelineAxis": "Year",
-    "trendAxis": "Launches per year",
-    "bubbleAxisX": "Single-launch payload (log scale)",
-    "bubbleAxisY": "Long-run cost score",
-    "programs": "Programs",
-    "companies": "Companies",
-    "sourceNode": "Node",
-    "siteProjects": "Linked programs",
-    "siteMetric": "Metric total at site"
-  }
-};
-const ENUMS = {
-  "region": {
-    "US": {
-      "zh": "美国",
-      "en": "U.S."
+  const TEXT = {
+    zh: {
+      brand: 'Rocket Market Map · Executive Edition',
+      heroEyebrow: 'Executive view',
+      heroTitle: '全球火箭市场：先看目标，再看技术',
+      heroSubtitle: '火箭公司不是在比“谁最先进”，而是在成本、运力、可靠性、节奏、主权和资本之间做取舍。这个版本只保留对管理层真正有用的内容：先解释为什么会有不同路线，再用一张主图和可下钻的公司卡把市场看清。',
+      ctaMap: '看主图',
+      ctaRoutes: '看路线解释',
+      heroTakeaways: [
+        ['先问目标', '一家公司到底想赢什么：最低长期成本、最大单发运力、最高任务把握度、最快响应，还是国家主权准入？'],
+        ['再看约束', '发动机成熟度、资本、订单、发射场和认证，决定了它敢不敢走复用，能不能把路线做成生意。'],
+        ['最后看路线', '多数主流玩家最终都会落到六类路线里。路线不同，不代表谁先进谁落后，而是服务不同目标。']
+      ],
+      overview: [
+        ['为什么火箭会长得不一样？', '因为客户不一样。大星座想要的是单位成本和频率，国家任务想要的是任务把握度，小卫星客户想买的是专属窗口。'],
+        ['为什么不是所有人都做全复用？', '因为全复用的上限最高，但研发风险、系统复杂度和资本消耗也最高。多数公司先从一次性或一级复用起步。'],
+        ['看一家公司最该看什么？', '看它服务谁、靠什么赚钱、最怕什么，以及它的技术路线是否真的和这些目标匹配。']
+      ],
+      principlesTitle: '先用第一性原理读懂火箭设计',
+      principlesSubtitle: '大多数设计差异，都可以追溯到四个拨杆：客户、推进剂、回收方式，以及现实约束。',
+      principles: [
+        ['客户是谁', '大星座和政府重型任务，会推动更大的运力和更高频率；小卫星客户更看重专属时间窗。'],
+        ['推进剂怎么选', '煤油成熟、甲烷更利于复用、氢效率高但系统复杂、固体响应快但长期成本通常不占优。'],
+        ['回收做到哪一步', '不回收最稳、一级回收最像主流商业方案、全复用潜力最大但系统难度最高。'],
+        ['现实约束是什么', '资本、发动机成熟度、认证、供应链和发射场，常常比“理论最优解”更能决定最终路线。']
+      ],
+      goalsTitle: '如果目标变了，路线也会变',
+      goalsSubtitle: '点一个目标，看它通常会把公司推向哪些路线。',
+      routesTitle: '六种最重要的主流路线',
+      routesSubtitle: '点卡片可过滤主图与公司卡。默认展示全部。',
+      clearRouteFilter: '显示全部路线',
+      mapTitle: '主图：单发运力 vs. 长期成本竞争力',
+      mapSubtitle: '横轴看单发运力，纵轴看长期成本竞争力评分，气泡大小看可交付运力。颜色代表路线，点击气泡看公司策略卡。',
+      metric2026: '2026 可交付运力',
+      metric2030: '2030 潜在运力',
+      regionAll: '全部地区',
+      regionUS: '美国',
+      regionEurope: '欧洲',
+      regionChina: '中国',
+      mapNote: '说明：这张图只放“单一火箭产品节点”。像“长征现役舰队”这种体系级节点，会在公司卡里保留，但不会放在单发气泡图里。长期成本竞争力是基于复用深度、频率、批产和订单闭环的研究性评分，不等于官方报价。',
+      companiesTitle: '公司策略卡',
+      companiesSubtitle: '默认按路线分组。点任意公司卡，可展开技术、历史、资本和计划任务。',
+      searchPlaceholder: '搜索公司或火箭…',
+      emptyState: '当前筛选条件下没有匹配结果。',
+      dataPortTitle: '数据更新端口',
+      dataPortSubtitle: '以后你用 AI 自动采集和更新时，只要读这几个固定入口就行。网站主读取主数据文件，其它是清单和更新契约。',
+      portCards: [
+        ['主数据文件', '网站的可视化和详情页都优先读取这一份 JSON。'],
+        ['数据清单', '告诉 AI 哪个文件是主入口，以及当前版本号。'],
+        ['更新契约', '告诉 AI 应该按什么主键和字段去改，避免把网站改坏。']
+      ],
+      drawerClose: '关闭',
+      drawerSections: {
+        thesis: '一句话判断',
+        coreData: '关键数据',
+        why: '为什么会选这条路线',
+        tech: '技术与基础设施',
+        history: '历史与近期任务',
+        capital: '资本与投资人',
+        sources: '来源'
+      },
+      drawerLabels: {
+        route: '路线', region: '地区', maturity: '状态', target: '目标', constraint: '主要制约', watch: '下一观察点',
+        payload: '单发 LEO', gto: '单发 GTO', flights2026: '2026 发射次数', firstFlight: '首飞', totalFlights: '累计发射',
+        propellant: '推进剂', reuse: '复用方式', recovery: '回收方式', architecture: '架构', launchSite: '发射场',
+        certified: '认证', constellation: '组网适配', valuation: '估值', funding: '融资', investors: '投资人',
+        engines: '发动机', planned: '近期计划任务', historyChart: '近年发射节奏'
+      },
+      yes: '是', no: '否', unknown: '未披露 / 不适用',
+      actual: '已首飞', planned: '计划首飞',
+      nodesUnit: '个节点',
+      supplyUnit: '2026 运力',
+      chartXTitle: '单发 LEO 运力（对数轴）',
+      chartYTitle: '长期成本竞争力评分',
+      topLabelNote: '标签只展示少数关键节点；其余请悬停或点击查看。',
+      axisTickKg: 'kg',
+      axisTickT: 't'
     },
-    "Europe": {
-      "zh": "欧洲",
-      "en": "Europe"
-    },
-    "China": {
-      "zh": "中国",
-      "en": "China"
+    en: {
+      brand: 'Rocket Market Map · Executive Edition',
+      heroEyebrow: 'Executive view',
+      heroTitle: 'Global launch market: start with goals, then technology',
+      heroSubtitle: 'Rocket companies are not simply competing on “who is more advanced.” They are making tradeoffs between cost, payload, reliability, cadence, sovereignty and capital. This version keeps only what helps leadership teams: explain why different routes exist, then show the market through one main chart and drill-down strategy cards.',
+      ctaMap: 'Open main chart',
+      ctaRoutes: 'See route archetypes',
+      heroTakeaways: [
+        ['Start with the goal', 'Is the company trying to win on delivered cost, payload per launch, mission assurance, response time, or sovereign access?'],
+        ['Then look at constraints', 'Engine maturity, capital, launch sites, certification and order flow determine how bold a vehicle architecture can be.'],
+        ['Only then look at technology', 'Most serious players eventually cluster into six route archetypes. Different routes exist because the business goals differ.']
+      ],
+      overview: [
+        ['Why do rockets look so different?', 'Because customers differ. Constellations want delivered cost and cadence, sovereign missions want assurance, and small-satellite buyers often want a dedicated window.'],
+        ['Why not build everything around full reuse?', 'Because full reuse offers the highest upside, but also the hardest engineering, the largest capital burn, and the longest path to stable operations.'],
+        ['What should you ask first?', 'Who pays, what the company is trying to win, what can break the model, and whether the chosen architecture actually matches that reality.']
+      ],
+      principlesTitle: 'Read rocket design from first principles',
+      principlesSubtitle: 'Most design differences come from four levers: customer, propellant, recovery depth and real-world constraints.',
+      principles: [
+        ['Customer', 'Constellation and government-heavy demand pushes toward larger payloads and higher cadence; small satellites often value a dedicated window.'],
+        ['Propellant', 'Kerosene is mature, methane is attractive for reuse, hydrogen is efficient but complex, and solids are operationally fast but usually weaker on long-run cost.'],
+        ['Recovery depth', 'Expendable is simpler, first-stage reuse is today’s commercial sweet spot, and full reuse has the highest upside with the highest system complexity.'],
+        ['Real-world constraints', 'Capital, engines, certification, supply chain and launch-site access often matter more than the elegant theoretical answer.']
+      ],
+      goalsTitle: 'Change the goal, change the architecture',
+      goalsSubtitle: 'Pick a goal to see which routes it usually pushes companies toward.',
+      routesTitle: 'Six route archetypes that matter most',
+      routesSubtitle: 'Click a card to filter the chart and strategy cards. Default view shows all routes.',
+      clearRouteFilter: 'Show all routes',
+      mapTitle: 'Main chart: payload per launch vs. long-term cost position',
+      mapSubtitle: 'X shows single-launch payload, Y is a long-term cost competitiveness score, bubble size shows supply. Color shows route type. Click a bubble for the strategy card.',
+      metric2026: '2026 deliverable supply',
+      metric2030: '2030 potential supply',
+      regionAll: 'All regions',
+      regionUS: 'U.S.',
+      regionEurope: 'Europe',
+      regionChina: 'China',
+      mapNote: 'Note: the chart shows single-vehicle product nodes only. Fleet-level nodes such as the active Long March fleet remain in the company cards but are excluded from the single-launch bubble chart. The long-term cost score is an analytical view based on reuse depth, cadence, production scale and order loops; it is not an official price quote.',
+      companiesTitle: 'Strategy cards by company and vehicle',
+      companiesSubtitle: 'By default the cards are grouped by route. Open any card for the full technical, historical and capital detail.',
+      searchPlaceholder: 'Search company or vehicle…',
+      emptyState: 'No matching vehicles under the current filters.',
+      dataPortTitle: 'Data update port',
+      dataPortSubtitle: 'If you later automate collection and refresh with AI, these are the fixed endpoints to read and update. The website reads the primary data file first.',
+      portCards: [
+        ['Primary data file', 'The site reads this JSON first for charts and drill-down detail.'],
+        ['Manifest', 'Tells an AI which file is the primary entry point and which version is live.'],
+        ['Update contract', 'Tells an AI which keys and fields to update so the site stays stable.']
+      ],
+      drawerClose: 'Close',
+      drawerSections: {
+        thesis: 'Bottom line',
+        coreData: 'Key data',
+        why: 'Why this route',
+        tech: 'Technology and infrastructure',
+        history: 'History and near-term missions',
+        capital: 'Capital and investors',
+        sources: 'Sources'
+      },
+      drawerLabels: {
+        route: 'Route', region: 'Region', maturity: 'Status', target: 'Objective', constraint: 'Main constraint', watch: 'What to watch',
+        payload: 'Single-launch LEO', gto: 'Single-launch GTO', flights2026: '2026 flights', firstFlight: 'First flight', totalFlights: 'Total flights',
+        propellant: 'Propellant', reuse: 'Reuse', recovery: 'Recovery method', architecture: 'Architecture', launchSite: 'Launch sites',
+        certified: 'Certified', constellation: 'Constellation capable', valuation: 'Valuation', funding: 'Funding', investors: 'Investors',
+        engines: 'Engines', planned: 'Planned missions', historyChart: 'Recent launch cadence'
+      },
+      yes: 'Yes', no: 'No', unknown: 'Undisclosed / n.a.',
+      actual: 'Flown', planned: 'Planned',
+      nodesUnit: 'nodes',
+      supplyUnit: '2026 supply',
+      chartXTitle: 'Single-launch LEO payload (log scale)',
+      chartYTitle: 'Long-term cost competitiveness',
+      topLabelNote: 'Only a few key labels are shown by default; hover or click for the rest.',
+      axisTickKg: 'kg',
+      axisTickT: 't'
     }
-  },
-  "horizon_bucket": {
-    "Live 2026 supply": {
-      "zh": "现实供给（2026）",
-      "en": "Live 2026 supply"
-    },
-    "2027-2030 option": {
-      "zh": "远期期权（2027-2030）",
-      "en": "2027-2030 option"
-    },
-    "Distressed / paused": {
-      "zh": "暂停 / 受挫",
-      "en": "Distressed / paused"
-    }
-  },
-  "ownership_class": {
-    "Private company": {
-      "zh": "民营公司",
-      "en": "Private company"
-    },
-    "Public company": {
-      "zh": "上市公司",
-      "en": "Public company"
-    },
-    "Industrial JV / incumbent": {
-      "zh": "工业合资 / 传统主承包",
-      "en": "Industrial JV / incumbent"
-    },
-    "State system": {
-      "zh": "国家体系",
-      "en": "State system"
-    },
-    "State-backed commercial": {
-      "zh": "国资 / 体系支持商业平台",
-      "en": "State-backed commercial"
-    }
-  },
-  "reusability_class": {
-    "Full reusable": {
-      "zh": "全复用",
-      "en": "Full reusable"
-    },
-    "Partial reusable": {
-      "zh": "一级 / 部分复用",
-      "en": "Partial reusable"
-    },
-    "Expendable": {
-      "zh": "一次性",
-      "en": "Expendable"
-    }
-  },
-  "propellant_class": {
-    "Methane/LOX": {
-      "zh": "甲烷 / 液氧",
-      "en": "Methane / LOX"
-    },
-    "Kerosene/LOX": {
-      "zh": "煤油 / 液氧",
-      "en": "Kerosene / LOX"
-    },
-    "Mixed cryogenic": {
-      "zh": "混合低温",
-      "en": "Mixed cryogenic"
-    },
-    "Solid": {
-      "zh": "固体",
-      "en": "Solid"
-    }
-  },
-  "maturity_class": {
-    "Mature service": {
-      "zh": "成熟运营",
-      "en": "Mature service"
-    },
-    "Early operations": {
-      "zh": "早期运营",
-      "en": "Early operations"
-    },
-    "Operational / scaling": {
-      "zh": "已运营 / 扩张中",
-      "en": "Operational / scaling"
-    },
-    "Operational / ramping": {
-      "zh": "已运营 / 爬坡中",
-      "en": "Operational / ramping"
-    },
-    "Operational": {
-      "zh": "已运营",
-      "en": "Operational"
-    },
-    "Development / pre-scale": {
-      "zh": "研发 / 首飞前",
-      "en": "Development / pre-scale"
-    },
-    "Distressed / paused": {
-      "zh": "暂停 / 受挫",
-      "en": "Distressed / paused"
-    },
-    "Pilot / demonstration": {
-      "zh": "试验 / 验证",
-      "en": "Pilot / demonstration"
-    }
-  },
-  "confidence": {
-    "High": {
-      "zh": "高",
-      "en": "High"
-    },
-    "Medium": {
-      "zh": "中",
-      "en": "Medium"
-    },
-    "Low": {
-      "zh": "低",
-      "en": "Low"
-    }
-  }
-};
-const REGION_COLORS = {
-  US: '#7cc7ff',
-  Europe: '#60e1c2',
-  China: '#f5c66d'
-};
-const METRICS = {
-  supply_2026_kg: {
-    label: { zh: TEXT.zh.metricSupply2026, en: TEXT.en.metricSupply2026 },
-    desc: { zh: TEXT.zh.metricSupply2026Desc, en: TEXT.en.metricSupply2026Desc }
-  },
-  supply_2030_kg: {
-    label: { zh: TEXT.zh.metricSupply2030, en: TEXT.en.metricSupply2030 },
-    desc: { zh: TEXT.zh.metricSupply2030Desc, en: TEXT.en.metricSupply2030Desc }
-  },
-  single_launch_kg: {
-    label: { zh: TEXT.zh.metricSingle, en: TEXT.en.metricSingle },
-    desc: { zh: TEXT.zh.metricSingleDesc, en: TEXT.en.metricSingleDesc }
-  }
-};
-
-let DATA = null;
-let state = {
-  metric: 'supply_2026_kg',
-  search: '',
-  region: 'All',
-  bucket: 'All',
-  ownership: 'All',
-  reusability: 'All',
-  propellant: 'All',
-  site: 'All',
-  drawer: null
-};
-
-document.addEventListener('DOMContentLoaded', init);
-
-async function init() {
-  const bootstrapNode = document.getElementById('bootstrap-data');
-  if (bootstrapNode && bootstrapNode.textContent && window.location.protocol === 'file:') {
-    DATA = JSON.parse(bootstrapNode.textContent);
-  } else {
-    try {
-      DATA = await fetch('data/rocket_market_map_2026_2030_v2.json').then(r => {
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        return r.json();
-      });
-    } catch (err) {
-      if (bootstrapNode && bootstrapNode.textContent) {
-        DATA = JSON.parse(bootstrapNode.textContent);
-      } else {
-        throw err;
-      }
-    }
-  }
-  bindStaticActions();
-  renderText();
-  initFilters();
-  rerender();
-}
-
-function t(key) {
-  return (TEXT[LANG] && TEXT[LANG][key]) || key;
-}
-
-function format(template, vars) {
-  return String(template).replace(/\{(.*?)\}/g, (_, k) => vars[k] ?? '');
-}
-
-function enumLabel(kind, value) {
-  if (value == null) return t('none');
-  if (value === 'All') return t('all');
-  return (ENUMS[kind] && ENUMS[kind][value] && ENUMS[kind][value][LANG]) || value;
-}
-
-function titleMeta() {
-  return LANG === 'zh' ? DATA.meta.titleZh : DATA.meta.title;
-}
-function subtitleMeta() {
-  return LANG === 'zh' ? DATA.meta.subtitleZh : DATA.meta.subtitle;
-}
-function scopeMeta() {
-  return LANG === 'zh' ? DATA.meta.scopeNoteZh : DATA.meta.scopeNote;
-}
-function insightsMeta() {
-  return LANG === 'zh' ? DATA.meta.insightsZh : DATA.meta.insights;
-}
-function methodMeta() {
-  return LANG === 'zh' ? DATA.meta.methodologyZh : DATA.meta.methodology;
-}
-function escapeHtml(value) {
-  return String(value ?? '').replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;', "'":'&#39;'}[s]));
-}
-function colorForRegion(region) {
-  return REGION_COLORS[region] || '#a5b4fc';
-}
-function formatMass(v) {
-  if (v == null || v === '') return t('none');
-  const num = Number(v);
-  if (!Number.isFinite(num)) return String(v);
-  if (Math.abs(num) >= 1_000_000) return (num / 1_000_000).toFixed(2).replace(/\.00$/, '').replace(/0$/, '') + 'M kg';
-  if (Math.abs(num) >= 1000) return (num / 1000).toFixed(num >= 10000 ? 0 : 1).replace(/\.0$/, '') + 't';
-  return num.toLocaleString() + ' kg';
-}
-function formatInt(v) {
-  if (v == null || v === '') return t('none');
-  const num = Number(v);
-  if (!Number.isFinite(num)) return String(v);
-  return num.toLocaleString();
-}
-function formatYear(node) {
-  if (!node.firstFlightYear) return t('none');
-  const suffix = node.firstFlightStatus === 'planned' ? (LANG === 'zh' ? '（计划）' : ' (planned)') : '';
-  return node.firstFlightYear + suffix;
-}
-function metricValue(obj) {
-  return Number(obj[state.metric]) || 0;
-}
-function displayVehicleMain(node) {
-  if (LANG === 'zh') return node.vehicleZh || node.vehicle;
-  return node.vehicle;
-}
-function displayVehicleSub(node) {
-  if (LANG === 'zh') return node.vehicleZh && node.vehicleZh !== node.vehicle ? node.vehicle : '';
-  return '';
-}
-function displayCompanyMain(obj) {
-  if (LANG === 'zh') return obj.companyZh || obj.company;
-  return obj.company;
-}
-function displayCompanySub(obj) {
-  if (LANG === 'zh') return obj.companyZh && obj.companyZh !== obj.company ? obj.company : '';
-  return '';
-}
-function displayRegion(region) {
-  return enumLabel('region', region);
-}
-function displayBoolean(v) {
-  return v ? t('yes') : t('no');
-}
-function uniqueSorted(values) {
-  const arr = Array.from(new Set(values.filter(v => v != null && v !== '')));
-  arr.sort((a,b) => String(a).localeCompare(String(b)));
-  return ['All', ...arr];
-}
-function searchMatch(node) {
-  if (!state.search) return true;
-  const q = state.search.toLowerCase();
-  const hay = [
-    node.company, node.companyZh, node.vehicle, node.vehicleZh, node.region, node.country,
-    node.propellant_class, node.reusability_class, node.horizon_bucket, node.techRoute, node.techRouteEn,
-    ...(node.launchSites || []),
-    ...(node.engines || []).map(e => e.name),
-    ...(node.plannedMissions || []).map(m => (m.mission || '') + ' ' + (m.missionEn || ''))
-  ].join(' ').toLowerCase();
-  return hay.includes(q);
-}
-function filteredNodes() {
-  return DATA.nodes.filter(node =>
-    searchMatch(node) &&
-    (state.region === 'All' || node.region === state.region) &&
-    (state.bucket === 'All' || node.horizon_bucket === state.bucket) &&
-    (state.ownership === 'All' || node.ownership_class === state.ownership) &&
-    (state.reusability === 'All' || node.reusability_class === state.reusability) &&
-    (state.propellant === 'All' || node.propellant_class === state.propellant) &&
-    (state.site === 'All' || (node.launchSites || []).includes(state.site)) &&
-    metricValue(node) > 0
-  );
-}
-function companyAggMap(nodes) {
-  const map = new Map();
-  nodes.forEach(node => {
-    const key = node.region + '::' + node.company;
-    if (!map.has(key)) {
-      map.set(key, {
-        region: node.region,
-        company: node.company,
-        companyZh: node.companyZh,
-        vehicles: [],
-        supply_2026_kg: 0,
-        supply_2030_kg: 0,
-        maxCost: 0,
-        nodes: []
-      });
-    }
-    const row = map.get(key);
-    row.vehicles.push(node.vehicle);
-    row.supply_2026_kg += Number(node.supply_2026_kg) || 0;
-    row.supply_2030_kg += Number(node.supply_2030_kg) || 0;
-    row.maxCost = Math.max(row.maxCost, Number(node.cost_score) || 0);
-    row.nodes.push(node);
-  });
-  return map;
-}
-function visibleCompanies() {
-  const map = companyAggMap(filteredNodes());
-  return DATA.companies
-    .filter(c => map.has(c.region + '::' + c.company))
-    .map(c => Object.assign({}, c, map.get(c.region + '::' + c.company)))
-    .sort((a,b) => (Number(b[state.metric]) || 0) - (Number(a[state.metric]) || 0));
-}
-function companyRecordFromNode(node) {
-  return DATA.companies.find(c => c.region === node.region && c.company === node.company);
-}
-function nodeById(id) {
-  return DATA.nodes.find(n => n.id === id);
-}
-function bindStaticActions() {
-  document.getElementById('searchInput').addEventListener('input', e => {
-    state.search = e.target.value.trim();
-    rerender();
-  });
-  document.getElementById('resetFiltersBtn').addEventListener('click', () => {
-    state = Object.assign(state, {
-      metric: 'supply_2026_kg',
-      search: '',
-      region: 'All',
-      bucket: 'All',
-      ownership: 'All',
-      reusability: 'All',
-      propellant: 'All',
-      site: 'All'
-    });
-    syncControls();
-    rerender();
-  });
-  document.getElementById('downloadJsonBtn').addEventListener('click', downloadJson);
-  document.getElementById('downloadCsvBtn').addEventListener('click', downloadCsv);
-  document.getElementById('drawerBackdrop').addEventListener('click', closeDrawer);
-  document.getElementById('drawerClose').addEventListener('click', closeDrawer);
-}
-function renderText() {
-  const pairs = [
-    ['eyebrow', 'eyebrow'], ['pageTitle', null], ['pageSubtitle', null], ['downloadJsonBtn','downloadJson'], ['downloadCsvBtn','downloadCsv'],
-    ['metricLabel','metricLabel'], ['searchLabel','searchLabel'], ['regionLabel','regionLabel'], ['bucketLabel','bucketLabel'],
-    ['ownershipLabel','ownershipLabel'], ['reusabilityLabel','reusabilityLabel'], ['propellantLabel','propellantLabel'], ['siteLabel','siteLabel'],
-    ['resetFiltersBtn','resetFilters'], ['navOverview','navOverview'], ['navLifecycle','navLifecycle'], ['navEngineering','navEngineering'],
-    ['navExplorer','navExplorer'], ['navMethodology','navMethodology'], ['navSources','navSources'],
-    ['overviewTitle','overviewTitle'], ['overviewDesc','overviewDesc'], ['regionChartTitle','regionChartTitle'], ['regionChartDesc','regionChartDesc'],
-    ['statusChartTitle','statusChartTitle'], ['statusChartDesc','statusChartDesc'], ['companyChartTitle','companyChartTitle'],
-    ['companyChartDesc','companyChartDesc'], ['heatmapTitle','heatmapTitle'], ['heatmapDesc','heatmapDesc'],
-    ['bubbleTitle','bubbleTitle'], ['bubbleDesc','bubbleDesc'], ['lifecycleTitle','lifecycleTitle'], ['lifecycleDesc','lifecycleDesc'],
-    ['timelineTitle','timelineTitle'], ['timelineDesc','timelineDesc'], ['trendTitle','trendTitle'], ['trendDesc','trendDesc'],
-    ['engineeringTitle','engineeringTitle'], ['engineeringDesc','engineeringDesc'], ['engineTableTitle','engineTableTitle'],
-    ['engineTableDesc','engineTableDesc'], ['siteMapTitle','siteMapTitle'], ['siteMapDesc','siteMapDesc'],
-    ['explorerTitle','explorerTitle'], ['explorerDesc','explorerDesc'], ['programTableTitle','programTableTitle'],
-    ['programTableDesc','programTableDesc'], ['companyTableTitle','companyTableTitle'], ['companyTableDesc','companyTableDesc'],
-    ['methodologyTitle','methodologyTitle'], ['methodologyDesc','methodologyDesc'], ['requirementsTitle','requirementsTitle'],
-    ['sourcesTitle','sourcesTitle'], ['sourcesDesc','sourcesDesc']
-  ];
-  document.getElementById('eyebrow').textContent = t('eyebrow');
-  document.getElementById('pageTitle').textContent = titleMeta();
-  document.getElementById('pageSubtitle').textContent = subtitleMeta();
-  document.getElementById('downloadJsonBtn').textContent = t('downloadJson');
-  document.getElementById('downloadCsvBtn').textContent = t('downloadCsv');
-  document.getElementById('searchInput').placeholder = t('searchPlaceholder');
-  pairs.forEach(([id, key]) => {
-    if (!key) return;
-    const el = document.getElementById(id);
-    if (el) el.textContent = t(key);
-  });
-}
-function initFilters() {
-  populateSelect('regionFilter', uniqueSorted(DATA.nodes.map(n => n.region)), state.region, 'region');
-  populateSelect('bucketFilter', uniqueSorted(DATA.nodes.map(n => n.horizon_bucket)), state.bucket, 'horizon_bucket');
-  populateSelect('ownershipFilter', uniqueSorted(DATA.nodes.map(n => n.ownership_class)), state.ownership, 'ownership_class');
-  populateSelect('reusabilityFilter', uniqueSorted(DATA.nodes.map(n => n.reusability_class)), state.reusability, 'reusability_class');
-  populateSelect('propellantFilter', uniqueSorted(DATA.nodes.map(n => n.propellant_class)), state.propellant, 'propellant_class');
-  populateSelect('siteFilter', uniqueSorted(DATA.nodes.flatMap(n => n.launchSites || [])), state.site, null);
-  document.getElementById('regionFilter').addEventListener('change', e => { state.region = e.target.value; rerender(); });
-  document.getElementById('bucketFilter').addEventListener('change', e => { state.bucket = e.target.value; rerender(); });
-  document.getElementById('ownershipFilter').addEventListener('change', e => { state.ownership = e.target.value; rerender(); });
-  document.getElementById('reusabilityFilter').addEventListener('change', e => { state.reusability = e.target.value; rerender(); });
-  document.getElementById('propellantFilter').addEventListener('change', e => { state.propellant = e.target.value; rerender(); });
-  document.getElementById('siteFilter').addEventListener('change', e => { state.site = e.target.value; rerender(); });
-  renderMetricSwitch();
-}
-function populateSelect(id, options, current, enumKind) {
-  const el = document.getElementById(id);
-  el.innerHTML = options.map(v => {
-    const label = enumKind ? enumLabel(enumKind, v) : (v === 'All' ? t('all') : v);
-    return `<option value="${escapeHtml(v)}" ${v === current ? 'selected' : ''}>${escapeHtml(label)}</option>`;
-  }).join('');
-}
-function syncControls() {
-  document.getElementById('searchInput').value = state.search;
-  document.getElementById('regionFilter').value = state.region;
-  document.getElementById('bucketFilter').value = state.bucket;
-  document.getElementById('ownershipFilter').value = state.ownership;
-  document.getElementById('reusabilityFilter').value = state.reusability;
-  document.getElementById('propellantFilter').value = state.propellant;
-  document.getElementById('siteFilter').value = state.site;
-  renderMetricSwitch();
-}
-function renderMetricSwitch() {
-  const wrap = document.getElementById('metricSwitch');
-  wrap.innerHTML = Object.entries(METRICS).map(([key, meta]) =>
-    `<button class="metric-btn ${state.metric === key ? 'active' : ''}" data-metric="${key}">${escapeHtml(meta.label[LANG])}</button>`
-  ).join('');
-  wrap.querySelectorAll('button').forEach(btn => btn.addEventListener('click', () => {
-    state.metric = btn.dataset.metric;
-    rerender();
-  }));
-}
-function rerender() {
-  document.getElementById('scopeNote').textContent = scopeMeta();
-  syncControls();
-  renderHeroChips();
-  renderHeroKpis();
-  renderInsights();
-  renderRegionBars();
-  renderStatusGrid();
-  renderCompanyBars();
-  renderHeatmap();
-  renderBubbleChart();
-  renderTimeline();
-  renderTrendChart();
-  renderEngineTable();
-  renderSiteMap();
-  renderProgramTable();
-  renderCompanyTable();
-  renderMethodology();
-  renderSourceTable();
-  renderDrawer();
-}
-function renderHeroChips() {
-  const visibleNodes = filteredNodes();
-  const companies = visibleCompanies();
-  const chips = [
-    format(t('filterScope'), { count: visibleNodes.length, companies: companies.length }),
-    METRICS[state.metric].desc[LANG],
-    state.site !== 'All' ? format(t('siteFilterActive'), { site: state.site }) : null
-  ].filter(Boolean);
-  document.getElementById('heroChips').innerHTML = chips.map(c => `<span class="hero-chip">${escapeHtml(c)}</span>`).join('');
-}
-function renderHeroKpis() {
-  const arr = filteredNodes();
-  const total = arr.reduce((a,b) => a + metricValue(b), 0);
-  const live = arr.filter(n => n.horizon_bucket === 'Live 2026 supply').length;
-  const option = arr.filter(n => n.horizon_bucket === '2027-2030 option').length;
-  const paused = arr.filter(n => n.horizon_bucket === 'Distressed / paused').length;
-  const topNode = [...arr].sort((a,b) => metricValue(b) - metricValue(a))[0];
-  const regions = ['US','Europe','China'].map(region => ({ region, total: arr.filter(n => n.region === region).reduce((a,b) => a + metricValue(b), 0) })).sort((a,b)=>b.total-a.total);
-  const topRegion = regions[0];
-  const cards = [
-    { label: t('selectedMetricTotal'), value: formatMass(total), meta: METRICS[state.metric].desc[LANG] },
-    { label: t('topRegion'), value: topRegion ? displayRegion(topRegion.region) : '—', meta: topRegion ? format(t('topRegionMeta'), { value: formatMass(topRegion.total) }) : '—' },
-    { label: t('topNode'), value: topNode ? displayVehicleMain(topNode) : '—', meta: topNode ? format(t('topNodeMeta'), { company: displayCompanyMain(topNode), value: formatMass(metricValue(topNode)) }) : '—' },
-    { label: t('visibleNodes'), value: String(arr.length), meta: format(t('visibleNodesMeta'), { live, option, paused }) }
-  ];
-  document.getElementById('heroKpis').innerHTML = cards.map(card => `
-    <div class="kpi">
-      <div class="label">${escapeHtml(card.label)}</div>
-      <div class="value">${escapeHtml(card.value)}</div>
-      <div class="delta">${escapeHtml(card.meta)}</div>
-    </div>`).join('');
-}
-function renderInsights() {
-  document.getElementById('insightGrid').innerHTML = insightsMeta().map(item => `
-    <div class="insight">
-      <h4>${escapeHtml(item.title)}</h4>
-      <p>${escapeHtml(item.body)}</p>
-    </div>`).join('');
-}
-function renderRegionBars() {
-  const arr = filteredNodes();
-  const rows = ['US','Europe','China'].map(region => {
-    const subset = arr.filter(n => n.region === region);
-    return { region, total: subset.reduce((a,b) => a + metricValue(b), 0) };
-  }).sort((a,b)=>b.total-a.total);
-  const max = Math.max(...rows.map(r => r.total), 1);
-  const wrap = document.getElementById('regionBars');
-  wrap.innerHTML = rows.map(r => `
-    <div class="bar-row ${state.region === r.region ? 'active' : ''}" data-region="${r.region}">
-      <div class="bar-label">${escapeHtml(displayRegion(r.region))}</div>
-      <div class="bar-track"><div class="bar-fill" style="width:${(r.total / max) * 100}%; background:${colorForRegion(r.region)}"></div></div>
-      <div class="bar-value">${escapeHtml(formatMass(r.total))}</div>
-    </div>`).join('');
-  wrap.querySelectorAll('.bar-row').forEach(el => el.addEventListener('click', () => {
-    state.region = state.region === el.dataset.region ? 'All' : el.dataset.region;
-    rerender();
-  }));
-}
-function renderStatusGrid() {
-  const arr = filteredNodes();
-  const buckets = ['Live 2026 supply', '2027-2030 option', 'Distressed / paused'];
-  const wrap = document.getElementById('statusGrid');
-  wrap.innerHTML = buckets.map(bucket => {
-    const subset = arr.filter(n => n.horizon_bucket === bucket);
-    const total = subset.reduce((a,b) => a + metricValue(b), 0);
-    return `
-      <div class="status-card ${state.bucket === bucket ? 'active' : ''}" data-bucket="${bucket}">
-        <div class="status-title">${escapeHtml(enumLabel('horizon_bucket', bucket))}</div>
-        <div class="status-value">${escapeHtml(formatMass(total))}</div>
-        <div class="status-meta">${escapeHtml(t('statusCount'))}: ${subset.length} · ${escapeHtml(t('statusMetric'))}</div>
-      </div>`;
-  }).join('');
-  wrap.querySelectorAll('.status-card').forEach(el => el.addEventListener('click', () => {
-    state.bucket = state.bucket === el.dataset.bucket ? 'All' : el.dataset.bucket;
-    rerender();
-  }));
-}
-function renderCompanyBars() {
-  const companies = visibleCompanies().slice(0, 8);
-  const max = Math.max(...companies.map(c => Number(c[state.metric]) || 0), 1);
-  const wrap = document.getElementById('companyBars');
-  wrap.innerHTML = companies.map(c => {
-    const total = Number(c[state.metric]) || 0;
-    return `
-      <div class="bar-row row-clickable" data-company="${escapeHtml(c.company)}" data-region="${c.region}">
-        <div class="bar-label">
-          <span class="cell-main">${escapeHtml(displayCompanyMain(c))}</span>
-          ${displayCompanySub(c) ? `<span class="cell-sub">${escapeHtml(displayCompanySub(c))}</span>` : ''}
-        </div>
-        <div class="bar-track"><div class="bar-fill" style="width:${(total / max) * 100}%; background:${colorForRegion(c.region)}"></div></div>
-        <div class="bar-value">${escapeHtml(formatMass(total))}</div>
-      </div>`;
-  }).join('');
-  wrap.querySelectorAll('.bar-row').forEach(el => el.addEventListener('click', () => {
-    state.drawer = { type: 'company', key: el.dataset.region + '::' + el.dataset.company };
-    renderDrawer();
-  }));
-}
-function renderHeatmap() {
-  const arr = filteredNodes();
-  const rows = uniqueSorted(DATA.nodes.map(n => n.reusability_class)).filter(v => v !== 'All');
-  const cols = uniqueSorted(DATA.nodes.map(n => n.propellant_class)).filter(v => v !== 'All');
-  const values = [];
-  rows.forEach(r => cols.forEach(c => {
-    const total = arr.filter(n => n.reusability_class === r && n.propellant_class === c).reduce((a,b) => a + metricValue(b), 0);
-    values.push(total);
-  }));
-  const max = Math.max(...values, 1);
-  const wrap = document.getElementById('heatmap');
-  const header = `<div class="heatmap-row">${['', ...cols.map(c => `<div class="heatmap-label">${escapeHtml(enumLabel('propellant_class', c))}</div>`)].join('')}</div>`;
-  const body = rows.map(r => `<div class="heatmap-row">
-      <div class="heatmap-label">${escapeHtml(enumLabel('reusability_class', r))}</div>
-      ${cols.map(c => {
-        const subset = arr.filter(n => n.reusability_class === r && n.propellant_class === c);
-        const total = subset.reduce((a,b) => a + metricValue(b), 0);
-        const alpha = 0.10 + (total / max) * 0.55;
-        return `<div class="heatmap-cell" data-r="${escapeHtml(r)}" data-c="${escapeHtml(c)}" style="background:rgba(124,199,255,${alpha.toFixed(3)})">
-            <strong>${escapeHtml(formatMass(total))}</strong>
-            <span>${subset.length} ${escapeHtml(t('nodes'))}</span>
-          </div>`;
-      }).join('')}
-    </div>`).join('');
-  wrap.innerHTML = header + body;
-  wrap.querySelectorAll('.heatmap-cell').forEach(el => el.addEventListener('click', () => {
-    state.reusability = state.reusability === el.dataset.r ? 'All' : el.dataset.r;
-    state.propellant = state.propellant === el.dataset.c ? 'All' : el.dataset.c;
-    rerender();
-  }));
-}
-function renderBubbleChart() {
-  const arr = filteredNodes().filter(n => Number(n.single_launch_kg) > 0);
-  const wrap = document.getElementById('bubbleChart');
-  if (!arr.length) {
-    wrap.innerHTML = '';
-    return;
-  }
-  const width = 980, height = 420;
-  const m = { left: 70, right: 30, top: 20, bottom: 56 };
-  const plotW = width - m.left - m.right;
-  const plotH = height - m.top - m.bottom;
-  const xVals = arr.map(n => Math.log10(Math.max(1, Number(n.single_launch_kg))));
-  const minX = Math.min(...xVals, 1.7);
-  const maxX = Math.max(...xVals, 5.2);
-  const maxMetric = Math.max(...arr.map(n => metricValue(n)), 1);
-  const x = v => m.left + ((Math.log10(Math.max(1, v)) - minX) / (maxX - minX || 1)) * plotW;
-  const y = v => m.top + (1 - (v / 10)) * plotH;
-  const r = v => 6 + Math.sqrt(v / maxMetric) * 28;
-  const gridX = [100, 300, 1000, 3000, 10000, 30000, 100000].filter(v => v >= Math.pow(10, minX) && v <= Math.pow(10, maxX));
-  const gridY = [2,4,6,8,10];
-  const svg = [];
-  svg.push(`<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="bubble chart">`);
-  gridY.forEach(val => svg.push(`<line class="grid-line" x1="${m.left}" x2="${width-m.right}" y1="${y(val)}" y2="${y(val)}" />`));
-  gridX.forEach(val => svg.push(`<line class="grid-line" y1="${m.top}" y2="${height-m.bottom}" x1="${x(val)}" x2="${x(val)}" />`));
-  svg.push(`<line class="grid-line" x1="${m.left}" x2="${width-m.right}" y1="${height-m.bottom}" y2="${height-m.bottom}" />`);
-  svg.push(`<line class="grid-line" y1="${m.top}" y2="${height-m.bottom}" x1="${m.left}" x2="${m.left}" />`);
-  gridX.forEach(val => svg.push(`<text class="axis" x="${x(val)}" y="${height-24}" text-anchor="middle">${escapeHtml(formatMass(val))}</text>`));
-  gridY.forEach(val => svg.push(`<text class="axis" x="${m.left-12}" y="${y(val)+4}" text-anchor="end">${val}</text>`));
-  svg.push(`<text class="axis-label" x="${width/2}" y="${height-6}" text-anchor="middle">${escapeHtml(t('bubbleAxisX'))}</text>`);
-  svg.push(`<text class="axis-label" transform="translate(18 ${height/2}) rotate(-90)" text-anchor="middle">${escapeHtml(t('bubbleAxisY'))}</text>`);
-  arr.forEach(n => {
-    const cx = x(Number(n.single_launch_kg));
-    const cy = y(Number(n.cost_score));
-    const radius = r(metricValue(n));
-    svg.push(`<g class="plot-point" data-id="${escapeHtml(n.id)}" tabindex="0">
-      <circle cx="${cx}" cy="${cy}" r="${radius}" fill="${colorForRegion(n.region)}" fill-opacity="0.35" stroke="${colorForRegion(n.region)}" stroke-width="2"></circle>
-      <title>${escapeHtml(displayVehicleMain(n))} | ${escapeHtml(displayCompanyMain(n))}</title>
-    </g>`);
-  });
-  [...arr].sort((a,b) => metricValue(b) - metricValue(a)).slice(0, 10).forEach(n => {
-    svg.push(`<text x="${x(Number(n.single_launch_kg))+10}" y="${y(Number(n.cost_score))-10}" fill="#dbe7ff" font-size="12">${escapeHtml(displayVehicleMain(n))}</text>`);
-  });
-  svg.push(`</svg>`);
-  wrap.innerHTML = svg.join('') + `<div class="legend-row">
-      <span class="legend-dot"><i style="background:${colorForRegion('US')}"></i>${escapeHtml(displayRegion('US'))}</span>
-      <span class="legend-dot"><i style="background:${colorForRegion('Europe')}"></i>${escapeHtml(displayRegion('Europe'))}</span>
-      <span class="legend-dot"><i style="background:${colorForRegion('China')}"></i>${escapeHtml(displayRegion('China'))}</span>
-    </div>`;
-  wrap.querySelectorAll('.plot-point').forEach(el => {
-    el.addEventListener('click', () => openNodeById(el.dataset.id));
-    el.addEventListener('keypress', e => { if (e.key === 'Enter') openNodeById(el.dataset.id); });
-  });
-}
-function renderTimeline() {
-  const arr = filteredNodes().slice().sort((a,b) => (a.firstFlightYear || 9999) - (b.firstFlightYear || 9999));
-  const wrap = document.getElementById('timelineChart');
-  const width = 980, height = 360;
-  const m = { left: 70, right: 20, top: 24, bottom: 54 };
-  const plotW = width - m.left - m.right;
-  const plotH = height - m.top - m.bottom;
-  const years = arr.map(n => n.firstFlightYear).filter(Boolean);
-  if (!years.length) { wrap.innerHTML = ''; return; }
-  const minYear = Math.min(...years, 2010);
-  const maxYear = Math.max(...years, 2027);
-  const x = v => m.left + ((v - minYear) / (maxYear - minYear || 1)) * plotW;
-  const lanes = ['US','Europe','China'];
-  const laneGap = plotH / Math.max(lanes.length - 1, 1);
-  const y = region => m.top + lanes.indexOf(region) * laneGap;
-  const svg = [];
-  svg.push(`<svg viewBox="0 0 ${width} ${height}">`);
-  lanes.forEach(region => {
-    svg.push(`<line class="grid-line" x1="${m.left}" x2="${width-m.right}" y1="${y(region)}" y2="${y(region)}" />`);
-    svg.push(`<text class="axis" x="${m.left-12}" y="${y(region)+4}" text-anchor="end">${escapeHtml(displayRegion(region))}</text>`);
-  });
-  for (let yr = minYear; yr <= maxYear; yr++) {
-    const xx = x(yr);
-    svg.push(`<line class="grid-line" x1="${xx}" x2="${xx}" y1="${m.top-8}" y2="${height-m.bottom+8}" />`);
-    svg.push(`<text class="axis" x="${xx}" y="${height-22}" text-anchor="middle">${yr}</text>`);
-  }
-  svg.push(`<text class="axis-label" x="${width/2}" y="${height-4}" text-anchor="middle">${escapeHtml(t('timelineAxis'))}</text>`);
-  arr.forEach(n => {
-    const xx = x(n.firstFlightYear || maxYear);
-    const yy = y(n.region);
-    const color = colorForRegion(n.region);
-    if (n.firstFlightStatus === 'planned') {
-      const size = 9;
-      svg.push(`<g class="plot-point" data-id="${escapeHtml(n.id)}" tabindex="0">
-        <polygon points="${xx},${yy-size} ${xx+size},${yy} ${xx},${yy+size} ${xx-size},${yy}" fill="none" stroke="${color}" stroke-width="2"></polygon>
-        <title>${escapeHtml(displayVehicleMain(n))} | ${escapeHtml(formatYear(n))}</title>
-      </g>`);
-    } else {
-      svg.push(`<g class="plot-point" data-id="${escapeHtml(n.id)}" tabindex="0">
-        <circle cx="${xx}" cy="${yy}" r="7.5" fill="${color}" stroke="#fff" stroke-width="1.4"></circle>
-        <title>${escapeHtml(displayVehicleMain(n))} | ${escapeHtml(formatYear(n))}</title>
-      </g>`);
-    }
-  });
-  [...arr].filter(n => metricValue(n) > 0).sort((a,b) => metricValue(b) - metricValue(a)).slice(0, 9).forEach(n => {
-    svg.push(`<text x="${x(n.firstFlightYear || maxYear)+10}" y="${y(n.region)-12}" fill="#dbe7ff" font-size="12">${escapeHtml(displayVehicleMain(n))}</text>`);
-  });
-  svg.push(`</svg>`);
-  wrap.innerHTML = svg.join('');
-  wrap.querySelectorAll('.plot-point').forEach(el => {
-    el.addEventListener('click', () => openNodeById(el.dataset.id));
-    el.addEventListener('keypress', e => { if (e.key === 'Enter') openNodeById(el.dataset.id); });
-  });
-}
-function aggregateTrend(nodes) {
-  const map = new Map();
-  nodes.forEach(n => {
-    const hist = n.launchHistory || {};
-    Object.entries(hist).forEach(([year, value]) => {
-      map.set(year, (map.get(year) || 0) + (Number(value) || 0));
-    });
-  });
-  return Array.from(map.entries()).map(([year, value]) => ({
-    year,
-    value,
-    future: String(year).includes('e'),
-    sortKey: Number(String(year).replace('e', ''))
-  })).sort((a,b) => a.sortKey - b.sortKey);
-}
-function renderTrendChart() {
-  const series = aggregateTrend(filteredNodes());
-  const wrap = document.getElementById('trendChart');
-  if (!series.length) { wrap.innerHTML = ''; return; }
-  const width = 980, height = 360;
-  const m = { left: 68, right: 24, top: 24, bottom: 54 };
-  const plotW = width - m.left - m.right;
-  const plotH = height - m.top - m.bottom;
-  const maxY = Math.max(...series.map(d => d.value), 1);
-  const x = idx => m.left + (idx / Math.max(series.length - 1, 1)) * plotW;
-  const y = val => m.top + (1 - val / maxY) * plotH;
-  const actual = series.filter(d => !d.future);
-  const planned = series.filter(d => d.future);
-  const actualPath = actual.map((d,i) => `${i===0?'M':'L'}${x(series.indexOf(d))},${y(d.value)}`).join(' ');
-  const plannedPath = planned.map((d,i) => `${i===0?'M':'L'}${x(series.indexOf(d))},${y(d.value)}`).join(' ');
-  const svg = [];
-  svg.push(`<svg viewBox="0 0 ${width} ${height}">`);
-  [0.25, 0.5, 0.75, 1].forEach(frac => {
-    const val = maxY * frac;
-    svg.push(`<line class="grid-line" x1="${m.left}" x2="${width-m.right}" y1="${y(val)}" y2="${y(val)}" />`);
-    svg.push(`<text class="axis" x="${m.left-12}" y="${y(val)+4}" text-anchor="end">${Math.round(val)}</text>`);
-  });
-  series.forEach((d, idx) => {
-    const xx = x(idx);
-    svg.push(`<line class="grid-line" x1="${xx}" x2="${xx}" y1="${m.top}" y2="${height-m.bottom}" />`);
-    svg.push(`<text class="axis" x="${xx}" y="${height-22}" text-anchor="middle">${escapeHtml(String(d.year))}</text>`);
-  });
-  if (actualPath) svg.push(`<path d="${actualPath}" fill="none" stroke="#7cc7ff" stroke-width="3"></path>`);
-  if (plannedPath) svg.push(`<path d="${plannedPath}" fill="none" stroke="#f5c66d" stroke-width="3" stroke-dasharray="8 6"></path>`);
-  actual.forEach(d => svg.push(`<circle cx="${x(series.indexOf(d))}" cy="${y(d.value)}" r="4.5" fill="#7cc7ff"></circle>`));
-  planned.forEach(d => svg.push(`<circle cx="${x(series.indexOf(d))}" cy="${y(d.value)}" r="4.5" fill="#f5c66d"></circle>`));
-  svg.push(`<text class="axis-label" x="${width/2}" y="${height-4}" text-anchor="middle">${escapeHtml(t('trendAxis'))}</text>`);
-  svg.push(`</svg>`);
-  wrap.innerHTML = svg.join('') + `<div class="legend-row">
-      <span class="legend-dot"><i style="background:#7cc7ff"></i>${escapeHtml(t('trendActual'))}</span>
-      <span class="legend-dot"><i style="background:#f5c66d"></i>${escapeHtml(t('trendPlanned'))}</span>
-    </div>`;
-}
-function renderEngineTable() {
-  const rows = filteredNodes().flatMap(node => (node.engines || []).map(engine => Object.assign({ node }, engine)));
-  rows.sort((a,b) => (Number(b.thrust_kN) || -1) - (Number(a.thrust_kN) || -1));
-  const table = document.getElementById('engineTable');
-  table.innerHTML = `
-    <thead>
-      <tr>
-        <th>${escapeHtml(t('tableVehicle'))}</th>
-        <th>${escapeHtml(t('tableStage'))}</th>
-        <th>${escapeHtml(t('tableEngine'))}</th>
-        <th>${escapeHtml(t('tableCount'))}</th>
-        <th>${escapeHtml(t('tableThrust'))}</th>
-        <th>${escapeHtml(t('tableIsp'))}</th>
-      </tr>
-    </thead>
-    <tbody>
-      ${rows.map(row => `
-        <tr class="row-clickable" data-id="${escapeHtml(row.node.id)}">
-          <td>
-            <span class="cell-main">${escapeHtml(displayVehicleMain(row.node))}</span>
-            ${displayVehicleSub(row.node) ? `<span class="cell-sub">${escapeHtml(displayVehicleSub(row.node))}</span>` : ''}
-          </td>
-          <td>${escapeHtml(row.stage || t('none'))}</td>
-          <td>${escapeHtml(row.name || t('none'))}</td>
-          <td>${escapeHtml(row.count == null ? t('none') : String(row.count))}</td>
-          <td>${row.thrust_kN == null ? escapeHtml(t('none')) : escapeHtml(String(row.thrust_kN))}</td>
-          <td>${row.isp_s == null ? escapeHtml(t('none')) : escapeHtml(String(row.isp_s))}</td>
-        </tr>`).join('')}
-    </tbody>`;
-  table.querySelectorAll('tr.row-clickable').forEach(row => row.addEventListener('click', () => openNodeById(row.dataset.id)));
-}
-function sitePoints() {
-  const visible = filteredNodes();
-  const map = new Map();
-  visible.forEach(node => {
-    (node.launchSites || []).forEach(site => {
-      const meta = DATA.launchSites[site];
-      if (!meta) return;
-      if (!map.has(site)) {
-        map.set(site, {
-          site,
-          meta,
-          count: 0,
-          total: 0,
-          nodes: []
-        });
-      }
-      const row = map.get(site);
-      row.count += 1;
-      row.total += metricValue(node);
-      row.nodes.push(node);
-    });
-  });
-  return Array.from(map.values()).sort((a,b) => b.count - a.count || b.total - a.total);
-}
-function renderSiteMap() {
-  const points = sitePoints();
-  const wrap = document.getElementById('siteMap');
-  const legend = document.getElementById('siteLegend');
-  if (!points.length) {
-    wrap.innerHTML = '';
-    legend.innerHTML = '';
-    return;
-  }
-  const width = 620, height = 360;
-  const m = { left: 44, right: 18, top: 20, bottom: 40 };
-  const plotW = width - m.left - m.right;
-  const plotH = height - m.top - m.bottom;
-  const x = lon => m.left + ((lon + 180) / 360) * plotW;
-  const y = lat => m.top + ((90 - lat) / 180) * plotH;
-  const maxCount = Math.max(...points.map(p => p.count), 1);
-  const svg = [];
-  svg.push(`<svg viewBox="0 0 ${width} ${height}">`);
-  [-120,-60,0,60,120].forEach(lon => svg.push(`<line class="grid-line" x1="${x(lon)}" x2="${x(lon)}" y1="${m.top}" y2="${height-m.bottom}" />`));
-  [-60,-30,0,30,60].forEach(lat => svg.push(`<line class="grid-line" x1="${m.left}" x2="${width-m.right}" y1="${y(lat)}" y2="${y(lat)}" />`));
-  [-120,-60,0,60,120].forEach(lon => svg.push(`<text class="axis" x="${x(lon)}" y="${height-18}" text-anchor="middle">${lon}</text>`));
-  [-60,-30,0,30,60].forEach(lat => svg.push(`<text class="axis" x="${m.left-8}" y="${y(lat)+4}" text-anchor="end">${lat}</text>`));
-  svg.push(`<text class="axis-label" x="${width/2}" y="${height-4}" text-anchor="middle">${escapeHtml(t('siteAxisX'))}</text>`);
-  svg.push(`<text class="axis-label" transform="translate(16 ${height/2}) rotate(-90)" text-anchor="middle">${escapeHtml(t('siteAxisY'))}</text>`);
-  points.forEach(point => {
-    const radius = 5 + Math.sqrt(point.count / maxCount) * 16;
-    svg.push(`<g class="plot-point" data-site="${escapeHtml(point.site)}" tabindex="0">
-      <circle cx="${x(point.meta.lon)}" cy="${y(point.meta.lat)}" r="${radius}" fill="${state.site === point.site ? '#ff8b99' : '#60e1c2'}" fill-opacity="0.35" stroke="${state.site === point.site ? '#ff8b99' : '#60e1c2'}" stroke-width="2"></circle>
-      <title>${escapeHtml(point.site)} | ${point.count} ${escapeHtml(t('programs'))}</title>
-    </g>`);
-  });
-  points.slice(0, 8).forEach(point => {
-    svg.push(`<text x="${x(point.meta.lon)+10}" y="${y(point.meta.lat)-8}" fill="#dbe7ff" font-size="11">${escapeHtml(point.site)}</text>`);
-  });
-  svg.push(`</svg>`);
-  wrap.innerHTML = svg.join('');
-  wrap.querySelectorAll('.plot-point').forEach(el => {
-    el.addEventListener('click', () => {
-      state.site = state.site === el.dataset.site ? 'All' : el.dataset.site;
-      rerender();
-    });
-    el.addEventListener('keypress', e => { if (e.key === 'Enter') { state.site = state.site === el.dataset.site ? 'All' : el.dataset.site; rerender(); } });
-  });
-  legend.innerHTML = `<div class="small-note">${escapeHtml(t('siteLegend'))}</div>` + points.slice(0, 14).map(point => `
-    <span class="site-pill ${state.site === point.site ? 'active' : ''}" data-site="${escapeHtml(point.site)}">${escapeHtml(point.site)} · ${point.count}</span>
-  `).join('');
-  legend.querySelectorAll('.site-pill').forEach(el => el.addEventListener('click', () => {
-    state.site = state.site === el.dataset.site ? 'All' : el.dataset.site;
-    rerender();
-  }));
-}
-function renderProgramTable() {
-  const rows = filteredNodes().slice().sort((a,b) => metricValue(b) - metricValue(a));
-  const table = document.getElementById('programTable');
-  table.innerHTML = `
-    <thead>
-      <tr>
-        <th>${escapeHtml(t('tableVehicle'))}</th>
-        <th>${escapeHtml(t('tableCompany'))}</th>
-        <th>${escapeHtml(t('tableRegion'))}</th>
-        <th>${escapeHtml(t('table2026'))}</th>
-        <th>${escapeHtml(t('table2030'))}</th>
-        <th>${escapeHtml(t('tablePayload'))}</th>
-        <th>${escapeHtml(t('tableGto'))}</th>
-        <th>${escapeHtml(t('tableFirstFlight'))}</th>
-        <th>${escapeHtml(t('tableFlights'))}</th>
-        <th>${escapeHtml(t('tableStatus'))}</th>
-      </tr>
-    </thead>
-    <tbody>
-      ${rows.map(node => `
-        <tr class="row-clickable" data-id="${escapeHtml(node.id)}">
-          <td>
-            <span class="cell-main">${escapeHtml(displayVehicleMain(node))}</span>
-            ${displayVehicleSub(node) ? `<span class="cell-sub">${escapeHtml(displayVehicleSub(node))}</span>` : ''}
-          </td>
-          <td>
-            <span class="cell-main">${escapeHtml(displayCompanyMain(node))}</span>
-            ${displayCompanySub(node) ? `<span class="cell-sub">${escapeHtml(displayCompanySub(node))}</span>` : ''}
-          </td>
-          <td>${escapeHtml(displayRegion(node.region))}</td>
-          <td>${escapeHtml(formatMass(node.supply_2026_kg))}</td>
-          <td>${escapeHtml(formatMass(node.supply_2030_kg))}</td>
-          <td>${escapeHtml(formatMass(node.single_launch_kg))}</td>
-          <td>${escapeHtml(formatMass(node.gtoPayloadKg))}</td>
-          <td>${escapeHtml(formatYear(node))}</td>
-          <td>${escapeHtml(node.totalFlightsDisplay || formatInt(node.totalFlights))}</td>
-          <td><span class="badge">${escapeHtml(enumLabel('horizon_bucket', node.horizon_bucket))}</span></td>
-        </tr>`).join('')}
-    </tbody>`;
-  table.querySelectorAll('tr.row-clickable').forEach(row => row.addEventListener('click', () => openNodeById(row.dataset.id)));
-}
-function renderCompanyTable() {
-  const rows = visibleCompanies();
-  const table = document.getElementById('companyTable');
-  table.innerHTML = `
-    <thead>
-      <tr>
-        <th>${escapeHtml(t('tableCompany'))}</th>
-        <th>${escapeHtml(t('tableRegion'))}</th>
-        <th>${escapeHtml(t('tableVehicles'))}</th>
-        <th>${escapeHtml(t('table2026'))}</th>
-        <th>${escapeHtml(t('table2030'))}</th>
-        <th>${escapeHtml(t('tableValuation'))}</th>
-        <th>${escapeHtml(t('tableFunding'))}</th>
-      </tr>
-    </thead>
-    <tbody>
-      ${rows.map(company => `
-        <tr class="row-clickable" data-company="${escapeHtml(company.company)}" data-region="${company.region}">
-          <td>
-            <span class="cell-main">${escapeHtml(displayCompanyMain(company))}</span>
-            ${displayCompanySub(company) ? `<span class="cell-sub">${escapeHtml(displayCompanySub(company))}</span>` : ''}
-          </td>
-          <td>${escapeHtml(displayRegion(company.region))}</td>
-          <td>${escapeHtml(company.vehicles.length.toString())}<span class="cell-sub">${escapeHtml(company.vehicles.join(', '))}</span></td>
-          <td>${escapeHtml(formatMass(company.supply_2026_kg))}</td>
-          <td>${escapeHtml(formatMass(company.supply_2030_kg))}</td>
-          <td>${escapeHtml(LANG === 'zh' ? (company.valuationZh || company.valuation) : company.valuation)}</td>
-          <td>${escapeHtml(LANG === 'zh' ? (company.fundingZh || company.funding) : company.funding)}</td>
-        </tr>`).join('')}
-    </tbody>`;
-  table.querySelectorAll('tr.row-clickable').forEach(row => row.addEventListener('click', () => {
-    state.drawer = { type: 'company', key: row.dataset.region + '::' + row.dataset.company };
-    renderDrawer();
-  }));
-}
-function renderMethodology() {
-  document.getElementById('methodList').innerHTML = methodMeta().map(item => `<li>${escapeHtml(item)}</li>`).join('');
-  document.getElementById('requirementsList').innerHTML = DATA.meta.requirementsCovered.map(item => `<li>${escapeHtml(item)}</li>`).join('');
-}
-function renderSourceTable() {
-  const rows = filteredNodes().flatMap(node => (node.sources || []).map(src => ({
-    node,
-    label: src.label,
-    url: src.url
-  })));
-  const table = document.getElementById('sourceTable');
-  table.innerHTML = `
-    <thead>
-      <tr>
-        <th>${escapeHtml(t('sourceNode'))}</th>
-        <th>${escapeHtml(t('tableSource'))}</th>
-        <th>${escapeHtml(t('tableLink'))}</th>
-      </tr>
-    </thead>
-    <tbody>
-      ${rows.map(row => `
-        <tr>
-          <td>
-            <span class="cell-main">${escapeHtml(displayVehicleMain(row.node))}</span>
-            <span class="cell-sub">${escapeHtml(displayCompanyMain(row.node))}</span>
-          </td>
-          <td>${escapeHtml(row.label)}</td>
-          <td><a href="${escapeHtml(row.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(row.url)}</a></td>
-        </tr>`).join('')}
-    </tbody>`;
-}
-function openNodeById(id) {
-  state.drawer = { type: 'node', id };
-  renderDrawer();
-}
-function closeDrawer() {
-  state.drawer = null;
-  renderDrawer();
-}
-function detailCard(label, value) {
-  return `<div class="detail-card"><div class="k">${escapeHtml(label)}</div><div class="v">${value}</div></div>`;
-}
-function renderDrawer() {
-  const drawer = document.getElementById('drawer');
-  const backdrop = document.getElementById('drawerBackdrop');
-  const body = document.getElementById('drawerBody');
-  if (!state.drawer) {
-    drawer.classList.remove('open');
-    backdrop.classList.remove('open');
-    body.innerHTML = '';
-    return;
-  }
-  drawer.classList.add('open');
-  backdrop.classList.add('open');
-  if (state.drawer.type === 'node') {
-    const node = nodeById(state.drawer.id);
-    if (!node) return;
-    const company = companyRecordFromNode(node);
-    const routeText = LANG === 'zh' ? (node.techRoute || node.route_summary) : (node.techRouteEn || node.route_summary);
-    const realityText = LANG === 'zh' ? (node.currentRealityZh || node.current_reality) : node.current_reality;
-    const costText = LANG === 'zh' ? (node.costThesisZh || node.cost_thesis) : node.cost_thesis;
-    body.innerHTML = `
-      <div>
-        <div class="eyebrow">${escapeHtml(t('drawerProgram'))}</div>
-        <h2>${escapeHtml(displayVehicleMain(node))}</h2>
-        ${displayVehicleSub(node) ? `<div class="muted">${escapeHtml(displayVehicleSub(node))}</div>` : ''}
-        <div class="muted" style="margin-top:8px;">${escapeHtml(displayCompanyMain(node))}${displayCompanySub(node) ? ' / ' + escapeHtml(displayCompanySub(node)) : ''} · ${escapeHtml(displayRegion(node.region))}</div>
-      </div>
-      <div class="drawer-section">
-        <h3>${escapeHtml(t('drawerOverview'))}</h3>
-        <div class="drawer-grid">
-          ${detailCard(t('fieldCompany'), escapeHtml(displayCompanyMain(node)))}
-          ${detailCard(t('fieldRegion'), escapeHtml(displayRegion(node.region)))}
-          ${detailCard(t('fieldCountry'), escapeHtml(node.country))}
-          ${detailCard(t('fieldOwnership'), escapeHtml(enumLabel('ownership_class', node.ownership_class)))}
-          ${detailCard(t('fieldHorizon'), escapeHtml(enumLabel('horizon_bucket', node.horizon_bucket)))}
-          ${detailCard(t('fieldFirstFlight'), escapeHtml(formatYear(node)))}
-          ${detailCard(t('fieldTotalFlights'), escapeHtml(node.totalFlightsDisplay || formatInt(node.totalFlights)))}
-          ${detailCard(t('fieldLaunch2026'), escapeHtml(formatInt(node.flights_2026_base)))}
-          ${detailCard(t('fieldLaunch2030'), escapeHtml(formatInt(node.flights_2030_base)))}
-          ${detailCard(t('fieldSingle'), escapeHtml(formatMass(node.single_launch_kg)))}
-          ${detailCard(t('fieldGto'), escapeHtml(formatMass(node.gtoPayloadKg)))}
-          ${detailCard(t('fieldReusability'), escapeHtml(enumLabel('reusability_class', node.reusability_class)))}
-          ${detailCard(t('fieldRecovery'), escapeHtml(node.recoveryMethod || t('none')))}
-          ${detailCard(t('fieldPropellant'), escapeHtml(enumLabel('propellant_class', node.propellant_class)))}
-          ${detailCard(t('fieldArchitecture'), escapeHtml(node.architecture_class))}
-          ${detailCard(t('fieldCertification'), escapeHtml(node.certified || t('none')))}
-          ${detailCard(t('fieldConstellation'), escapeHtml(displayBoolean(node.constellationCapable)))}
-          ${detailCard(t('fieldConfidence'), escapeHtml(enumLabel('confidence', node.confidence)))}
-        </div>
-      </div>
-      <div class="drawer-section">
-        <h3>${escapeHtml(t('drawerNarrative'))}</h3>
-        <div class="narrative"><strong>${escapeHtml(t('tableTechRoute'))}</strong><br>${escapeHtml(routeText)}</div>
-        <div class="narrative"><strong>${escapeHtml(LANG === 'zh' ? '当前现实' : 'Current reality')}</strong><br>${escapeHtml(realityText)}</div>
-        <div class="narrative"><strong>${escapeHtml(LANG === 'zh' ? '长期成本逻辑' : 'Long-run cost logic')}</strong><br>${escapeHtml(costText)}</div>
-      </div>
-      <div class="drawer-section">
-        <h3>${escapeHtml(t('drawerSites'))}</h3>
-        <ul class="list-clean">${(node.launchSites || []).map(site => `<li>${escapeHtml(site)}</li>`).join('')}</ul>
-      </div>
-      <div class="drawer-section">
-        <h3>${escapeHtml(t('drawerMissions'))}</h3>
-        <div class="table-wrap">
-          <table class="data-table">
-            <thead><tr><th>${escapeHtml(t('tableDate'))}</th><th>${escapeHtml(t('tableMission'))}</th><th>${escapeHtml(t('tableOrbit'))}</th></tr></thead>
-            <tbody>
-              ${(node.plannedMissions || []).map(m => `<tr><td>${escapeHtml(m.date)}</td><td>${escapeHtml(LANG === 'zh' ? m.mission : (m.missionEn || m.mission))}</td><td>${escapeHtml(m.orbit || t('none'))}</td></tr>`).join('')}
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div class="drawer-section">
-        <h3>${escapeHtml(t('drawerEngines'))}</h3>
-        <div class="table-wrap">
-          <table class="data-table">
-            <thead><tr><th>${escapeHtml(t('tableStage'))}</th><th>${escapeHtml(t('tableEngine'))}</th><th>${escapeHtml(t('tableCount'))}</th><th>${escapeHtml(t('tableThrust'))}</th><th>${escapeHtml(t('tableIsp'))}</th></tr></thead>
-            <tbody>
-              ${(node.engines || []).map(e => `<tr><td>${escapeHtml(e.stage || t('none'))}</td><td>${escapeHtml(e.name || t('none'))}</td><td>${escapeHtml(e.count == null ? t('none') : String(e.count))}</td><td>${escapeHtml(e.thrust_kN == null ? t('none') : String(e.thrust_kN))}</td><td>${escapeHtml(e.isp_s == null ? t('none') : String(e.isp_s))}</td></tr>`).join('')}
-            </tbody>
-          </table>
-        </div>
-      </div>
-      ${company ? `
-      <div class="drawer-section">
-        <h3>${escapeHtml(t('drawerCapital'))}</h3>
-        <div class="drawer-grid">
-          ${detailCard(t('fieldValuation'), escapeHtml(LANG === 'zh' ? (company.valuationZh || company.valuation) : company.valuation))}
-          ${detailCard(t('fieldFunding'), escapeHtml(LANG === 'zh' ? (company.fundingZh || company.funding) : company.funding))}
-        </div>
-        <div class="narrative"><strong>${escapeHtml(t('fieldInvestors'))}</strong><br>${escapeHtml(LANG === 'zh' ? (company.investorsZh || company.investors) : company.investors)}</div>
-      </div>` : ''}
-      <div class="drawer-section">
-        <h3>${escapeHtml(t('drawerSources'))}</h3>
-        <div class="link-list">
-          ${(node.sources || []).map(src => `<a href="${escapeHtml(src.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(src.label)}</a>`).join('')}
-        </div>
-      </div>
-      <div class="footer-note">${escapeHtml(t('drawerNote'))}</div>
-    `;
-  } else if (state.drawer.type === 'company') {
-    const [region, companyName] = state.drawer.key.split('::');
-    const company = visibleCompanies().find(c => c.region === region && c.company === companyName) || DATA.companies.find(c => c.region === region && c.company === companyName);
-    if (!company) return;
-    const nodes = DATA.nodes.filter(n => n.region === region && n.company === companyName);
-    body.innerHTML = `
-      <div>
-        <div class="eyebrow">${escapeHtml(t('drawerCompany'))}</div>
-        <h2>${escapeHtml(displayCompanyMain(company))}</h2>
-        ${displayCompanySub(company) ? `<div class="muted">${escapeHtml(displayCompanySub(company))}</div>` : ''}
-        <div class="muted" style="margin-top:8px;">${escapeHtml(displayRegion(company.region))}</div>
-      </div>
-      <div class="drawer-section">
-        <h3>${escapeHtml(t('drawerOverview'))}</h3>
-        <div class="drawer-grid">
-          ${detailCard(t('table2026'), escapeHtml(formatMass(company.supply_2026_kg || 0)))}
-          ${detailCard(t('table2030'), escapeHtml(formatMass(company.supply_2030_kg || 0)))}
-          ${detailCard(t('tableVehicles'), escapeHtml(String((company.vehicles || []).length)))}
-          ${detailCard(t('tableCost'), escapeHtml(String(company.maxCost || 0)))}
-          ${detailCard(t('fieldValuation'), escapeHtml(LANG === 'zh' ? (company.valuationZh || company.valuation) : company.valuation))}
-          ${detailCard(t('fieldFunding'), escapeHtml(LANG === 'zh' ? (company.fundingZh || company.funding) : company.funding))}
-        </div>
-      </div>
-      <div class="drawer-section">
-        <h3>${escapeHtml(t('fieldInvestors'))}</h3>
-        <div class="narrative">${escapeHtml(LANG === 'zh' ? (company.investorsZh || company.investors) : company.investors)}</div>
-      </div>
-      <div class="drawer-section">
-        <h3>${escapeHtml(t('fieldVehicles'))}</h3>
-        <div class="table-wrap">
-          <table class="data-table">
-            <thead><tr><th>${escapeHtml(t('tableVehicle'))}</th><th>${escapeHtml(t('tableStatus'))}</th><th>${escapeHtml(t('table2026'))}</th><th>${escapeHtml(t('table2030'))}</th></tr></thead>
-            <tbody>
-              ${nodes.map(node => `<tr class="row-clickable" data-id="${escapeHtml(node.id)}"><td><span class="cell-main">${escapeHtml(displayVehicleMain(node))}</span>${displayVehicleSub(node) ? `<span class="cell-sub">${escapeHtml(displayVehicleSub(node))}</span>` : ''}</td><td>${escapeHtml(enumLabel('horizon_bucket', node.horizon_bucket))}</td><td>${escapeHtml(formatMass(node.supply_2026_kg))}</td><td>${escapeHtml(formatMass(node.supply_2030_kg))}</td></tr>`).join('')}
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div class="drawer-section">
-        <h3>${escapeHtml(t('drawerSources'))}</h3>
-        <div class="link-list">
-          ${nodes.flatMap(node => (node.sources || []).map(src => `<a href="${escapeHtml(src.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(node.vehicle)} · ${escapeHtml(src.label)}</a>`)).join('')}
-        </div>
-      </div>
-      <div class="footer-note">${escapeHtml(t('companyCapitalHint'))}</div>
-    `;
-    body.querySelectorAll('tr.row-clickable').forEach(row => row.addEventListener('click', () => openNodeById(row.dataset.id)));
-  }
-}
-function downloadJson() {
-  const payload = {
-    exportedAt: new Date().toISOString(),
-    lang: LANG,
-    state,
-    nodes: filteredNodes()
   };
-  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-  triggerDownload(blob, 'rocket-market-map-filtered.json');
-}
-function downloadCsv() {
-  const rows = filteredNodes().map(node => ({
-    region: displayRegion(node.region),
-    company: LANG === 'zh' ? (node.companyZh || node.company) : node.company,
-    vehicle: LANG === 'zh' ? (node.vehicleZh || node.vehicle) : node.vehicle,
-    supply_2026_kg: node.supply_2026_kg,
-    supply_2030_kg: node.supply_2030_kg,
-    single_launch_kg: node.single_launch_kg,
-    gto_payload_kg: node.gtoPayloadKg,
-    first_flight: formatYear(node),
-    total_flights: node.totalFlightsDisplay || node.totalFlights,
-    status: enumLabel('horizon_bucket', node.horizon_bucket),
-    reusability: enumLabel('reusability_class', node.reusability_class),
-    propellant: enumLabel('propellant_class', node.propellant_class),
-    launch_sites: (node.launchSites || []).join('; ')
-  }));
-  const columns = Object.keys(rows[0] || { placeholder: '' });
-  const csv = [columns.join(',')].concat(rows.map(row => columns.map(col => csvEscape(row[col])).join(','))).join('\n');
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
-  triggerDownload(blob, 'rocket-market-map-filtered.csv');
-}
-function csvEscape(v) {
-  const str = String(v ?? '');
-  return /[",\n]/.test(str) ? '"' + str.replace(/"/g, '""') + '"' : str;
-}
-function triggerDownload(blob, filename) {
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
+
+  const ROUTE_COPY_EN = {
+    scaled_reuse: {
+      why: 'The goal is to turn launch into a high-cadence industrial service where reuse, refurbishment and demand all compound together.',
+      tradeoff: 'Best long-run cost and cadence, but it only works if flight rate, ops discipline and infrastructure all hold up.',
+      fit: 'Best fit for mixed government/commercial demand and large constellations.'
+    },
+    reuse_challenger: {
+      why: 'The goal is to capture most reuse benefits in medium/heavy launch without taking the full risk of all-up full reuse on day one.',
+      tradeoff: 'Promising cost curve if scale arrives, but the company must master landing, engines and manufacturing at the same time.',
+      fit: 'Best fit for players trying to challenge the commercial mainstream by 2027–2030.'
+    },
+    frontier_full_reuse: {
+      why: 'The goal is not a small cost gain but a step change in payload and marginal cost.',
+      tradeoff: 'Highest upside, highest systems risk: thermal protection, turnaround, reentry and in-space ops all become central.',
+      fit: 'Best fit for ultra-heavy cargo, giant constellations and deep-space logistics ambitions.'
+    },
+    sovereign_assured: {
+      why: 'The goal is assured national access and certified mission execution, not pure minimum price.',
+      tradeoff: 'High mission assurance and political value, but usually slower cadence and weaker structural cost position.',
+      fit: 'Best fit for sovereign launch ecosystems and national-security-heavy portfolios.'
+    },
+    dedicated_small: {
+      why: 'The goal is to sell a dedicated window and orbital flexibility to small payloads.',
+      tradeoff: 'Flexible and useful, but hard to make cheap without real volume.',
+      fit: 'Best fit for dedicated small-sat missions, demos and time-sensitive rides.'
+    },
+    responsive_solid: {
+      why: 'The goal is rapid deployment with simpler operations and lighter infrastructure demands.',
+      tradeoff: 'Fast and operationally simple, but usually weaker on long-run cost and orbital finesse.',
+      fit: 'Best fit for responsive missions, some government demand and early constellation replenishment.'
+    }
+  };
+
+  const REGIONS = {
+    ALL: { zh: TEXT.zh.regionAll, en: TEXT.en.regionAll },
+    US: { zh: TEXT.zh.regionUS, en: TEXT.en.regionUS },
+    Europe: { zh: TEXT.zh.regionEurope, en: TEXT.en.regionEurope },
+    China: { zh: TEXT.zh.regionChina, en: TEXT.en.regionChina }
+  };
+
+  const state = {
+    data: null,
+    metric: 'supply_2026_kg',
+    region: 'ALL',
+    route: 'ALL',
+    goal: 'low_cost',
+    search: '',
+    selectedId: null
+  };
+
+  const els = {
+    brandTitle: document.getElementById('brandTitle'),
+    heroEyebrow: document.getElementById('heroEyebrow'),
+    heroTitle: document.getElementById('heroTitle'),
+    heroSubtitle: document.getElementById('heroSubtitle'),
+    ctaMap: document.getElementById('ctaMap'),
+    ctaRoutes: document.getElementById('ctaRoutes'),
+    heroTakeaways: document.getElementById('heroTakeaways'),
+    overviewCard1: document.getElementById('overviewCard1'),
+    overviewCard2: document.getElementById('overviewCard2'),
+    overviewCard3: document.getElementById('overviewCard3'),
+    principlesTitle: document.getElementById('principlesTitle'),
+    principlesSubtitle: document.getElementById('principlesSubtitle'),
+    principlesGrid: document.getElementById('principlesGrid'),
+    goalsTitle: document.getElementById('goalsTitle'),
+    goalsSubtitle: document.getElementById('goalsSubtitle'),
+    goalPills: document.getElementById('goalPills'),
+    goalCallout: document.getElementById('goalCallout'),
+    routesTitle: document.getElementById('routesTitle'),
+    routesSubtitle: document.getElementById('routesSubtitle'),
+    clearRouteFilter: document.getElementById('clearRouteFilter'),
+    routeGrid: document.getElementById('routeGrid'),
+    mapTitle: document.getElementById('mapTitle'),
+    mapSubtitle: document.getElementById('mapSubtitle'),
+    metricToggle: document.getElementById('metricToggle'),
+    regionToggle: document.getElementById('regionToggle'),
+    chartLegend: document.getElementById('chartLegend'),
+    bubbleChart: document.getElementById('bubbleChart'),
+    mapNote: document.getElementById('mapNote'),
+    companiesTitle: document.getElementById('companiesTitle'),
+    companiesSubtitle: document.getElementById('companiesSubtitle'),
+    companySearch: document.getElementById('companySearch'),
+    companyGroups: document.getElementById('companyGroups'),
+    dataPortTitle: document.getElementById('dataPortTitle'),
+    dataPortSubtitle: document.getElementById('dataPortSubtitle'),
+    dataPortGrid: document.getElementById('dataPortGrid'),
+    drawerBackdrop: document.getElementById('drawerBackdrop'),
+    detailDrawer: document.getElementById('detailDrawer'),
+    drawerEyebrow: document.getElementById('drawerEyebrow'),
+    drawerTitle: document.getElementById('drawerTitle'),
+    drawerSubtitle: document.getElementById('drawerSubtitle'),
+    drawerBody: document.getElementById('drawerBody'),
+    closeDrawer: document.getElementById('closeDrawer'),
+    tooltip: document.getElementById('tooltip')
+  };
+
+  function t(key) {
+    return TEXT[isZh ? 'zh' : 'en'][key];
+  }
+
+  function deepCopy(obj) {
+    return JSON.parse(JSON.stringify(obj));
+  }
+
+  async function loadData() {
+    const inline = window.__INLINE_DATA__ ? deepCopy(window.__INLINE_DATA__) : null;
+    const useInline = location.protocol === 'file:';
+    if (!useInline && window.__DATA_PATH__) {
+      try {
+        const res = await fetch(window.__DATA_PATH__, { cache: 'no-store' });
+        if (res.ok) return await res.json();
+      } catch (err) {
+        console.warn('Falling back to inline data:', err);
+      }
+    }
+    return inline;
+  }
+
+  function regionLabel(region) {
+    const entry = REGIONS[region];
+    if (!entry) return region;
+    return isZh ? entry.zh : entry.en;
+  }
+
+  function routeLabel(node) {
+    return isZh ? node.route_class_zh : node.route_class_en;
+  }
+
+  function routeCopy(routeId) {
+    const defs = state.data.meta_v3.routeDefinitions[routeId];
+    return {
+      name: isZh ? defs.zh : defs.en,
+      why: isZh ? defs.why_zh : ROUTE_COPY_EN[routeId].why,
+      tradeoff: isZh ? defs.tradeoff_zh : ROUTE_COPY_EN[routeId].tradeoff,
+      fit: isZh ? defs.fit_zh : ROUTE_COPY_EN[routeId].fit,
+      color: defs.color,
+      order: defs.order
+    };
+  }
+
+  function goalCopy(goalId) {
+    const goal = state.data.meta_v3.goalDefinitions[goalId];
+    return {
+      label: isZh ? goal.zh : goal.en,
+      summary: isZh ? goal.summary_zh : (goal.summary_en || {
+        low_cost: 'Lower delivered cost usually pushes you toward first-stage reuse or full reuse.',
+        high_payload: 'Higher payload usually means larger boosters, more engine thrust and heavier ground systems.',
+        high_reliability: 'Government and high-value missions often prioritize mission assurance over the lowest possible price.',
+        fast_schedule: 'If schedule matters most, the market tends to split between high-cadence reusable platforms and dedicated small / responsive systems.',
+        sovereignty: 'When sovereign access matters more than minimum cost, procurement and certification shape the architecture.',
+        risk_control: 'The more conservative the architecture, the easier it is to manage development risk—at the expense of long-run cost upside.'
+      }[goalId]),
+      routes: goal.routes
+    };
+  }
+
+  function massShort(kg) {
+    if (kg == null) return t('unknown');
+    if (kg >= 1_000_000) return `${(kg / 1000).toLocaleString(undefined, { maximumFractionDigits: 0 })}${t('axisTickT')}`;
+    if (kg >= 1000) {
+      const tons = kg / 1000;
+      return `${tons >= 10 ? tons.toLocaleString(undefined, { maximumFractionDigits: 0 }) : tons.toLocaleString(undefined, { maximumFractionDigits: 1 })}${t('axisTickT')}`;
+    }
+    return `${kg.toLocaleString()} ${t('axisTickKg')}`;
+  }
+
+  function regionShort(region) {
+    return regionLabel(region);
+  }
+
+  function currentText(node, keyZh, keyEn, fallback = '') {
+    if (isZh) return node[keyZh] || fallback;
+    return node[keyEn] || fallback;
+  }
+
+  function textSearch(node) {
+    const parts = [node.company, node.vehicle, node.companyZh, node.vehicleZh, node.route_class_zh, node.route_class_en, node.region, node.country];
+    return parts.join(' ').toLowerCase();
+  }
+
+  function filteredNodes() {
+    const q = state.search.trim().toLowerCase();
+    return state.data.nodes.filter((node) => {
+      if (state.region !== 'ALL' && node.region !== state.region) return false;
+      if (state.route !== 'ALL' && node.route_class !== state.route) return false;
+      if (q && !textSearch(node).includes(q)) return false;
+      return true;
+    });
+  }
+
+  function chartNodes() {
+    return filteredNodes().filter((n) => Number.isFinite(n.single_launch_kg));
+  }
+
+  function setText() {
+    els.brandTitle.textContent = t('brand');
+    els.heroEyebrow.textContent = t('heroEyebrow');
+    els.heroTitle.textContent = t('heroTitle');
+    els.heroSubtitle.textContent = t('heroSubtitle');
+    els.ctaMap.textContent = t('ctaMap');
+    els.ctaRoutes.textContent = t('ctaRoutes');
+
+    const takeaways = t('heroTakeaways');
+    els.heroTakeaways.innerHTML = takeaways.map(([title, body]) => `<div class="takeaway-card"><strong>${title}</strong><span>${body}</span></div>`).join('');
+
+    const overview = t('overview');
+    [els.overviewCard1, els.overviewCard2, els.overviewCard3].forEach((el, i) => {
+      el.innerHTML = `<h3>${overview[i][0]}</h3><p>${overview[i][1]}</p>`;
+    });
+
+    els.principlesTitle.textContent = t('principlesTitle');
+    els.principlesSubtitle.textContent = t('principlesSubtitle');
+    els.principlesGrid.innerHTML = t('principles').map(([title, body]) => `<div class="principle-card"><h3>${title}</h3><p>${body}</p></div>`).join('');
+    els.goalsTitle.textContent = t('goalsTitle');
+    els.goalsSubtitle.textContent = t('goalsSubtitle');
+
+    els.routesTitle.textContent = t('routesTitle');
+    els.routesSubtitle.textContent = t('routesSubtitle');
+    els.clearRouteFilter.textContent = t('clearRouteFilter');
+
+    els.mapTitle.textContent = t('mapTitle');
+    els.mapSubtitle.textContent = t('mapSubtitle');
+    els.mapNote.textContent = t('mapNote');
+
+    els.companiesTitle.textContent = t('companiesTitle');
+    els.companiesSubtitle.textContent = t('companiesSubtitle');
+    els.companySearch.placeholder = t('searchPlaceholder');
+
+    els.dataPortTitle.textContent = t('dataPortTitle');
+    els.dataPortSubtitle.textContent = t('dataPortSubtitle');
+    els.closeDrawer.setAttribute('aria-label', t('drawerClose'));
+  }
+
+  function renderGoalPills() {
+    const goals = Object.keys(state.data.meta_v3.goalDefinitions);
+    els.goalPills.innerHTML = goals.map((goalId) => {
+      const copy = goalCopy(goalId);
+      const active = goalId === state.goal ? 'active' : '';
+      return `<button class="goal-pill ${active}" data-goal="${goalId}">${copy.label}</button>`;
+    }).join('');
+    [...els.goalPills.querySelectorAll('.goal-pill')].forEach((btn) => {
+      btn.addEventListener('click', () => {
+        state.goal = btn.dataset.goal;
+        renderGoalPills();
+        renderGoalCallout();
+        renderRoutes();
+      });
+    });
+    renderGoalCallout();
+  }
+
+  function renderGoalCallout() {
+    const copy = goalCopy(state.goal);
+    const routesHtml = copy.routes.map((rid) => {
+      const rcopy = routeCopy(rid);
+      return `<span class="mini-pill"><span class="mini-dot" style="background:${rcopy.color}"></span>${rcopy.name}</span>`;
+    }).join('');
+    els.goalCallout.innerHTML = `
+      <h4>${copy.label}</h4>
+      <p>${copy.summary}</p>
+      <div class="goal-routes">${routesHtml}</div>
+    `;
+  }
+
+  function computeRouteStatsForView() {
+    const baseNodes = state.data.nodes.filter((node) => {
+      const q = state.search.trim().toLowerCase();
+      if (state.region !== 'ALL' && node.region !== state.region) return false;
+      if (q && !textSearch(node).includes(q)) return false;
+      return true;
+    });
+    const grouped = {};
+    for (const node of baseNodes) {
+      const key = node.route_class;
+      if (!grouped[key]) grouped[key] = { count: 0, supply: 0, examples: [] };
+      grouped[key].count += 1;
+      grouped[key].supply += Number(node[state.metric] || 0);
+      grouped[key].examples.push(node);
+    }
+    return grouped;
+  }
+
+  function renderRoutes() {
+    const stats = computeRouteStatsForView();
+    const highlightedRoutes = new Set(goalCopy(state.goal).routes);
+    const routeIds = Object.keys(state.data.meta_v3.routeDefinitions).sort((a, b) => routeCopy(a).order - routeCopy(b).order);
+    els.routeGrid.innerHTML = routeIds.map((routeId) => {
+      const copy = routeCopy(routeId);
+      const stat = stats[routeId] || { count: 0, supply: 0, examples: [] };
+      const examples = stat.examples.sort((a, b) => Number(b[state.metric] || 0) - Number(a[state.metric] || 0)).slice(0, 3);
+      const exampleHtml = examples.map((n) => `
+        <button class="route-example-chip" data-node-open="${n.id}">${isZh ? `${n.companyZh} · ${n.vehicleZh}` : `${n.company} · ${n.vehicle}`}</button>`).join('');
+      const active = state.route === routeId ? 'active' : '';
+      const highlighted = highlightedRoutes.has(routeId) ? 'highlighted' : '';
+      const borderColor = copy.color;
+      return `
+        <div class="route-card ${active} ${highlighted}" data-route="${routeId}" style="border-color:${active ? borderColor : '#dde6f3'}">
+          <div class="route-top">
+            <div class="route-name"><span class="route-swatch" style="background:${copy.color}"></span><h3>${copy.name}</h3></div>
+            <div class="route-metric">
+              <div>${stat.count} ${t('nodesUnit')}</div>
+              <div>${massShort(stat.supply)}</div>
+            </div>
+          </div>
+          <p>${copy.why}</p>
+          <p class="tradeoff"><strong>${isZh ? '代价' : 'Tradeoff'}：</strong>${copy.tradeoff}</p>
+          <p class="tradeoff"><strong>${isZh ? '最适合' : 'Best fit'}：</strong>${copy.fit}</p>
+          <div class="route-examples">${exampleHtml}</div>
+        </div>`;
+    }).join('');
+
+    [...els.routeGrid.querySelectorAll('.route-card')].forEach((card) => {
+      card.addEventListener('click', (event) => {
+        if (event.target.closest('[data-node-open]')) return;
+        const routeId = card.dataset.route;
+        state.route = state.route === routeId ? 'ALL' : routeId;
+        renderAll();
+      });
+    });
+    [...els.routeGrid.querySelectorAll('[data-node-open]')].forEach((btn) => {
+      btn.addEventListener('click', (event) => {
+        event.stopPropagation();
+        openDrawer(btn.dataset.nodeOpen);
+      });
+    });
+  }
+
+  function renderControls() {
+    els.metricToggle.innerHTML = [
+      ['supply_2026_kg', t('metric2026')],
+      ['supply_2030_kg', t('metric2030')]
+    ].map(([metric, label]) => `<button class="toggle-button ${state.metric === metric ? 'active' : ''}" data-metric="${metric}">${label}</button>`).join('');
+    [...els.metricToggle.querySelectorAll('.toggle-button')].forEach((btn) => {
+      btn.addEventListener('click', () => {
+        state.metric = btn.dataset.metric;
+        renderAll();
+      });
+    });
+
+    els.regionToggle.innerHTML = ['ALL', 'US', 'Europe', 'China'].map((region) => `<button class="toggle-button ${state.region === region ? 'active' : ''}" data-region="${region}">${regionLabel(region)}</button>`).join('');
+    [...els.regionToggle.querySelectorAll('.toggle-button')].forEach((btn) => {
+      btn.addEventListener('click', () => {
+        state.region = btn.dataset.region;
+        renderAll();
+      });
+    });
+
+    els.chartLegend.innerHTML = Object.keys(state.data.meta_v3.routeDefinitions)
+      .sort((a, b) => routeCopy(a).order - routeCopy(b).order)
+      .map((routeId) => {
+        const copy = routeCopy(routeId);
+        return `<span class="legend-chip"><span class="mini-dot" style="background:${copy.color}"></span>${copy.name}</span>`;
+      }).join('');
+  }
+
+  function renderBubbleChart() {
+    const svg = els.bubbleChart;
+    const data = chartNodes().slice().sort((a, b) => Number(b[state.metric] || 0) - Number(a[state.metric] || 0));
+    const width = 1120;
+    const height = 560;
+    const margin = { top: 28, right: 34, bottom: 74, left: 90 };
+    const innerW = width - margin.left - margin.right;
+    const innerH = height - margin.top - margin.bottom;
+    const ticksTons = [0.1, 0.3, 1, 3, 10, 30, 100, 200];
+    const xMin = Math.log10(100);
+    const xMax = Math.log10(200000);
+    const metricMax = Math.max(...data.map((d) => Number(d[state.metric] || 0)), 1);
+
+    const xScale = (kg) => {
+      const x = Math.log10(Math.max(kg, 100));
+      const ratio = (x - xMin) / (xMax - xMin);
+      return margin.left + ratio * innerW;
+    };
+    const yScale = (score) => margin.top + innerH - (score / 10) * innerH;
+    const radiusScale = (value) => 7 + Math.sqrt(Math.max(value, 0) / metricMax) * 40;
+
+    const selected = state.selectedId ? data.find((d) => d.id === state.selectedId) : null;
+    const labels = new Set(data.slice(0, 8).map((d) => d.id));
+    if (selected) labels.add(selected.id);
+
+    const parts = [];
+    parts.push(`<rect x="0" y="0" width="${width}" height="${height}" fill="transparent"></rect>`);
+
+    for (let y = 0; y <= 10; y += 2) {
+      const py = yScale(y);
+      parts.push(`<line class="svg-grid" x1="${margin.left}" y1="${py}" x2="${width - margin.right}" y2="${py}"></line>`);
+      parts.push(`<text class="svg-axis" x="${margin.left - 16}" y="${py + 5}" text-anchor="end">${y}</text>`);
+    }
+    for (const tick of ticksTons) {
+      const xkg = tick * 1000;
+      const px = xScale(xkg);
+      parts.push(`<line class="svg-grid" x1="${px}" y1="${margin.top}" x2="${px}" y2="${height - margin.bottom}"></line>`);
+      const label = tick < 1 ? `${Math.round(tick * 1000)} ${t('axisTickKg')}` : `${tick}${t('axisTickT')}`;
+      parts.push(`<text class="svg-axis" x="${px}" y="${height - margin.bottom + 28}" text-anchor="middle">${label}</text>`);
+    }
+    parts.push(`<line class="svg-axis-line" x1="${margin.left}" y1="${height - margin.bottom}" x2="${width - margin.right}" y2="${height - margin.bottom}"></line>`);
+    parts.push(`<line class="svg-axis-line" x1="${margin.left}" y1="${margin.top}" x2="${margin.left}" y2="${height - margin.bottom}"></line>`);
+    parts.push(`<text class="svg-title" x="${margin.left + innerW / 2}" y="${height - 18}" text-anchor="middle">${t('chartXTitle')}</text>`);
+    parts.push(`<text class="svg-title" x="24" y="${margin.top + innerH / 2}" transform="rotate(-90 24 ${margin.top + innerH / 2})" text-anchor="middle">${t('chartYTitle')}</text>`);
+    parts.push(`<text class="svg-note" x="${width - margin.right}" y="18" text-anchor="end">${t('topLabelNote')}</text>`);
+
+    data.forEach((node) => {
+      const cx = xScale(node.single_launch_kg);
+      const cy = yScale(Number(node.cost_score || 0));
+      const r = radiusScale(Number(node[state.metric] || 0));
+      const color = routeCopy(node.route_class).color;
+      const selectedClass = state.selectedId === node.id ? 'selected' : '';
+      parts.push(`
+        <g class="bubble-node ${selectedClass}" data-node="${node.id}" tabindex="0" role="button" aria-label="${isZh ? node.vehicleZh : node.vehicle}">
+          <circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}" fill-opacity="0.18" stroke="${color}" stroke-width="${state.selectedId === node.id ? 4 : 2.4}"></circle>
+          <circle cx="${cx}" cy="${cy}" r="${Math.max(2.4, r * 0.16)}" fill="${color}" fill-opacity="0.85"></circle>
+        </g>
+      `);
+    });
+
+    const labelBoxes = [];
+    data.filter((node) => labels.has(node.id)).forEach((node) => {
+      const cx = xScale(node.single_launch_kg);
+      const cy = yScale(Number(node.cost_score || 0));
+      const r = radiusScale(Number(node[state.metric] || 0));
+      const label = isZh ? node.vehicleZh : node.vehicle;
+      let lx = cx + r + 8;
+      let ly = cy - r - 6;
+      const widthApprox = Math.max(50, label.length * 8.6);
+      const heightApprox = 16;
+      if (lx + widthApprox > width - margin.right) lx = cx - r - widthApprox - 8;
+      if (ly < margin.top + 14) ly = cy + r + 16;
+      let tries = 0;
+      while (tries < 8 && labelBoxes.some((b) => !(lx + widthApprox < b.x || b.x + b.w < lx || ly + heightApprox < b.y || b.y + b.h < ly))) {
+        ly += 18;
+        if (ly > height - margin.bottom - 10) {
+          ly = cy - r - 6 - tries * 18;
+        }
+        tries += 1;
+      }
+      labelBoxes.push({ x: lx, y: ly - 12, w: widthApprox, h: heightApprox });
+      parts.push(`<text class="svg-bubble-label" x="${lx}" y="${ly}">${label}</text>`);
+    });
+
+    svg.innerHTML = parts.join('');
+
+    [...svg.querySelectorAll('.bubble-node')].forEach((nodeEl) => {
+      const nodeId = nodeEl.dataset.node;
+      nodeEl.addEventListener('mouseenter', (e) => showTooltip(e, nodeId));
+      nodeEl.addEventListener('mousemove', (e) => moveTooltip(e));
+      nodeEl.addEventListener('mouseleave', hideTooltip);
+      nodeEl.addEventListener('click', () => openDrawer(nodeId));
+      nodeEl.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openDrawer(nodeId);
+        }
+      });
+    });
+  }
+
+  function showTooltip(event, nodeId) {
+    const node = state.data.nodes.find((n) => n.id === nodeId);
+    if (!node) return;
+    els.tooltip.hidden = false;
+    const title = isZh ? `${node.companyZh} · ${node.vehicleZh}` : `${node.company} · ${node.vehicle}`;
+    const subtitle = `${routeLabel(node)} · ${regionShort(node.region)}`;
+    const payloadLabel = `${t('drawerLabels').payload}: ${massShort(node.single_launch_kg)}`;
+    const supplyLabel = `${state.metric === 'supply_2026_kg' ? t('metric2026') : t('metric2030')}: ${massShort(node[state.metric])}`;
+    const why = isZh ? node.route_why_zh : node.route_why_en;
+    els.tooltip.innerHTML = `<strong>${title}</strong><div class="tooltip-meta">${subtitle}</div><div style="margin-top:6px">${payloadLabel} · ${supplyLabel}</div><div style="margin-top:6px">${why}</div>`;
+    moveTooltip(event);
+  }
+
+  function moveTooltip(event) {
+    const tip = els.tooltip;
+    const host = els.bubbleChart.parentElement.getBoundingClientRect();
+    const x = Math.min(host.width - 340, Math.max(12, event.clientX - host.left + 14));
+    const y = Math.max(12, event.clientY - host.top + 14);
+    tip.style.left = `${x}px`;
+    tip.style.top = `${y}px`;
+  }
+
+  function hideTooltip() {
+    els.tooltip.hidden = true;
+  }
+
+  function groupNodesByRoute(nodes) {
+    const groups = {};
+    nodes.forEach((node) => {
+      if (!groups[node.route_class]) groups[node.route_class] = [];
+      groups[node.route_class].push(node);
+    });
+    return Object.entries(groups)
+      .sort((a, b) => routeCopy(a[0]).order - routeCopy(b[0]).order)
+      .map(([routeId, routeNodes]) => [routeId, routeNodes.sort((x, y) => Number(y[state.metric] || 0) - Number(x[state.metric] || 0))]);
+  }
+
+  function renderCompanyCards() {
+    const nodes = filteredNodes();
+    if (!nodes.length) {
+      els.companyGroups.innerHTML = `<div class="empty-state">${t('emptyState')}</div>`;
+      return;
+    }
+    const groups = groupNodesByRoute(nodes);
+    els.companyGroups.innerHTML = groups.map(([routeId, routeNodes]) => {
+      const copy = routeCopy(routeId);
+      const groupMeta = `${routeNodes.length} ${t('nodesUnit')} · ${(state.metric === 'supply_2026_kg' ? t('metric2026') : t('metric2030'))} ${massShort(routeNodes.reduce((sum, n) => sum + Number(n[state.metric] || 0), 0))}`;
+      return `
+        <section class="company-group">
+          <h3><span class="mini-dot" style="display:inline-block;background:${copy.color};margin-right:8px"></span>${copy.name}</h3>
+          <div class="group-meta">${groupMeta}</div>
+          <div class="company-grid">
+            ${routeNodes.map(renderCompanyCard).join('')}
+          </div>
+        </section>`;
+    }).join('');
+    [...els.companyGroups.querySelectorAll('.company-card')].forEach((card) => {
+      card.addEventListener('click', () => openDrawer(card.dataset.node));
+    });
+  }
+
+  function renderCompanyCard(node) {
+    const title = isZh ? `${node.companyZh} · ${node.vehicleZh}` : `${node.company} · ${node.vehicle}`;
+    const summary = isZh ? node.route_why_zh : node.route_why_en;
+    const constraint = isZh ? node.constraint_zh : node.constraint_en;
+    const firstFlight = node.firstFlightYear ? `${node.firstFlightYear} · ${node.firstFlightStatus === 'actual' ? t('actual') : t('planned')}` : t('unknown');
+    return `
+      <article class="company-card" data-node="${node.id}">
+        <h4>${title}</h4>
+        <div class="meta-line">
+          <span class="badge">${routeLabel(node)}</span>
+          <span class="badge">${regionShort(node.region)}</span>
+          <span class="badge">${isZh ? node.maturity_class.replace('Development / pre-scale','研发 / 未形成规模').replace('Mature service','成熟运营').replace('Early operations','初步运营').replace('Operational / scaling','运营扩张').replace('Operational / ramping','运营爬坡').replace('Operational','运营中').replace('Distressed / paused','停滞 / 暂停') : node.maturity_class}</span>
+        </div>
+        <p>${summary}</p>
+        <p><strong>${isZh ? '关键制约：' : 'Constraint:'}</strong>${constraint}</p>
+        <div class="card-stats">
+          <div class="stat-box"><span class="label">${t('drawerLabels').payload}</span><span class="value">${massShort(node.single_launch_kg)}</span></div>
+          <div class="stat-box"><span class="label">${state.metric === 'supply_2026_kg' ? t('metric2026') : t('metric2030')}</span><span class="value">${massShort(node[state.metric])}</span></div>
+          <div class="stat-box"><span class="label">${t('drawerLabels').firstFlight}</span><span class="value">${firstFlight}</span></div>
+        </div>
+      </article>`;
+  }
+
+  function openDrawer(nodeId) {
+    const node = state.data.nodes.find((n) => n.id === nodeId);
+    if (!node) return;
+    state.selectedId = nodeId;
+    const route = routeCopy(node.route_class);
+    const title = isZh ? `${node.companyZh} · ${node.vehicleZh}` : `${node.company} · ${node.vehicle}`;
+    const subtitle = isZh ? node.currentRealityZh || node.current_reality : node.current_reality;
+    els.drawerEyebrow.textContent = route.name;
+    els.drawerTitle.textContent = title;
+    els.drawerSubtitle.textContent = subtitle || '';
+
+    const labels = t('drawerLabels');
+    const certified = node.certified == null ? t('unknown') : (node.certified ? t('yes') : t('no'));
+    const constellation = node.constellationCapable == null ? t('unknown') : (node.constellationCapable ? t('yes') : t('no'));
+    const sourceLinks = (node.sources || []).map((s) => `<a class="source-link" href="${s.url}" target="_blank" rel="noreferrer noopener">${s.label}</a>`).join('');
+    const companyCapital = state.data.companies.find((c) => c.company === node.company) || {};
+    const launchSites = (node.launchSites || []).join(isZh ? '、' : ', ');
+    const plannedRows = (node.plannedMissions || []).length ? (node.plannedMissions || []).map((m) => `
+      <tr><td>${m.date || '—'}</td><td>${isZh ? (m.mission || m.missionEn || '—') : (m.missionEn || m.mission || '—')}</td><td>${m.orbit || '—'}</td></tr>`).join('') : `<tr><td colspan="3">${t('unknown')}</td></tr>`;
+    const engineRows = (node.engines || []).length ? (node.engines || []).map((e) => `
+      <tr><td>${e.name || '—'}</td><td>${e.stage || '—'}</td><td>${e.count ?? '—'}</td><td>${e.thrust_kN ?? '—'} kN</td><td>${e.isp_s ?? '—'} s</td></tr>`).join('') : `<tr><td colspan="5">${t('unknown')}</td></tr>`;
+    const historyEntries = Object.entries(node.launchHistory || {}).filter(([k]) => !String(k).includes('e'));
+    const maxHistory = Math.max(...historyEntries.map(([, v]) => Number(v || 0)), 1);
+    const historyBars = historyEntries.length ? `<div class="history-bars">${historyEntries.map(([year, value]) => {
+      const height = 24 + (Number(value || 0) / maxHistory) * 72;
+      return `<div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:26px"><div class="history-bar" style="height:${height}px"><span>${value}</span></div><div class="history-year">${year}</div></div>`;
+    }).join('')}</div>` : `<div class="empty-state">${t('unknown')}</div>`;
+
+    const whyTitle = isZh ? node.costThesisZh || node.cost_thesis : node.cost_thesis;
+    const whyRoute = isZh ? node.route_why_zh : node.route_why_en;
+    const constraint = isZh ? node.constraint_zh : node.constraint_en;
+    const watch = isZh ? node.watch_zh : node.watch_en;
+    const techRoute = isZh ? (node.techRoute || node.route_summary) : (node.techRouteEn || node.route_summary);
+
+    els.drawerBody.innerHTML = `
+      <section class="drawer-section">
+        <h3>${t('drawerSections').thesis}</h3>
+        <div class="info-card"><span class="info-value">${whyTitle || whyRoute}</span></div>
+      </section>
+
+      <section class="drawer-section">
+        <h3>${t('drawerSections').coreData}</h3>
+        <div class="drawer-grid-3">
+          <div class="info-card"><span class="info-label">${labels.payload}</span><span class="info-value">${massShort(node.single_launch_kg)}</span></div>
+          <div class="info-card"><span class="info-label">${labels.gto}</span><span class="info-value">${massShort(node.gtoPayloadKg)}</span></div>
+          <div class="info-card"><span class="info-label">${labels.flights2026}</span><span class="info-value">${node.flights_2026_base ?? t('unknown')}</span></div>
+          <div class="info-card"><span class="info-label">${labels.firstFlight}</span><span class="info-value">${node.firstFlightYear ? `${node.firstFlightYear} · ${node.firstFlightStatus === 'actual' ? t('actual') : t('planned')}` : t('unknown')}</span></div>
+          <div class="info-card"><span class="info-label">${labels.totalFlights}</span><span class="info-value">${node.totalFlightsDisplay || node.totalFlights || t('unknown')}</span></div>
+          <div class="info-card"><span class="info-label">${state.metric === 'supply_2026_kg' ? t('metric2026') : t('metric2030')}</span><span class="info-value">${massShort(node[state.metric])}</span></div>
+        </div>
+      </section>
+
+      <section class="drawer-section">
+        <h3>${t('drawerSections').why}</h3>
+        <div class="drawer-grid-3">
+          <div class="info-card"><span class="info-label">${labels.route}</span><span class="info-value">${route.name}</span></div>
+          <div class="info-card"><span class="info-label">${labels.target}</span><span class="info-value">${isZh ? node.target_goal_zh : node.route_why_en}</span></div>
+          <div class="info-card"><span class="info-label">${labels.region}</span><span class="info-value">${regionShort(node.region)}</span></div>
+        </div>
+        <div class="info-list">
+          <div class="info-card"><span class="info-label">${isZh ? '为什么选这条路线' : 'Why this route'}</span><span class="info-value">${whyRoute}</span></div>
+          <div class="info-card"><span class="info-label">${labels.constraint}</span><span class="info-value">${constraint}</span></div>
+          <div class="info-card"><span class="info-label">${labels.watch}</span><span class="info-value">${watch}</span></div>
+        </div>
+      </section>
+
+      <section class="drawer-section">
+        <h3>${t('drawerSections').tech}</h3>
+        <div class="drawer-grid-2">
+          <div class="info-card"><span class="info-label">${labels.propellant}</span><span class="info-value">${isZh ? translatePropellant(node.propellant_class) : node.propellant_class}</span></div>
+          <div class="info-card"><span class="info-label">${labels.reuse}</span><span class="info-value">${isZh ? translateReuse(node.reusability_class) : node.reusability_class}</span></div>
+          <div class="info-card"><span class="info-label">${labels.recovery}</span><span class="info-value">${node.recoveryMethod || t('unknown')}</span></div>
+          <div class="info-card"><span class="info-label">${labels.architecture}</span><span class="info-value">${isZh ? translateArchitecture(node.architecture_class) : node.architecture_class}</span></div>
+          <div class="info-card"><span class="info-label">${labels.launchSite}</span><span class="info-value">${launchSites || t('unknown')}</span></div>
+          <div class="info-card"><span class="info-label">${labels.certified} / ${labels.constellation}</span><span class="info-value">${certified} / ${constellation}</span></div>
+        </div>
+        <div class="info-card"><span class="info-label">${isZh ? '技术路线解释' : 'Technical route'}</span><span class="info-value">${techRoute || t('unknown')}</span></div>
+        <div class="table-wrap">
+          <table class="table">
+            <thead><tr><th>${labels.engines}</th><th>${isZh ? '级段' : 'Stage'}</th><th>${isZh ? '数量' : 'Count'}</th><th>${isZh ? '推力' : 'Thrust'}</th><th>ISP</th></tr></thead>
+            <tbody>${engineRows}</tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="drawer-section">
+        <h3>${t('drawerSections').history}</h3>
+        <div class="drawer-grid-2">
+          <div class="info-card"><span class="info-label">${labels.firstFlight}</span><span class="info-value">${node.firstFlightYear ? `${node.firstFlightYear} · ${node.firstFlightStatus === 'actual' ? t('actual') : t('planned')}` : t('unknown')}</span></div>
+          <div class="info-card"><span class="info-label">${labels.totalFlights}</span><span class="info-value">${node.totalFlightsDisplay || node.totalFlights || t('unknown')}</span></div>
+        </div>
+        <div class="info-card"><span class="info-label">${labels.historyChart}</span>${historyBars}</div>
+        <div class="table-wrap">
+          <table class="table">
+            <thead><tr><th>${isZh ? '时间' : 'Date'}</th><th>${isZh ? '任务' : 'Mission'}</th><th>${isZh ? '轨道' : 'Orbit'}</th></tr></thead>
+            <tbody>${plannedRows}</tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="drawer-section">
+        <h3>${t('drawerSections').capital}</h3>
+        <div class="info-list">
+          <div class="info-card"><span class="info-label">${labels.valuation}</span><span class="info-value">${isZh ? (companyCapital.valuationZh || node.valuation || t('unknown')) : (companyCapital.valuation || node.valuation || t('unknown'))}</span></div>
+          <div class="info-card"><span class="info-label">${labels.funding}</span><span class="info-value">${isZh ? (companyCapital.fundingZh || node.funding || t('unknown')) : (companyCapital.funding || node.funding || t('unknown'))}</span></div>
+          <div class="info-card"><span class="info-label">${labels.investors}</span><span class="info-value">${isZh ? (companyCapital.investorsZh || node.investors || t('unknown')) : (companyCapital.investors || node.investors || t('unknown'))}</span></div>
+        </div>
+      </section>
+
+      <section class="drawer-section">
+        <h3>${t('drawerSections').sources}</h3>
+        <div class="source-links">${sourceLinks || `<div class="empty-state">${t('unknown')}</div>`}</div>
+      </section>
+    `;
+
+    els.drawerBackdrop.hidden = false;
+    els.detailDrawer.classList.add('open');
+    els.detailDrawer.setAttribute('aria-hidden', 'false');
+    renderBubbleChart();
+  }
+
+  function closeDrawer() {
+    state.selectedId = null;
+    els.drawerBackdrop.hidden = true;
+    els.detailDrawer.classList.remove('open');
+    els.detailDrawer.setAttribute('aria-hidden', 'true');
+    renderBubbleChart();
+  }
+
+  function renderDataPort() {
+    const ports = [
+      state.data.meta_v3.data_port,
+      state.data.meta_v3.manifest_port,
+      state.data.meta_v3.schema_port
+    ];
+    const cards = t('portCards');
+    els.dataPortGrid.innerHTML = cards.map((card, idx) => `
+      <div class="port-card">
+        <strong>${card[0]}</strong>
+        <p>${card[1]}</p>
+        <code>${ports[idx]}</code>
+      </div>
+    `).join('');
+  }
+
+  function translatePropellant(value) {
+    const map = {
+      'Kerosene/LOX': '煤油 / 液氧',
+      'Methane/LOX': '甲烷 / 液氧',
+      'Mixed cryogenic': '混合低温',
+      'Solid': '固体',
+      'Propane/LOX': '丙烷 / 液氧',
+      'Mixed family': '多型号混合'
+    };
+    return map[value] || value;
+  }
+
+  function translateReuse(value) {
+    const map = {
+      'Expendable': '一次性',
+      'Partial reusable': '一级 / 部分复用',
+      'Full reusable': '全复用'
+    };
+    return map[value] || value;
+  }
+
+  function translateArchitecture(value) {
+    const map = {
+      'Two-stage medium/heavy launcher': '两级中大型火箭',
+      'Three-core heavy launcher': '三芯级重型火箭',
+      'Super heavy fully reusable stack': '超重型全复用堆栈',
+      'Reusable first stage + hydrogen upper stage': '一级可回收 + 氢上面级',
+      'Methane booster + hydrogen upper stage; solid-boosted variants': '甲烷一级 + 氢上面级 / 固体助推变体',
+      'Small dedicated launcher': '专属小火箭',
+      'Reusable medium launcher': '可复用中型火箭',
+      'Small launcher': '小型火箭',
+      'Reusable medium-heavy launcher': '可复用中重型火箭',
+      'Fully reusable two-stage launcher': '两级全复用火箭',
+      'Hydrogen core + solid boosters': '氢芯级 + 固体助推',
+      'Small-medium solid launcher': '小中型固体火箭',
+      'Small launcher with recovered first stage': '带一级回收的小型火箭',
+      'Mini launcher with reusable and expendable variants': '带可回收 / 一次性变体的迷你火箭',
+      'Three-stage small launcher': '三级小火箭',
+      'Micro launcher': '微型火箭',
+      'National launch fleet': '国家发射舰队',
+      'Reusable first-stage state launcher': '国家体系一级可回收火箭',
+      'Sea/land-launch commercial solid launcher': '海陆通用商业固体火箭',
+      'Medium launcher': '中型火箭',
+      'Micro-launch family': '微小型火箭家族',
+      'Small/medium solid launcher': '小中型固体火箭',
+      'Reusable heavy launcher': '可复用重型火箭',
+      'Medium solid launcher': '中型固体火箭',
+      'Reusable medium-small launcher': '可复用中小型火箭'
+    };
+    return map[value] || value;
+  }
+
+  function renderAll() {
+    renderGoalPills();
+    renderRoutes();
+    renderControls();
+    renderBubbleChart();
+    renderCompanyCards();
+    renderDataPort();
+  }
+
+  function bindEvents() {
+    els.clearRouteFilter.addEventListener('click', () => {
+      state.route = 'ALL';
+      renderAll();
+    });
+    els.companySearch.addEventListener('input', (e) => {
+      state.search = e.target.value;
+      renderAll();
+    });
+    els.drawerBackdrop.addEventListener('click', closeDrawer);
+    els.closeDrawer.addEventListener('click', closeDrawer);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeDrawer();
+    });
+  }
+
+  loadData().then((data) => {
+    state.data = data;
+    setText();
+    bindEvents();
+    renderAll();
+  });
+})();

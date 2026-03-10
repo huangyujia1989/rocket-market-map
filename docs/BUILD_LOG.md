@@ -1,76 +1,88 @@
-# Build log / change log — 2026-03-06 v2
+# BUILD LOG — Rocket Market Map v3
 
-## What changed in this version
+Date: 2026-03-06
 
-1. Rebuilt the bilingual site shell around the latest 33-node dataset, instead of patching the broken earlier English page.
-2. Cleaned the Chinese interface copy so the page is readable as a Chinese investor-facing product.
-3. Removed explicit “MECE” wording from the interface, while keeping exclusive classification logic in the data model.
-4. Added high-priority data fields:
-   - `firstFlightYear`
-   - `firstFlightStatus`
-   - `totalFlights`
-   - `totalFlightsDisplay`
-   - `engines`
-   - `plannedMissions`
-5. Added medium-priority data fields:
-   - `gtoPayloadKg`
-   - `techRoute`
-   - `techRouteEn`
-   - `launchSites`
-   - `recoveryMethod`
-6. Added low-priority / strategic fields:
-   - `constellationCapable`
-   - `certified`
-   - `launchHistory`
-7. Added new visual modules:
-   - first-flight timeline
-   - launch cadence trend
-   - engine comparison table
-   - launch-site geographic view
-8. Added a formal AI update port:
-   - canonical dataset manifest
-   - update contract
-   - example patch
-   - merge helper script
+## Why this rebuild happened
 
-## Files added
+The previous iterations suffered from three problems:
 
-- `assets/app.js`
-- `assets/styles.css`
-- `data/rocket_market_map_2026_2030_v2.json`
-- `data/manifest.json`
-- `data/update_contract.json`
-- `updates/sample_patch.json`
-- `tools/apply_update.py`
-- `docs/AI_UPDATE_PORT.md`
+1. Too much surface area and too many charts.
+2. The visual hierarchy rewarded “showing data” more than “building understanding.”
+3. Several charts did not help a senior reader answer the real question: why do rocket companies choose different architectures?
 
-## Data notes
+The rebuild therefore started from a simpler framing:
 
-- The 33 launch nodes from the earlier market map were retained.
-- New P0/P1/P2 fields are best-effort public-data snapshots as of March 2026.
-- For some emerging programs, especially on engines, GTO payload, and launch cadence, values are approximate when public disclosure is limited.
-- Company valuation/funding/investor strings remain strategic narrative summaries, not audited cap-table records.
+- First explain the goals.
+- Then explain the constraints.
+- Then explain why different routes emerge.
+- Only then show the market map and let readers drill into company detail.
 
-## QA completed
+## Product decisions
 
-- JSON dataset regenerated and validated for unique node IDs.
-- JavaScript syntax checked with `node --check`.
-- HTML / JS ID references cross-checked for missing targets.
-- Launch-site references checked against the launch-site dictionary.
+### Removed
 
-## Known limitations
+- heatmap
+- first-flight timeline as a primary page section
+- launch-site map as a primary page section
+- dense multi-filter controls
+- secondary charts that did not directly explain design choice
 
-- Some Chinese page capital strings are translated at summary level rather than line-by-line editorial translation.
-- Trend history is strongest for the best-known active vehicles and weaker for the newest development programs.
-- This remains a static site; “real-time updates” require updating the dataset file and redeploying.
+### Kept
 
-## Deployment note
+- one main bubble chart: single-launch payload vs. long-term cost position
 
-For GitHub Pages, publish the repository root with:
-- `index.html`
-- `en.html`
-- `assets/`
-- `data/`
-- `docs/`
-- `tools/`
-- `updates/`
+### Added
+
+- first-principles explainer cards
+- interactive goal selector
+- six route archetype cards
+- simplified company strategy cards
+- richer detail drawer with engines, launch history, missions and capital information
+- explicit AI data update port
+
+## Data model changes
+
+Primary file moved to:
+
+`data/rocket_market_map_2026_2030_v3.json`
+
+Added derived fields per node:
+
+- `route_class`
+- `route_class_zh`
+- `route_class_en`
+- `route_color`
+- `route_why_zh`
+- `route_why_en`
+- `constraint_zh`
+- `constraint_en`
+- `watch_zh`
+- `watch_en`
+- `target_goal_zh`
+- display fields for payload and supply
+
+These fields let the website explain *why* each company chose a route instead of merely listing specs.
+
+## UX principles used in v3
+
+1. One main chart, not many medium-value charts.
+2. Text is short by default; detail appears on click.
+3. Route color is more important than region color because the design question is “why this architecture,” not just “where is it from.”
+4. Region still exists as a filter because geography matters for procurement, sovereignty and customer mix.
+5. Fleet-level nodes are excluded from the single-launch bubble chart to avoid misleading comparisons.
+
+## Technical notes
+
+- The page supports both `file://` preview and hosted deployment.
+- If hosted, it tries to load `data/rocket_market_map_2026_2030_v3.json`.
+- If local, it falls back to `window.__INLINE_DATA__` embedded into each page.
+- No external JS library is required.
+- Bubble chart is pure SVG.
+
+## Sanity checks performed
+
+- JS syntax check via `node --check`
+- data file presence check
+- HTML pages generated with inline data fallback
+- route archetype mapping applied to all nodes
+- no chart dependence on fleet nodes with null payload

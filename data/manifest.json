@@ -1,43 +1,7 @@
 {
-  "name": "rocket-market-map",
-  "version": "2026-03-06-v2",
-  "canonical_dataset": "data/rocket_market_map_2026_2030_v2.json",
+  "version": "3.0.0",
+  "updated_at": "2026-03-06",
+  "primary_data_file": "data/rocket_market_map_2026_2030_v3.json",
   "update_contract": "data/update_contract.json",
-  "ai_update_port": {
-    "mode": "file-based upsert",
-    "patch_input": "updates/patch.json",
-    "merge_script": "tools/apply_update.py",
-    "upsert_keys": {
-      "nodes": [
-        "id"
-      ],
-      "companies": [
-        "region",
-        "company"
-      ],
-      "launchSites": [
-        "site_name"
-      ]
-    },
-    "delete_keys": {
-      "nodes": [
-        "id"
-      ],
-      "companies": [
-        "region",
-        "company"
-      ],
-      "launchSites": [
-        "site_name"
-      ]
-    },
-    "write_back": "data/rocket_market_map_2026_2030_v2.json",
-    "backup_output": "updates/archive/<timestamp>-before-apply.json",
-    "notes": [
-      "For nodes, use id as the stable primary key.",
-      "For companies, use region + company as the stable composite key.",
-      "For launchSites, the patch uses site_name as the dictionary key.",
-      "The website reads only the canonical dataset file. Update that file and GitHub Pages will reflect the change after deployment."
-    ]
-  }
+  "notes": "Website reads the primary_data_file. For automated updates, modify that file or generate a patch that conforms to update_contract.json."
 }

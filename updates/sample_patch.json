@@ -1,43 +1,22 @@
 {
-  "dataset_version": "2026-03-15-v2.1",
-  "updated_at_utc": "2026-03-15T09:40:00Z",
-  "meta_updates": {
-    "version": "2026-03-15-v2.1"
-  },
-  "nodes_upsert": [
+  "operations": [
     {
-      "id": "blue_new_glenn",
-      "firstFlightYear": 2025,
-      "totalFlights": 3,
-      "totalFlightsDisplay": "3",
-      "plannedMissions": [
-        {
-          "date": "2026",
-          "mission": "Kuiper deployment",
-          "missionEn": "Kuiper deployment",
-          "orbit": "LEO"
-        }
-      ]
-    }
-  ],
-  "companies_upsert": [
+      "op": "replace_node",
+      "id": "rocketlab_neutron",
+      "fields": {
+        "firstFlightYear": 2026,
+        "firstFlightStatus": "actual",
+        "current_reality": "首飞完成，进入验证与爬坡阶段。",
+        "currentRealityZh": "首飞完成，进入验证与爬坡阶段。"
+      }
+    },
     {
-      "region": "US",
-      "company": "Blue Origin",
-      "valuation": "No public valuation; founder-funded",
-      "funding": "Founder-funded by Jeff Bezos; update latest disclosed context here.",
-      "investors": "Founder-funded by Jeff Bezos."
+      "op": "replace_company",
+      "company": "Rocket Lab",
+      "fields": {
+        "valuationZh": "按最新市值更新",
+        "fundingZh": "按最新披露更新"
+      }
     }
-  ],
-  "launchSites_upsert": {
-    "CCSFS LC-36": {
-      "lat": 28.455,
-      "lon": -80.528,
-      "country": "United States",
-      "nameZh": "卡纳维拉尔角 LC-36"
-    }
-  },
-  "change_log": [
-    "Updated Blue Origin / New Glenn flight count and planned 2026 missions."
   ]
 }
