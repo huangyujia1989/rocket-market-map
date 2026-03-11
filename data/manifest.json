@@ -1,7 +1,7 @@
 {
-  "version": "3.0.0",
-  "updated_at": "2026-03-06",
+  "version": "3.1.0",
+  "updated_at": "2026-03-10",
   "primary_data_file": "data/rocket_market_map_2026_2030_v3.json",
   "update_contract": "data/update_contract.json",
-  "notes": "Website reads the primary_data_file. For automated updates, modify that file or generate a patch that conforms to update_contract.json."
+  "notes": "v3.1 adds hide-zero toggle, company/country filters, launch-site map, benchmarking chart, and Excel-integrated model metrics."
 }

@@ -35,3 +35,13 @@ rocket-market-map/
 ├─ tools/
 └─ updates/
 ```
+
+
+## v3.1 update (2026-03-10)
+
+- Added hide-zero toggle for selected-year supply on the main map
+- Added country/company filters shared across map, launch-site map, benchmarking chart, and company cards
+- Added launch-site intelligence layer (main sites, launch method, site-access model, site map)
+- Added flexible benchmarking bar chart for vehicles / companies / countries
+- Integrated Excel model metrics into vehicle and company layers (launches, payload, supply, price, revenue, $/kg, cumulative launches)
+- Added Japan / India / Korea / Australia representative launch vehicles
