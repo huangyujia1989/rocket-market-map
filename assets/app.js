@@ -2843,5 +2843,713 @@
   }
 
 
+  Object.assign(TEXT.zh, {
+    overviewSupplyLabel: '供给时间线',
+    overviewSupplyGroup: '显示公司数',
+    overviewSupplyYear: '主要公司排序年份',
+    mapSubtitle: '横轴是单发能力，纵轴是成本与兑现难度，气泡大小是所选年份的年供给最佳估算。支持 2026E–2030E 任一年查看，悬浮查看摘要，点击查看完整资料。',
+    drawerSections: { ...TEXT.zh.drawerSections, visual: '尺寸与结构' },
+    labels: {
+      ...TEXT.zh.labels,
+      height: '高度',
+      diameter: '直径',
+      stages: '级数',
+      propellant: '推进剂',
+      reuse: '复用方式',
+      architecture: '构型',
+      engines: '发动机',
+      designLogic: '设计逻辑',
+      dimensionsQuality: '尺寸口径'
+    }
+  });
+
+  Object.assign(TEXT.en, {
+    overviewSupplyLabel: 'Supply timeline',
+    overviewSupplyGroup: 'Number of leaders',
+    overviewSupplyYear: 'Ranking year',
+    mapSubtitle: 'The x-axis shows single-launch capability, the y-axis shows cost / execution difficulty, and bubble size shows the best estimate of annual supply in the selected year. You can switch across any year from 2026E to 2030E; hover for a preview, click for full detail.',
+    drawerSections: { ...TEXT.en.drawerSections, visual: 'Size and structure' },
+    labels: {
+      ...TEXT.en.labels,
+      height: 'Height',
+      diameter: 'Diameter',
+      stages: 'Stages',
+      propellant: 'Propellant',
+      reuse: 'Reuse',
+      architecture: 'Architecture',
+      engines: 'Engines',
+      designLogic: 'Design logic',
+      dimensionsQuality: 'Dimension basis'
+    }
+  });
+
+  const VEHICLE_SCHEMATICS = {
+    spacex_starship: { height_m: 120, diameter_m: 9, stageCount: 2, boosterCount: 0, profile: 'starship', quality: 'public', noteZh: '全复用超重型，尺寸为公开尺度。', noteEn: 'Fully reusable super-heavy system; dimensions follow public specs.' },
+    spacex_f9: { height_m: 70, diameter_m: 3.7, stageCount: 2, boosterCount: 0, quality: 'public', noteZh: '一级回收、二级一次性，公开尺寸较明确。', noteEn: 'Reusable first stage, expendable upper stage, with well-known public dimensions.' },
+    longmarch_fleet: { profile: 'fleet', quality: 'aggregate', noteZh: '这是“舰队节点”，不是单一火箭；这里用结构卡解释国家体系供给能力。', noteEn: 'This is a fleet node rather than a single rocket; the card explains aggregate state-system capacity.' },
+    longmarch_12a: { height_m: 62, diameter_m: 3.8, stageCount: 2, boosterCount: 0, quality: 'estimate', noteZh: '公开尺寸仍有限，这里按公开区间做近似示意。', noteEn: 'Public dimensions remain limited; the schematic uses a public-range estimate.' },
+    blue_new_glenn: { height_m: 98, diameter_m: 7, stageCount: 2, boosterCount: 0, quality: 'public' },
+    landspace_zq3: { height_m: 76, diameter_m: 4.5, stageCount: 2, boosterCount: 0, quality: 'estimate' },
+    orienspace_g2: { height_m: 70, diameter_m: 4.2, stageCount: 2, boosterCount: 0, quality: 'estimate' },
+    ula_vulcan: { height_m: 61.6, diameter_m: 5.4, stageCount: 2, boosterCount: 0, quality: 'public' },
+    interstellar_h3: { height_m: 69, diameter_m: 4.2, stageCount: 2, boosterCount: 0, quality: 'estimate' },
+    rocketlab_neutron: { height_m: 43, diameter_m: 7, stageCount: 2, boosterCount: 0, profile: 'winged_fairing', quality: 'public' },
+    ariane6: { height_m: 63, diameter_m: 5.4, stageCount: 2, boosterCount: 2, boosterType: 'solid', quality: 'public' },
+    spacepioneer_tl3: { height_m: 71, diameter_m: 3.8, stageCount: 2, boosterCount: 0, quality: 'estimate' },
+    relativity_terranr: { height_m: 82, diameter_m: 5.4, stageCount: 2, boosterCount: 0, quality: 'public' },
+    spacex_fh: { height_m: 70, diameter_m: 3.7, stageCount: 2, boosterCount: 2, boosterType: 'liquid', quality: 'public' },
+    firefly_eclipse: { height_m: 59, diameter_m: 4.5, stageCount: 2, boosterCount: 0, quality: 'estimate' },
+    h3_japan: { height_m: 63, diameter_m: 5.2, stageCount: 2, boosterCount: 2, boosterType: 'solid', quality: 'public' },
+    casspace_k2: { height_m: 52, diameter_m: 3.35, stageCount: 2, boosterCount: 0, quality: 'estimate' },
+    galactic_pallas1: { height_m: 42, diameter_m: 3.35, stageCount: 2, boosterCount: 0, quality: 'estimate' },
+    landspace_zq2e: { height_m: 49.5, diameter_m: 3.35, stageCount: 2, boosterCount: 0, quality: 'estimate' },
+    deepblue_nebula1: { height_m: 57, diameter_m: 3.8, stageCount: 2, boosterCount: 0, quality: 'estimate' },
+    lvm3_india: { height_m: 43.5, diameter_m: 4, stageCount: 3, boosterCount: 2, boosterType: 'solid', quality: 'public' },
+    orienspace_g1: { height_m: 31, diameter_m: 2.65, stageCount: 3, boosterCount: 0, quality: 'estimate' },
+    stoke_nova: { height_m: 44, diameter_m: 5, stageCount: 2, boosterCount: 0, quality: 'estimate' },
+    vega_c: { height_m: 35, diameter_m: 3, stageCount: 4, boosterCount: 0, quality: 'public' },
+    casspace_k1: { height_m: 30, diameter_m: 2.65, stageCount: 4, boosterCount: 0, quality: 'estimate' },
+    rfa_one: { height_m: 30, diameter_m: 2, stageCount: 3, boosterCount: 0, quality: 'public' },
+    jielong3: { height_m: 31, diameter_m: 2.65, stageCount: 4, boosterCount: 0, quality: 'estimate' },
+    firefly_alpha: { height_m: 29, diameter_m: 1.8, stageCount: 2, boosterCount: 0, quality: 'public' },
+    isar_spectrum: { height_m: 28, diameter_m: 2, stageCount: 2, boosterCount: 0, quality: 'public' },
+    spacepioneer_tl2: { height_m: 33, diameter_m: 3.35, stageCount: 2, boosterCount: 0, quality: 'estimate' },
+    maia_launcher: { height_m: 50, diameter_m: 3.5, stageCount: 2, boosterCount: 0, quality: 'estimate' },
+    rocketlab_electron: { height_m: 18, diameter_m: 1.2, stageCount: 2, boosterCount: 0, quality: 'public' },
+    pslv_india: { height_m: 44, diameter_m: 2.8, stageCount: 4, boosterCount: 4, boosterType: 'solid', quality: 'public' },
+    galactic_ceres1: { height_m: 19, diameter_m: 1.4, stageCount: 4, boosterCount: 0, quality: 'public' },
+    pld_miura5: { height_m: 35.7, diameter_m: 2, stageCount: 2, boosterCount: 0, quality: 'public' },
+    nuri_korea: { height_m: 47.2, diameter_m: 3.5, stageCount: 3, boosterCount: 0, quality: 'public' },
+    vikram1_skyroot: { height_m: 24.3, diameter_m: 2.1, stageCount: 3, boosterCount: 0, quality: 'public' },
+    eris_gilmour: { height_m: 25, diameter_m: 2, stageCount: 3, boosterCount: 0, quality: 'public' },
+    orbex_prime: { height_m: 19, diameter_m: 1.3, stageCount: 2, boosterCount: 0, quality: 'public' }
+  };
+
+  function escapeHtml(value) {
+    return String(value ?? '').replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+  }
+
+  function fmtMeters(value) {
+    if (value == null || Number.isNaN(Number(value)) || Number(value) <= 0) return t('unknown');
+    return `${fmtFloat(value, 1)} m`;
+  }
+
+  function companyColor(company) {
+    const seed = String(company || 'Other');
+    let hash = 0;
+    for (let i = 0; i < seed.length; i += 1) hash = ((hash * 31) + seed.charCodeAt(i)) >>> 0;
+    const hue = hash % 360;
+    return `hsl(${hue}, 62%, 48%)`;
+  }
+
+  function overviewTopOptions() {
+    return ['5', '8', '10', '12'];
+  }
+
+  function overviewTopLabel(value) {
+    return isZh ? `Top ${value} 公司` : `Top ${value} companies`;
+  }
+
+  function overviewRankYearLabel(year) {
+    return isZh ? `主要公司按 ${yearLabel(year)} 选` : `Leaders ranked by ${yearLabel(year)}`;
+  }
+
+  function ensureOverviewLegend() {
+    if (els.overviewSupplyLegend) return;
+    if (!els.overviewSupplyChart || !els.overviewSupplyChart.parentElement) return;
+    const legend = document.createElement('div');
+    legend.id = 'overviewSupplyLegend';
+    legend.className = 'overview-legend';
+    els.overviewSupplyChart.parentElement.insertAdjacentElement('afterend', legend);
+    els.overviewSupplyLegend = legend;
+  }
+
+  function buildOverviewTimelineData() {
+    const rankingYear = Number(state.overviewSupplyYear || 2030);
+    const parsedTopCount = Number(state.overviewSupplyGroup);
+    const topCount = Number.isFinite(parsedTopCount) && parsedTopCount > 0 ? parsedTopCount : 8;
+    const companyRowsByYear = new Map(CHART_YEARS.map((year) => [year, buildCompanyRows(state.data.nodes, year)]));
+    const rankingRows = (companyRowsByYear.get(rankingYear) || []).filter((row) => num(row.best_estimate_supply_selected_kg) > 0);
+    const leaders = rankingRows.slice(0, topCount);
+    const leaderIds = new Set(leaders.map((row) => row.company));
+    const leaderSeries = leaders.map((row) => ({
+      id: row.company,
+      label: row.label,
+      color: companyColor(row.company),
+      values: CHART_YEARS.map((year) => {
+        const match = (companyRowsByYear.get(year) || []).find((item) => item.company === row.company);
+        return num(match?.best_estimate_supply_selected_kg);
+      })
+    }));
+    const totals = CHART_YEARS.map((year) => (companyRowsByYear.get(year) || []).reduce((sum, row) => sum + num(row.best_estimate_supply_selected_kg), 0));
+    const otherValues = CHART_YEARS.map((year, index) => {
+      const leaderSum = leaderSeries.reduce((sum, series) => sum + num(series.values[index]), 0);
+      return Math.max(0, totals[index] - leaderSum);
+    });
+    if (otherValues.some((value) => value > 0)) {
+      leaderSeries.push({
+        id: 'OTHER',
+        label: isZh ? '其他' : 'Other',
+        color: '#b8c7da',
+        values: otherValues
+      });
+    }
+    return { rankingYear, topCount, years: CHART_YEARS, series: leaderSeries, totals };
+  }
+
+  function renderOverviewSupplyChart() {
+    if (!els.overviewSupplyChart) return;
+    ensureOverviewLegend();
+    const data = buildOverviewTimelineData();
+    const { years, series, totals } = data;
+    const svg = els.overviewSupplyChart;
+    const width = 980;
+    const height = 460;
+    const margin = { top: 30, right: 36, bottom: 74, left: 88 };
+    const innerW = width - margin.left - margin.right;
+    const innerH = height - margin.top - margin.bottom;
+    const maxTotal = Math.max(...totals, 1);
+    const tickCount = 4;
+    const barBand = innerW / years.length;
+    const barW = Math.min(118, barBand * 0.58);
+    const yScale = (v) => margin.top + innerH - (num(v) / maxTotal) * innerH;
+    const xCenter = (index) => margin.left + barBand * (index + 0.5);
+    const parts = [`<rect x="0" y="0" width="${width}" height="${height}" fill="transparent"></rect>`];
+
+    for (let i = 0; i <= tickCount; i += 1) {
+      const value = (maxTotal / tickCount) * i;
+      const y = yScale(value);
+      parts.push(`<line class="svg-grid" x1="${margin.left}" y1="${y}" x2="${width - margin.right}" y2="${y}"></line>`);
+      parts.push(`<text class="svg-axis" x="${margin.left - 10}" y="${y + 4}" text-anchor="end">${fmtMass(value)}</text>`);
+    }
+
+    years.forEach((year, yearIndex) => {
+      const x = xCenter(yearIndex) - barW / 2;
+      let stackBottom = margin.top + innerH;
+      parts.push(`<rect x="${x}" y="${margin.top}" width="${barW}" height="${innerH}" rx="16" fill="#f4f8fd"></rect>`);
+      series.forEach((entry) => {
+        const value = num(entry.values[yearIndex]);
+        if (value <= 0) return;
+        const segH = Math.max(4, (value / maxTotal) * innerH);
+        const y = Math.max(margin.top, stackBottom - segH);
+        const isOther = entry.id === 'OTHER';
+        const radius = segH < 12 ? 4 : 10;
+        parts.push(`<rect class="stack-segment" data-company="${escapeHtml(entry.id)}" data-label="${escapeHtml(entry.label)}" data-year="${year}" data-value="${value}" data-total="${totals[yearIndex]}" x="${x}" y="${y}" width="${barW}" height="${segH}" rx="${radius}" fill="${entry.color}" fill-opacity="${isOther ? '0.82' : '0.92'}"></rect>`);
+        stackBottom = y;
+      });
+      parts.push(`<text class="svg-bar-total" x="${xCenter(yearIndex)}" y="${yScale(totals[yearIndex]) - 10}" text-anchor="middle">${fmtMass(totals[yearIndex])}</text>`);
+      parts.push(`<text class="svg-axis" x="${xCenter(yearIndex)}" y="${height - 26}" text-anchor="middle">${yearLabel(year)}</text>`);
+    });
+
+    parts.push(`<text class="svg-axis" x="${margin.left}" y="${height - 8}">${isZh ? '横轴：年份' : 'X-axis: year'}</text>`);
+    parts.push(`<text class="svg-axis" transform="translate(18 ${margin.top + innerH / 2}) rotate(-90)" text-anchor="middle">${isZh ? '纵轴：年供给' : 'Y-axis: annual supply'}</text>`);
+
+    svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+    svg.innerHTML = parts.join('');
+
+    const tooltipHtml = (segment) => {
+      const year = Number(segment.dataset.year);
+      const value = num(segment.dataset.value);
+      const total = Math.max(num(segment.dataset.total), 1);
+      const share = value > 0 ? `${fmtFloat((value / total) * 100, 1)}%` : t('unknown');
+      return `<strong>${escapeHtml(segment.dataset.label)}</strong><div class="tooltip-meta">${yearLabel(year)} ${t('labels').modelSupply}</div><div>${fmtMass(value)}</div><div>${isZh ? '占当年总供给' : 'Share of total supply'}: ${share}</div>`;
+    };
+
+    const resolveSegment = (target) => target?.closest ? target.closest('.stack-segment') : null;
+    svg.onpointermove = (event) => {
+      const segment = resolveSegment(event.target);
+      if (!segment) {
+        hideTooltip();
+        return;
+      }
+      showTooltip(event, tooltipHtml(segment));
+    };
+    svg.onpointerleave = hideTooltip;
+    svg.onclick = (event) => {
+      const segment = resolveSegment(event.target);
+      if (!segment) return;
+      const company = segment.dataset.company;
+      if (company && company !== 'OTHER') {
+        state.company = company;
+        state.country = 'ALL';
+        state.region = 'ALL';
+        syncSelectOptions();
+        renderAll();
+        document.getElementById('map')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    };
+
+    if (els.overviewSupplyLegend) {
+      els.overviewSupplyLegend.innerHTML = series.map((entry) => {
+        const latest = num(entry.values[entry.values.length - 1]);
+        const tag = entry.id === 'OTHER'
+          ? (isZh ? '剩余玩家合并' : 'All other players')
+          : `${yearLabel(data.rankingYear)} · ${fmtMass(num(entry.values[data.years.indexOf(data.rankingYear)] || 0))}`;
+        return `<button type="button" class="legend-chip" data-company="${escapeHtml(entry.id)}"><span class="legend-swatch" style="background:${entry.color}"></span><span>${escapeHtml(entry.label)}</span><span class="legend-meta">${entry.id === 'OTHER' ? tag : fmtMass(latest)}</span></button>`;
+      }).join('');
+      [...els.overviewSupplyLegend.querySelectorAll('.legend-chip')].forEach((chip) => {
+        chip.addEventListener('click', () => {
+          const company = chip.dataset.company;
+          if (!company || company === 'OTHER') return;
+          state.company = company;
+          state.country = 'ALL';
+          state.region = 'ALL';
+          syncSelectOptions();
+          renderAll();
+          document.getElementById('map')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+        chip.addEventListener('pointerenter', () => {
+          const company = chip.dataset.company;
+          const match = data.series.find((item) => item.id === company);
+          if (!match) return;
+          const rankingIndex = data.years.indexOf(data.rankingYear);
+          const yearValue = rankingIndex >= 0 ? match.values[rankingIndex] : match.values[match.values.length - 1];
+          showTooltipForElement(chip, `<strong>${escapeHtml(match.label)}</strong><div class="tooltip-meta">${overviewRankYearLabel(data.rankingYear)}</div><div>${t('labels').modelSupply}: ${fmtMass(yearValue)}</div>`);
+        });
+        chip.addEventListener('pointerleave', hideTooltip);
+      });
+    }
+  }
+
+  function schematicQualityLabel(spec) {
+    const quality = spec?.quality || 'estimate';
+    if (quality === 'public') return isZh ? '公开尺寸 / 公开资料' : 'Public dimensions / public specs';
+    if (quality === 'aggregate') return isZh ? '聚合节点 / 非单一火箭' : 'Aggregate node / not a single rocket';
+    return isZh ? '公开区间近似' : 'Approximate public-range estimate';
+  }
+
+  function defaultSchematicSpec(node) {
+    const byLift = {
+      Superheavy: { height_m: 110, diameter_m: 8, stageCount: 2 },
+      Heavy: { height_m: 65, diameter_m: 5, stageCount: 2 },
+      Medium: { height_m: 48, diameter_m: 3.5, stageCount: 2 },
+      Small: { height_m: 28, diameter_m: 2, stageCount: 2 },
+      'Fleet aggregate': { profile: 'fleet', quality: 'aggregate' }
+    };
+    const fallback = byLift[node.lift_class] || { height_m: 40, diameter_m: 3, stageCount: 2 };
+    return { ...fallback, quality: 'estimate' };
+  }
+
+  function stageFractionsFor(spec) {
+    if (spec.stageCount === 4) return [0.44, 0.24, 0.18, 0.14];
+    if (spec.stageCount === 3) return [0.5, 0.28, 0.22];
+    return [0.66, 0.34];
+  }
+
+  function stageLabelFor(index) {
+    if (isZh) return `第 ${index + 1} 级`;
+    return `Stage ${index + 1}`;
+  }
+
+  function renderFleetVisual(node, spec) {
+    const cards = [
+      { x: 58, h: 180, w: 24 },
+      { x: 104, h: 220, w: 28 },
+      { x: 154, h: 150, w: 20 },
+      { x: 194, h: 240, w: 30 },
+      { x: 248, h: 130, w: 18 }
+    ].map((item, index) => {
+      const y = 260 - item.h;
+      return `<g opacity="${0.72 + index * 0.04}"><rect x="${item.x}" y="${y}" width="${item.w}" height="${item.h}" rx="12" fill="#2c61da"></rect><polygon points="${item.x},${y + 6} ${item.x + item.w},${y + 6} ${item.x + item.w / 2},${y - 18}" fill="#5f8bff"></polygon></g>`;
+    }).join('');
+    return `
+      <div class="rocket-schematic-card fleet-card">
+        <div class="rocket-schematic-title">${isZh ? '舰队节点示意' : 'Fleet-node schematic'}</div>
+        <svg viewBox="0 0 320 280" class="rocket-svg" role="img" aria-label="fleet schematic">
+          <rect x="0" y="0" width="320" height="280" rx="24" fill="#f7fbff"></rect>
+          <line x1="36" y1="28" x2="36" y2="250" stroke="#d5e0ef" stroke-width="2"></line>
+          <text x="36" y="20" text-anchor="middle" class="rocket-axis-label">${isZh ? '多型' : 'mixed'}</text>
+          ${cards}
+          <text x="160" y="268" text-anchor="middle" class="rocket-axis-label">${isZh ? '国家体系现役 / 试验型号组合' : 'operational and pilot vehicles combined'}</text>
+        </svg>
+        <div class="visual-note">${escapeHtml(spec.noteZh || spec.noteEn || '')}</div>
+      </div>
+    `;
+  }
+
+  function renderVehicleSchematic(node) {
+    const spec = { ...defaultSchematicSpec(node), ...(VEHICLE_SCHEMATICS[node.id] || {}) };
+    if (spec.profile === 'fleet') return renderFleetVisual(node, spec);
+    const heightMeters = Math.max(12, num(spec.height_m));
+    const diameterMeters = Math.max(1.1, num(spec.diameter_m || 3));
+    const stageFractions = stageFractionsFor(spec);
+    const stageCount = spec.stageCount || stageFractions.length;
+    const canvasH = 360;
+    const canvasW = 320;
+    const rulerTop = 20;
+    const rulerBottom = 324;
+    const maxReference = 130;
+    const rocketHeightPx = Math.max(90, (heightMeters / maxReference) * (rulerBottom - rulerTop));
+    const rocketBottom = rulerBottom;
+    const rocketTop = rocketBottom - rocketHeightPx;
+    const bodyWidth = 28 + (diameterMeters / 9) * 54;
+    const bodyX = 190 - bodyWidth / 2;
+    const sideOffset = bodyWidth * 0.82;
+    const boosterWidth = Math.max(10, bodyWidth * 0.36);
+    const boosterHeight = rocketHeightPx * 0.58;
+    const boosterTop = rocketBottom - boosterHeight;
+    const ticks = [];
+    for (let meter = 0; meter <= Math.ceil(heightMeters / 10) * 10; meter += 10) {
+      const y = rocketBottom - (meter / maxReference) * (rulerBottom - rulerTop);
+      if (y < rulerTop - 6 || y > rulerBottom + 1) continue;
+      ticks.push(`<line x1="44" y1="${y}" x2="58" y2="${y}" stroke="#9db2cb" stroke-width="1.5"></line><text x="38" y="${y + 4}" text-anchor="end" class="rocket-axis-label">${meter}</text>`);
+    }
+    let accumulated = 0;
+    const segments = stageFractions.slice(0, stageCount).map((fraction, index) => {
+      const segH = rocketHeightPx * fraction;
+      const y = rocketTop + accumulated;
+      accumulated += segH;
+      return `<rect x="${bodyX}" y="${y}" width="${bodyWidth}" height="${segH}" rx="${index === 0 ? 12 : 10}" fill="${index % 2 === 0 ? '#275bd7' : '#78a0ff'}"></rect><text x="${bodyX + bodyWidth / 2}" y="${y + segH / 2 + 4}" text-anchor="middle" class="rocket-stage-label">${index + 1}</text>`;
+    }).join('');
+    const boosters = spec.boosterCount ? Array.from({ length: spec.boosterCount }).map((_, index) => {
+      const side = index % 2 === 0 ? -1 : 1;
+      const offset = side * (sideOffset + (spec.boosterCount > 2 && index > 1 ? boosterWidth * 0.92 : 0));
+      const x = bodyX + offset - boosterWidth / 2;
+      return `<rect x="${x}" y="${boosterTop}" width="${boosterWidth}" height="${boosterHeight}" rx="10" fill="#4b7af0" opacity="0.92"></rect><polygon points="${x},${boosterTop + 8} ${x + boosterWidth},${boosterTop + 8} ${x + boosterWidth / 2},${boosterTop - 18}" fill="#87a8ff"></polygon>`;
+    }).join('') : '';
+    const fairing = spec.profile === 'starship'
+      ? `<rect x="${bodyX - 4}" y="${rocketTop - 56}" width="${bodyWidth + 8}" height="64" rx="${bodyWidth / 2}" fill="#1f49ad"></rect>`
+      : `<polygon points="${bodyX},${rocketTop + 8} ${bodyX + bodyWidth},${rocketTop + 8} ${bodyX + bodyWidth / 2},${rocketTop - 38}" fill="#1f49ad"></polygon>`;
+    const arrowY = rocketTop - 42;
+    return `
+      <div class="rocket-schematic-card">
+        <div class="rocket-schematic-title">${isZh ? '尺寸与构型示意' : 'Size and configuration schematic'}</div>
+        <svg viewBox="0 0 ${canvasW} ${canvasH}" class="rocket-svg" role="img" aria-label="${escapeHtml(node.vehicle || node.vehicleZh || 'rocket schematic')}">
+          <rect x="0" y="0" width="${canvasW}" height="${canvasH}" rx="24" fill="#f7fbff"></rect>
+          <line x1="58" y1="${rulerTop}" x2="58" y2="${rulerBottom}" stroke="#d5e0ef" stroke-width="2"></line>
+          ${ticks.join('')}
+          <text x="58" y="${rulerTop - 6}" text-anchor="middle" class="rocket-axis-label">m</text>
+          <line x1="90" y1="${rocketBottom}" x2="260" y2="${rocketBottom}" stroke="#d5e0ef" stroke-width="2"></line>
+          ${boosters}
+          ${segments}
+          ${fairing}
+          <line x1="${bodyX + bodyWidth + 18}" y1="${rocketTop}" x2="${bodyX + bodyWidth + 18}" y2="${rocketBottom}" stroke="#92a8c3" stroke-width="2" marker-start="url(#arrowStart)" marker-end="url(#arrowEnd)"></line>
+          <text x="${bodyX + bodyWidth + 28}" y="${(rocketTop + rocketBottom) / 2}" class="rocket-measure-label">${fmtMeters(heightMeters)}</text>
+          <line x1="${bodyX}" y1="${rocketBottom + 18}" x2="${bodyX + bodyWidth}" y2="${rocketBottom + 18}" stroke="#92a8c3" stroke-width="2" marker-start="url(#arrowStart)" marker-end="url(#arrowEnd)"></line>
+          <text x="${bodyX + bodyWidth / 2}" y="${rocketBottom + 38}" text-anchor="middle" class="rocket-measure-label">${fmtMeters(diameterMeters)}</text>
+          <defs>
+            <marker id="arrowStart" markerWidth="10" markerHeight="10" refX="3" refY="5" orient="auto"><path d="M10,0 L0,5 L10,10" fill="none" stroke="#92a8c3" stroke-width="1.5"></path></marker>
+            <marker id="arrowEnd" markerWidth="10" markerHeight="10" refX="7" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10" fill="none" stroke="#92a8c3" stroke-width="1.5"></path></marker>
+          </defs>
+        </svg>
+        <div class="visual-note">${escapeHtml(spec.noteZh || spec.noteEn || (isZh ? '尺寸按公开资料或公开区间绘制，用于看大小、级数和总体设计逻辑。' : 'Dimensions are drawn from public specs or public-range estimates to show scale, staging and overall design logic.'))}</div>
+      </div>
+    `;
+  }
+
+  function renderVehicleVisualPanel(node) {
+    const spec = { ...defaultSchematicSpec(node), ...(VEHICLE_SCHEMATICS[node.id] || {}) };
+    const engines = (node.engines || []).map((engine) => `${engine.stage || stageLabelFor(0)} · ${engine.name || (isZh ? '未披露' : 'Undisclosed')}${engine.count ? ` × ${engine.count}` : ''}`);
+    const stageText = spec.profile === 'fleet' ? (isZh ? '多型舰队' : 'Fleet aggregate') : String(spec.stageCount || stageFractionsFor(spec).length);
+    const designLogic = isZh ? (node.techRoute || node.route_summary || t('unknown')) : (node.techRouteEn || node.route_summary || t('unknown'));
+    return `
+      <div class="vehicle-visual-grid">
+        ${renderVehicleSchematic(node)}
+        <div class="vehicle-visual-meta">
+          <div class="stats-grid wide visual-stats-grid">
+            <div class="stat-box"><span>${t('labels').height}</span><strong>${spec.profile === 'fleet' ? t('unknown') : fmtMeters(spec.height_m)}</strong></div>
+            <div class="stat-box"><span>${t('labels').diameter}</span><strong>${spec.profile === 'fleet' ? t('unknown') : fmtMeters(spec.diameter_m)}</strong></div>
+            <div class="stat-box"><span>${t('labels').stages}</span><strong>${stageText}</strong></div>
+            <div class="stat-box"><span>${t('labels').reuse}</span><strong>${escapeHtml(node.reusability_class || t('unknown'))}</strong></div>
+          </div>
+          <div class="info-card"><span class="info-label">${t('labels').propellant}</span><span class="info-value">${escapeHtml(node.propellant_class || t('unknown'))}</span></div>
+          <div class="info-card"><span class="info-label">${t('labels').architecture}</span><span class="info-value">${escapeHtml(node.architecture_class || t('unknown'))}</span></div>
+          <div class="info-card"><span class="info-label">${t('labels').designLogic}</span><span class="info-value">${escapeHtml(designLogic)}</span></div>
+          <div class="info-card"><span class="info-label">${t('labels').engines}</span><span class="info-value">${engines.length ? engines.map((item) => `<span class="engine-pill">${escapeHtml(item)}</span>`).join('') : t('unknown')}</span></div>
+          <div class="info-card soft"><span class="info-label">${t('labels').dimensionsQuality}</span><span class="info-value">${schematicQualityLabel(spec)}</span></div>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderVehicleDrawer(node) {
+    return `
+      <div class="drawer-hero">
+        <p class="eyebrow">${routeTag(node)} · ${node.country}</p>
+        <h2>${isZh ? (node.companyZh || node.company) : node.company} · ${isZh ? (node.vehicleZh || node.vehicle) : node.vehicle}</h2>
+        <p class="drawer-subtitle">${isZh ? (node.currentRealityZh || node.current_reality) : (node.current_reality || node.currentRealityZh || t('unknown'))}</p>
+      </div>
+      <section class="drawer-section">
+        <h3>${t('drawerSections').visual}</h3>
+        ${renderVehicleVisualPanel(node)}
+      </section>
+      <section class="drawer-section">
+        <h3>${t('drawerSections').summary}</h3>
+        <div class="stats-grid wide">
+          <div class="stat-box"><span>${t('labels').payload}</span><strong>${fmtMass(node.single_launch_kg)}</strong></div>
+          <div class="stat-box"><span>${yearLabel()} ${t('labels').modelSupply}</span><strong>${bestEstimateSupplyLabel(node)}</strong></div>
+          <div class="stat-box"><span>${yearLabel()} ${t('labels').modelLaunches}</span><strong>${bestEstimateLaunchesLabel(node)}</strong></div>
+          <div class="stat-box"><span>${t('labels').price}</span><strong>${fmtMoneyM(node[currentKeys().modelPrice])}</strong></div>
+          <div class="stat-box"><span>${isZh ? '估值（USD bn）' : 'Valuation (USD bn)'}</span><strong>${fmtMoneyCapital(node.valuation_est_usd_m)}</strong></div>
+          <div class="stat-box"><span>${isZh ? '融资额（USD bn）' : 'Funding (USD bn)'}</span><strong>${fmtMoneyCapital(node.funding_est_usd_m)}</strong></div>
+        </div>
+      </section>
+      <section class="drawer-section">
+        <h3>${t('drawerSections').route}</h3>
+        <div class="info-card"><span class="info-label">${t('labels').route}</span><span class="info-value">${routeTag(node)}</span></div>
+        <div class="info-card"><span class="info-label">${isZh ? '为什么这样做' : 'Why this route'}</span><span class="info-value">${isZh ? (node.route_why_zh || node.route_summary) : (node.route_why_en || node.route_summary)}</span></div>
+        <div class="info-card"><span class="info-label">${isZh ? '当前约束' : 'Current constraint'}</span><span class="info-value">${isZh ? (node.constraint_zh || t('unknown')) : (node.constraint_en || t('unknown'))}</span></div>
+      </section>
+      <section class="drawer-section">
+        <h3>${t('drawerSections').sites}</h3>
+        <div class="info-card"><span class="info-label">${t('labels').launchMethod}</span><span class="info-value">${isZh ? (node.launchMethodZh || t('unknown')) : (node.launchMethodEn || t('unknown'))}</span></div>
+        <div class="info-card"><span class="info-label">${t('labels').siteAccess}</span><span class="info-value">${isZh ? (node.siteAccessZh || t('unknown')) : (node.siteAccessEn || t('unknown'))}</span></div>
+        <div class="info-card"><span class="info-label">${t('labels').mainSites}</span><span class="info-value">${(node.launchSites || []).join(' / ') || t('unknown')}</span></div>
+        <div class="chip-row">
+          ${(node.launchSiteDetails || []).map((site) => `<span class="chip">${isZh ? (site.nameZh || site.site) : site.site} · ${accessLabel(site.access_category)}</span>`).join('')}
+        </div>
+      </section>
+      <section class="drawer-section">
+        <h3>${t('drawerSections').excel}</h3>
+        ${node.excel_model_available ? renderExcelTable(node, false) : `<div class="empty-state">${isZh ? '该节点没有完整 5 年预测；当前页仍保留核心市场信息。' : 'No full 5-year outlook was linked for this node; the key market view remains available.'}</div>`}
+      </section>
+      <section class="drawer-section">
+        <h3>${t('drawerSections').tech}</h3>
+        <div class="stats-grid wide">
+          <div class="stat-box"><span>${t('labels').status}</span><strong>${node.excel_model_status || node.maturity_class || t('unknown')}</strong></div>
+          <div class="stat-box"><span>${t('labels').confidence}</span><strong>${node.excel_model_confidence || node.confidence || t('unknown')}</strong></div>
+          <div class="stat-box"><span>${t('labels').firstFlight}</span><strong>${node.firstFlightYear || t('unknown')}</strong></div>
+          <div class="stat-box"><span>${t('labels').totalFlights}</span><strong>${node.totalFlightsDisplay || node.totalFlights || t('unknown')}</strong></div>
+        </div>
+        <div class="info-card"><span class="info-label">${isZh ? '技术路线' : 'Technical route'}</span><span class="info-value">${isZh ? (node.techRoute || node.route_summary) : (node.techRouteEn || node.route_summary || t('unknown'))}</span></div>
+      </section>
+      <section class="drawer-section">
+        <h3>${t('drawerSections').capital}</h3>
+        <div class="info-card"><span class="info-label">${t('labels').valuation}</span><span class="info-value">${node.valuation || node.valuationZh || t('unknown')}</span></div>
+        <div class="info-card"><span class="info-label">${t('labels').funding}</span><span class="info-value">${node.funding || node.fundingZh || t('unknown')}</span></div>
+        <div class="info-card"><span class="info-label">${t('labels').investors}</span><span class="info-value">${node.investors || node.investorsZh || t('unknown')}</span></div>
+        ${renderSources(node.sources)}
+      </section>
+    `;
+  }
+
+  function syncSelectOptions() {
+    const regions = ['ALL', ...new Set(state.data.nodes.map((n) => n.region))];
+    if (!els.yearToggleGroup) els.yearToggleGroup = document.getElementById('yearToggleGroup') || els.year2026?.parentElement;
+    if (els.yearToggleGroup) {
+      els.yearToggleGroup.innerHTML = CHART_YEARS.map((year) => `<button type="button" class="toggle-btn ${state.year === year ? 'active' : ''}" data-map-year="${year}" aria-pressed="${state.year === year}">${yearLabel(year)}</button>`).join('');
+    }
+
+    els.hideZeroBtn.textContent = state.hideZero ? t('showZero') : t('hideZero');
+    els.hideZeroBtn.classList.toggle('active', state.hideZero);
+
+    els.regionSelect.innerHTML = [
+      makeOption('ALL', `${t('region')}: ${t('all')}`, state.region === 'ALL'),
+      ...regions.filter((r) => r !== 'ALL').sort().map((r) => makeOption(r, regionLabel(r), state.region === r))
+    ].join('');
+
+    const countries = availableCountries();
+    if (state.country !== 'ALL' && !countries.includes(state.country)) state.country = 'ALL';
+    els.countrySelect.innerHTML = [
+      makeOption('ALL', `${t('country')}: ${t('all')}`, state.country === 'ALL'),
+      ...countries.map((c) => makeOption(c, c, state.country === c))
+    ].join('');
+
+    const companies = availableCompanies();
+    if (state.company !== 'ALL' && !companies.includes(state.company)) state.company = 'ALL';
+    els.companySelect.innerHTML = [
+      makeOption('ALL', `${t('company')}: ${t('all')}`, state.company === 'ALL'),
+      ...companies.map((c) => {
+        const master = companyMaster(c);
+        const label = isZh ? (master?.companyZh || c) : c;
+        return makeOption(c, label, state.company === c);
+      })
+    ].join('');
+
+    els.searchInput.placeholder = t('search');
+    els.searchInput.value = state.search;
+    els.clearBtn.textContent = t('clear');
+
+    els.benchmarkMode.innerHTML = Object.entries(t('benchmarkModes')).map(([value, label]) => makeOption(value, label, state.benchmarkMode === value)).join('');
+    els.benchmarkMetric.innerHTML = Object.entries(t('benchmarkMetrics')).map(([value, label]) => makeOption(value, label, state.benchmarkMetric === value)).join('');
+    if (els.benchmarkYear) els.benchmarkYear.innerHTML = CHART_YEARS.map((year) => makeOption(year, yearLabel(year), state.benchmarkYear === year)).join('');
+    if (els.benchmarkTopN) els.benchmarkTopN.innerHTML = Object.entries(t('benchmarkTopOptions')).map(([value, label]) => makeOption(value, label, state.benchmarkTopN === value)).join('');
+    if (els.benchmarkSort) els.benchmarkSort.innerHTML = Object.entries(t('benchmarkSortOptions')).map(([value, label]) => makeOption(value, label, state.benchmarkSort === value)).join('');
+    if (els.overviewSupplyGroup) els.overviewSupplyGroup.innerHTML = overviewTopOptions().map((value) => makeOption(value, overviewTopLabel(value), String(state.overviewSupplyGroup) === String(value))).join('');
+    if (els.overviewSupplyYear) els.overviewSupplyYear.innerHTML = CHART_YEARS.map((year) => makeOption(year, overviewRankYearLabel(year), Number(state.overviewSupplyYear) === year)).join('');
+    els.siteMetricSelect.innerHTML = Object.entries(t('siteMetricOptions')).map(([value, label]) => makeOption(value, label, state.siteMetric === value)).join('');
+    if (els.siteZoomReset) els.siteZoomReset.textContent = `${fmtFloat(state.siteZoom, 1)}×`;
+  }
+
+  function bindEvents() {
+    if (!els.yearToggleGroup) els.yearToggleGroup = document.getElementById('yearToggleGroup') || els.year2026?.parentElement;
+    if (els.yearToggleGroup) {
+      els.yearToggleGroup.addEventListener('click', (event) => {
+        const btn = event.target.closest('[data-map-year]');
+        if (!btn) return;
+        state.year = Number(btn.dataset.mapYear);
+        renderAll();
+      });
+    }
+    els.hideZeroBtn.addEventListener('click', () => {
+      state.hideZero = !state.hideZero;
+      renderAll();
+    });
+    els.regionSelect.addEventListener('change', (e) => {
+      state.region = e.target.value;
+      state.country = 'ALL';
+      state.company = 'ALL';
+      renderAll();
+    });
+    els.countrySelect.addEventListener('change', (e) => {
+      state.country = e.target.value;
+      state.company = 'ALL';
+      renderAll();
+    });
+    els.companySelect.addEventListener('change', (e) => {
+      state.company = e.target.value;
+      renderAll();
+    });
+    els.searchInput.addEventListener('input', (e) => {
+      state.search = e.target.value.trim();
+      renderAll();
+    });
+    els.clearBtn.addEventListener('click', () => {
+      state.region = 'ALL';
+      state.country = 'ALL';
+      state.company = 'ALL';
+      state.route = 'ALL';
+      state.search = '';
+      state.hideZero = false;
+      els.searchInput.value = '';
+      renderAll();
+    });
+    els.benchmarkMode.addEventListener('change', (e) => {
+      state.benchmarkMode = e.target.value;
+      renderAll();
+    });
+    els.benchmarkMetric.addEventListener('change', (e) => {
+      state.benchmarkMetric = e.target.value;
+      renderAll();
+    });
+    if (els.benchmarkYear) {
+      els.benchmarkYear.addEventListener('change', (e) => {
+        state.benchmarkYear = Number(e.target.value);
+        renderAll();
+      });
+    }
+    if (els.benchmarkTopN) {
+      els.benchmarkTopN.addEventListener('change', (e) => {
+        state.benchmarkTopN = e.target.value;
+        renderAll();
+      });
+    }
+    if (els.benchmarkSort) {
+      els.benchmarkSort.addEventListener('change', (e) => {
+        state.benchmarkSort = e.target.value;
+        renderAll();
+      });
+    }
+    if (els.overviewSupplyGroup) {
+      els.overviewSupplyGroup.addEventListener('change', (e) => {
+        state.overviewSupplyGroup = e.target.value;
+        renderAll();
+      });
+    }
+    if (els.overviewSupplyYear) {
+      els.overviewSupplyYear.addEventListener('change', (e) => {
+        state.overviewSupplyYear = Number(e.target.value);
+        renderAll();
+      });
+    }
+    els.siteMetricSelect.addEventListener('change', (e) => {
+      state.siteMetric = e.target.value;
+      renderAll();
+    });
+    if (els.siteZoomIn) els.siteZoomIn.addEventListener('click', () => setSiteZoom(state.siteZoom * 1.2));
+    if (els.siteZoomOut) els.siteZoomOut.addEventListener('click', () => setSiteZoom(state.siteZoom / 1.2));
+    if (els.siteZoomReset) els.siteZoomReset.addEventListener('click', resetSiteMapView);
+    if (els.siteZoomSlider) {
+      els.siteZoomSlider.addEventListener('input', (e) => setSiteZoom(Number(e.target.value)));
+      els.siteZoomSlider.addEventListener('change', (e) => setSiteZoom(Number(e.target.value)));
+    }
+    els.closeDrawer.addEventListener('click', closeDrawer);
+    els.drawerBackdrop.addEventListener('click', closeDrawer);
+    if (els.editRecordBtn) {
+      els.editRecordBtn.addEventListener('click', () => {
+        state.editing = !state.editing;
+        renderDrawer();
+      });
+    }
+    if (els.downloadDataBtn) {
+      els.downloadDataBtn.addEventListener('click', () => downloadJson('rocket-market-map-current.json', state.data));
+    }
+    if (els.importDataBtn) {
+      els.importDataBtn.addEventListener('click', () => els.importDataInput.click());
+    }
+    if (els.importDataInput) {
+      els.importDataInput.addEventListener('change', async (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        try {
+          const raw = await file.text();
+          const parsed = JSON.parse(raw);
+          applyPatch(parsed, { save: true, statusMessage: t('statusText').importSuccess });
+        } catch (error) {
+          console.error(error);
+          setDataStatus(t('statusText').importError, true);
+        } finally {
+          e.target.value = '';
+        }
+      });
+    }
+    if (els.resetDataBtn) {
+      els.resetDataBtn.addEventListener('click', async () => {
+        if (DATA_FROM_API) {
+          try {
+            const response = await fetch('/api/reset', { method: 'POST' });
+            if (response.ok) {
+              const payload = await response.json();
+              state.data = hydrateData(payload.data || payload);
+              saveDataToLocal(t('statusText').resetSuccess);
+              renderAll();
+              if (state.drawer) renderDrawer();
+              return;
+            }
+          } catch (error) {
+            console.error(error);
+          }
+        }
+        resetLocalData();
+      });
+    }
+    if (els.uploadDataBtn) {
+      els.uploadDataBtn.addEventListener('click', uploadCurrentData);
+    }
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeDrawer();
+    });
+  }
+
+  async function init() {
+    [
+      'brandTitle','heroEyebrow','heroTitle','heroSubtitle','heroTakeaways','heroPrimaryAction','heroSecondaryAction',
+      'navMap','navSites','navBenchmark','navData','overviewTitle','overviewGrid','overviewSupplyLabel','overviewSupplyGroup','overviewSupplyYear','overviewSupplyChart','routeTitle','routeSubtitle','routeGrid',
+      'year2026','year2030','hideZeroBtn','regionSelect','countrySelect','companySelect','searchInput','clearBtn',
+      'mapTitle','mapSubtitle','mapSummary','bubbleChart','mapLegend','sitesTitle','sitesSubtitle','siteMetricLabel','siteMetricSelect','siteZoomOut','siteZoomReset','siteZoomSlider','siteZoomIn','siteMap','siteLegend',
+      'benchmarkTitle','benchmarkSubtitle','benchmarkModeLabel','benchmarkMetricLabel','benchmarkYearLabel','benchmarkTopNLabel','benchmarkSortLabel','benchmarkMode','benchmarkMetric','benchmarkYear','benchmarkTopN','benchmarkSort','benchmarkSummary','benchmarkChart',
+      'listTitle','listSubtitle','companyGrid','dataTitle','dataSubtitle','dataPortGrid','downloadDataBtn','importDataBtn','uploadDataBtn','resetDataBtn','importDataInput','dataStatus',
+      'drawerBackdrop','detailDrawer','closeDrawer','editRecordBtn','drawerBody','tooltip','tooltipHost'
+    ].forEach((id) => {
+      els[id] = document.getElementById(id);
+    });
+    els.yearToggleGroup = document.getElementById('yearToggleGroup') || els.year2026?.parentElement;
+    ensureOverviewLegend();
+    if (els.tooltip && els.tooltipHost && els.tooltip.parentElement !== els.tooltipHost) {
+      els.tooltipHost.appendChild(els.tooltip);
+    }
+    const baseData = await loadData();
+    state.defaultData = deepClone(baseData);
+    const localData = savedDataFromLocal();
+    state.data = DATA_FROM_API ? deepClone(baseData) : (localData || deepClone(baseData));
+    state.overviewSupplyGroup = overviewTopOptions().includes(String(state.overviewSupplyGroup)) ? String(state.overviewSupplyGroup) : '8';
+    state.overviewSupplyYear = CHART_YEARS.includes(Number(state.overviewSupplyYear)) ? Number(state.overviewSupplyYear) : 2030;
+    bindEvents();
+    exposePublicApi();
+    renderAll();
+    setDataStatus('');
+  }
+
+
   window.addEventListener('DOMContentLoaded', init);
 })();

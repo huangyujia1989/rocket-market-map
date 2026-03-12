@@ -1,68 +1,38 @@
-# Rocket Market Map — v6 iteration
+# Rocket Market Map v7 — timeline + any-year map + vehicle schematics
 
-## What was fixed in this round
+This iteration focuses on three product changes:
 
-This iteration focused on the parts that still felt broken in the deployed site, especially the user-facing interaction layer.
+1. The top overview chart is now a **stacked annual supply timeline** with:
+   - x-axis = 2026E to 2030E
+   - y-axis = annual supply
+   - breakdown = top N companies + Other
+   - hover tooltip on each segment
+   - click a company segment / legend chip to filter the main market map
 
-### 1) Hover previews were fixed at the root cause
-The main issue was not only event binding. The shared tooltip element was mounted inside the first chart container, so even when events fired, the tooltip could be positioned relative to the wrong box and appear broken or invisible.
+2. The main market map now supports **any year from 2026E to 2030E**.
+   - Bubble size, summary pills, detail drawer, and linked views react to the selected year.
+   - Intermediate years use the existing best-estimate fields already present in the dataset.
 
-This round:
-- moved the shared tooltip to the global page host
-- kept pointer tracking, but also added direct hover bindings to interactive SVG elements
-- added hover support for bubble labels, site labels, and benchmark / overview row labels
-- added keyboard focus previews for the main interactive targets
+3. Every vehicle detail drawer now includes a **size-and-structure schematic** instead of leaving the user with text only.
+   - Public dimensions are used where they are broadly published.
+   - For programs with limited disclosure, the schematic uses a clearly labeled approximate public-range estimate.
+   - The panel shows height, diameter, stage count, reuse mode, propellant, architecture, engines, and design logic.
 
-### 2) Launch-site map zoom is clearer and easier to use
-The map already had wheel + drag logic, but it was not obvious enough and was still easy to miss.
+## Files changed
 
-This round:
-- enlarged the site map canvas
-- added a zoom slider
-- kept wheel zoom, drag-to-pan, and +/- controls
-- added double-click zoom
-- improved cursor and drag feedback
+- `assets/app.js`
+  - Added overview timeline chart logic
+  - Added 2026E–2030E year toggle rendering for the market map
+  - Added vehicle schematic rendering and drawer section
+  - Added state sanitization for the new overview controls
 
-### 3) Quick compare controls are more explicit
-The controls now show visible field labels instead of unlabeled dropdowns only.
+- `assets/styles.css`
+  - Added legend chip styles
+  - Added schematic card styles
+  - Added responsive layout for the new vehicle visual panel
 
-Users can choose:
-- comparison level
-- metric
-- year
-- display range: Top 5 / Top 10 / Top 20 / All
-- sort order
+## Design choices
 
-### 4) User-facing wording stayed aligned
-- Chinese user-facing terminology remains **载具**
-- capital-style metrics remain unified in **USD bn**
-
-## Validation done
-
-### Static validation
-- checked the patched HTML for duplicate IDs
-- verified the tooltip is now mounted at the page host instead of inside the map chart container
-- verified the new controls exist in the DOM
-- ran `node --check assets/app.js`
-
-### Backend validation
-Validated with FastAPI `TestClient`:
-- `GET /api/health`
-- `GET /api/data`
-- `POST /api/patch`
-- `POST /api/reset`
-- `GET /api/history`
-
-## Run locally
-
-From the project root:
-
-```bash
-uvicorn backend.app:app --host 0.0.0.0 --port 8000
-```
-
-Then open:
-
-```text
-http://127.0.0.1:8000/
-```
+- I used **schematics rather than hotlinked photos** so deployment stays stable and the user can read dimensions, structure, and design logic in one place.
+- The overview timeline ranks “major companies” by a selectable year, because “top companies” changes across 2026E–2030E and users should be able to choose the ranking basis.
+- “Other” is always preserved, so the market total remains readable even when only the top companies are broken out.
