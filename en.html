@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Global launch market: start with goals, then technology</title>
+  <title>Rocket Market Map</title>
   <meta name="description" content="Executive rocket market map with launch sites, benchmarking, and Excel-linked model data." />
   <link rel="stylesheet" href="assets/styles.css" />
 </head>
@@ -15,14 +15,15 @@
         <nav class="topnav">
           <a class="nav-link" href="#map" id="navMap">Map</a>
           <a class="nav-link" href="#sites" id="navSites">Launch sites</a>
-          <a class="nav-link" href="#benchmark" id="navBenchmark">Benchmark</a>
+          <a class="nav-link" href="#benchmark" id="navBenchmark">Compare</a>
+          <a class="nav-link" href="#data" id="navData">Data updates</a>
         </nav>
       </header>
 
       <section class="hero card">
         <div>
-          <p class="eyebrow" id="heroEyebrow">v3.1</p>
-          <h1 id="heroTitle">Global launch market: start with goals, then technology</h1>
+          <p class="eyebrow" id="heroEyebrow">Interactive market explorer</p>
+          <h1 id="heroTitle">Rocket Market Map</h1>
           <p class="hero-subtitle" id="heroSubtitle">Executive rocket market map with launch sites, benchmarking, and Excel-linked model data.</p>
           <div class="hero-actions">
             <a class="button primary" href="#map">Open map</a>
@@ -34,14 +35,14 @@
 
       <section class="section-card card">
         <div class="section-head">
-          <h2 id="overviewTitle">Overview</h2>
+          <h2 id="overviewTitle">At a glance</h2>
         </div>
         <div class="overview-grid" id="overviewGrid"></div>
       </section>
 
       <section class="section-card card" id="routes">
         <div class="section-head">
-          <h2 id="routeTitle">Routes</h2>
+          <h2 id="routeTitle">How players compete</h2>
           <p class="section-subtitle" id="routeSubtitle"></p>
         </div>
         <div class="route-grid" id="routeGrid"></div>
@@ -49,7 +50,7 @@
 
       <section class="section-card card" id="map">
         <div class="section-head">
-          <h2 id="mapTitle">Map</h2>
+          <h2 id="mapTitle">Market map</h2>
           <p class="section-subtitle" id="mapSubtitle"></p>
         </div>
         <div class="control-stack">
@@ -77,22 +78,22 @@
 
       <section class="section-card card" id="sites">
         <div class="section-head">
-          <h2 id="sitesTitle">Launch sites</h2>
+          <h2 id="sitesTitle">Launch-site footprint</h2>
           <p class="section-subtitle" id="sitesSubtitle"></p>
         </div>
         <div class="chart-toolbar">
-          <div class="metric-title" id="siteMetricLabel">Site metric</div>
+          <div class="metric-title" id="siteMetricLabel">Map size</div>
           <select id="siteMetricSelect" class="select-inline" style="width:min(360px,100%)"></select>
         </div>
-        <div class="split-grid">
-          <div class="chart-shell"><svg id="siteMap" role="img" aria-label="launch site map"></svg></div>
-          <div class="site-list" id="siteList"></div>
+        <div class="chart-shell wide-map-shell">
+          <svg id="siteMap" role="img" aria-label="launch site map"></svg>
         </div>
+        <div class="summary-line site-legend" id="siteLegend"></div>
       </section>
 
       <section class="section-card card" id="benchmark">
         <div class="section-head">
-          <h2 id="benchmarkTitle">Benchmark</h2>
+          <h2 id="benchmarkTitle">Compare quickly</h2>
           <p class="section-subtitle" id="benchmarkSubtitle"></p>
         </div>
         <div class="control-grid" style="grid-template-columns: 1fr 1.4fr auto auto auto auto;">
@@ -106,7 +107,7 @@
 
       <section class="section-card card" id="companies">
         <div class="section-head">
-          <h2 id="listTitle">Companies</h2>
+          <h2 id="listTitle">Companies and vehicles</h2>
           <p class="section-subtitle" id="listSubtitle"></p>
         </div>
         <div class="company-grid" id="companyGrid"></div>
@@ -114,9 +115,17 @@
 
       <section class="section-card card" id="data">
         <div class="section-head">
-          <h2 id="dataTitle">Data port</h2>
+          <h2 id="dataTitle">Data updates</h2>
           <p class="section-subtitle" id="dataSubtitle"></p>
         </div>
+        <div class="data-toolbar">
+          <button class="button primary" id="downloadDataBtn">导出当前数据</button>
+          <button class="button secondary" id="importDataBtn">导入更新文件</button>
+          <button class="button secondary" id="uploadDataBtn">上传保存</button>
+          <button class="ghost-button" id="resetDataBtn">恢复默认数据</button>
+          <input type="file" id="importDataInput" accept=".json,application/json" hidden />
+        </div>
+        <div class="summary-line" id="dataStatus"></div>
         <div id="dataPortGrid"></div>
       </section>
 
@@ -127,6 +136,9 @@
   <div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
   <aside class="drawer" id="detailDrawer" aria-modal="true" role="dialog">
     <div class="drawer-header">
+      <div class="drawer-header-actions">
+        <button class="ghost-button" id="editRecordBtn" hidden>编辑数据</button>
+      </div>
       <button class="icon-button" id="closeDrawer">×</button>
     </div>
     <div class="drawer-body" id="drawerBody"></div>
