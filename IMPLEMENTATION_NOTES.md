@@ -1,43 +1,64 @@
-# Rocket Market Map — user-first refresh
+# Rocket Market Map — full-stack refresh
+
+## This round of work
+
+This build turns the site from a static interactive page into a **front-end + back-end** package.
 
 ## What changed
 
-### 1) Reframed the page around user value
-- Rewrote hero copy, section names, labels and subtitles to describe what the product helps the user do.
-- Removed interface wording that sounded like an internal implementation report.
-- Added a dedicated **Data updates** entry in the top navigation.
+### 1) Hover previews now exist across the key views
+- Main market map bubbles support hover preview.
+- Launch-site markers support hover preview.
+- The new supply overview bar chart supports hover preview.
+- The benchmark chart supports hover preview.
 
-### 2) Unified the market view into one “best estimate”
-- The UI no longer presents separate “Excel vs. strategic” language as the main framing.
-- Main map, company cards, comparison chart and launch-site view now default to a **best estimate** value:
-  - prefer richer model values when available
-  - fall back to baseline estimates when model values are missing
+Implementation note: the hover logic was moved to SVG event delegation so it works more reliably on the actual circle / bar elements instead of depending on group-level hover behavior.
 
-### 3) Reduced jargon and improved comprehension
-- Renamed sections such as “Excel market snapshot”, “main chart”, and “benchmarking” into user-facing labels.
-- Reworked explanatory text so an uninformed user can understand what they are looking at.
+### 2) Launch-site map now supports zoom and pan
+- Added zoom in / reset / zoom out controls.
+- Added mouse-wheel zoom.
+- Added drag-to-pan.
+- Kept click-through detail behavior.
 
-### 4) Added hover preview on key visuals
-- Main market map bubbles now show a hover tooltip with company / vehicle, route, payload, supply, launches and price.
-- Launch-site markers now show hover previews as well.
+### 3) “Quick compare” is now user-controllable
+Users can now choose:
+- comparison level: vehicle / company / country
+- metric
+- year: 2026E–2030E
+- range: Top 10 / Top 20 / All
+- order: high → low or low → high
 
-### 5) Reworked the launch-site map
-- Removed the right-side list.
-- Added a world map background directly inside the SVG rendering path so the map remains self-contained.
-- Kept click-through detail behavior consistent with the main market map.
+### 4) Chinese terminology was corrected
+- `Vehicle` is now translated as **载具** in the user-facing Chinese UI.
 
-### 6) Added editable data flow
-- Company, vehicle and launch-site detail drawers now support **Edit data** mode.
-- Users can:
-  - edit common fields directly in the drawer
-  - save locally in the browser
-  - export a patch JSON
-  - export the full current dataset
-  - import a patch or full dataset JSON
-  - reset to default data
+### 5) “先看整体” now has an interactive supply bar chart
+- Added a supply overview chart under the top summary cards.
+- Supports grouping by company / country / route.
+- Supports year switching.
+- Hover shows details.
+- Clicking a bar applies the corresponding filter and jumps the user into the market view.
 
-### 7) Exposed a public front-end update API
-The page now exposes:
+### 6) Revenue / valuation / funding now use one unit
+- Unified user-facing display for capital-style metrics to **USD bn**.
+- Price per launch is still shown separately as price, since it is a different concept.
+
+### 7) A real backend was added
+New FastAPI backend in `backend/`:
+- `GET /api/health`
+- `GET /api/data`
+- `POST /api/data`
+- `POST /api/patch`
+- `POST /api/reset`
+- `GET /api/history`
+
+Behavior:
+- stores current live data in `backend/storage/current/rocket_market_map_current.json`
+- keeps timestamped backups in `backend/storage/history/`
+- serves the static site and API from the same process
+- front-end automatically prefers `/api/data` when the backend is available
+- **上传保存** now actually persists data server-side when the backend is running
+
+## Public front-end API
 
 ```js
 window.RocketMarketMap.getData()
@@ -45,41 +66,21 @@ window.RocketMarketMap.setData(nextData)
 window.RocketMarketMap.applyPatch(patch)
 window.RocketMarketMap.saveLocally()
 window.RocketMarketMap.resetLocalData()
+window.RocketMarketMap.saveToServer()
+window.RocketMarketMap.serverApplyPatch(patch)
+window.RocketMarketMap.resetServerData()
 ```
 
-Example patch:
+## Run locally
 
-```js
-window.RocketMarketMap.applyPatch({
-  type: 'vehicle',
-  id: 'spacex_starship',
-  changes: {
-    model_launches_2030: 48,
-    model_supply_2030_kg: 960000
-  }
-})
+From the project root:
+
+```bash
+uvicorn backend.app:app --host 0.0.0.0 --port 8000
 ```
 
-## Upload save behavior
-There is no backend inside this static package.
+Then open:
 
-The **Upload save** button works like this:
-- if `window.RocketMarketMapAPI.saveCurrentData` exists, it will call that function and pass the full current dataset
-- otherwise it falls back to local browser save and shows a status message
-
-Expected hook:
-
-```js
-window.RocketMarketMapAPI = {
-  async saveCurrentData(data) {
-    // send data to your server here
-  }
-}
+```text
+http://127.0.0.1:8000/
 ```
-
-## Files touched
-- `index.html`
-- `en.html`
-- `assets/app.js`
-- `assets/styles.css`
-- `assets/world-map-bg.png`

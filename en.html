@@ -96,10 +96,12 @@
           <h2 id="benchmarkTitle">Compare quickly</h2>
           <p class="section-subtitle" id="benchmarkSubtitle"></p>
         </div>
-        <div class="control-grid" style="grid-template-columns: 1fr 1.4fr auto auto auto auto;">
+        <div class="control-grid benchmark-control-grid">
           <select id="benchmarkMode" aria-label="mode"></select>
           <select id="benchmarkMetric" aria-label="metric"></select>
-          <div></div><div></div><div></div><div></div>
+          <select id="benchmarkYear" aria-label="benchmark year"></select>
+          <select id="benchmarkTopN" aria-label="benchmark count"></select>
+          <select id="benchmarkSort" aria-label="benchmark sort"></select>
         </div>
         <div class="benchmark-summary" id="benchmarkSummary"></div>
         <div class="chart-shell"><svg id="benchmarkChart" role="img" aria-label="benchmark chart"></svg></div>

@@ -45,13 +45,23 @@
         strategic_supply_selected_kg: '所选年份战略口径供给',
         model_supply_selected_kg: '所选年份 Excel 供给',
         model_launches_selected: '所选年份 Excel 发射次数',
-        vehicle_count: '覆盖火箭数'
+        vehicle_count: '覆盖载具数'
       },
       benchmarkTitle: '灵活 benchmarking：火箭 / 公司 / 国家',
       benchmarkSubtitle: '可切换比较维度和指标。公司 / 国家模式下，单发能力取组内最大火箭；价格类指标取加权平均；估值 / 融资是公开口径的近似解析值，适合管理层快速比较，不适合精确财务建模。',
       benchmarkMode: '比较对象',
       benchmarkMetric: '比较指标',
-      benchmarkModes: { vehicle: '火箭', company: '公司', country: '国家' },
+    benchmarkYear: '比较年份',
+    benchmarkTopN: '显示范围',
+    benchmarkSort: '排序方式',
+    benchmarkSortOptions: { desc: '从高到低', asc: '从低到高' },
+    benchmarkTopOptions: { '10': 'Top 10', '20': 'Top 20', all: '全部' },
+    overviewSupplyLabel: '供给概览',
+    overviewSupplyGroup: '分组方式',
+    overviewSupplyYear: '查看年份',
+    overviewSupplyGroups: { company: '按公司', country: '按国家', route: '按路线' },
+    siteZoomHint: '滚轮缩放，拖动画布，点击点位查看详情。',
+      benchmarkModes: { vehicle: '载具', company: '公司', country: '国家' },
       benchmarkTop: 'Top',
       listTitle: '公司卡片：按当前筛选结果更新',
       listSubtitle: '公司卡点击后可以看公司层面的场地、车辆组合和 Excel 汇总；气泡图里的点则是单个火箭。',
@@ -62,7 +72,7 @@
       unknown: '—',
       sources: '来源',
       companyCardSites: '主要场地',
-      companyCardVehicles: '车辆',
+      companyCardVehicles: '载具',
       benchmarkMetrics: {
         single_launch_kg: '单发能力',
         strategic_supply_selected_kg: '所选年份战略口径供给',
@@ -74,8 +84,8 @@
         model_price_selected_usd_m: '所选年份 Excel 单次价格',
         model_revenue_selected_usd_m: '所选年份 Excel 年收入',
         model_usd_per_kg_selected: '所选年份 Excel $/kg',
-        valuation_est_usd_m: '估值（估算）',
-        funding_est_usd_m: '融资额（估算）'
+        valuation_est_usd_m: '估值（USD bn）',
+        funding_est_usd_m: '融资额（USD bn）'
       },
       drawerSections: {
         route: '路线与定位',
@@ -89,7 +99,7 @@
       labels: {
         country: '国家',
         company: '公司',
-        vehicle: '火箭',
+        vehicle: '载具',
         route: '路线',
         payload: '单发能力',
         strategicSupply: '战略口径年供给',
@@ -104,7 +114,7 @@
         mainSites: '主要场地',
         operator: '运营方',
         accessCategory: '场地类型',
-        vehicleCount: '覆盖火箭数',
+        vehicleCount: '覆盖载具数',
         companyCount: '覆盖公司数',
         firstFlight: '首飞',
         totalFlights: '历史飞行',
@@ -182,6 +192,16 @@
       benchmarkSubtitle: 'Switch the comparison level and metric. In company/country mode, single-launch capability uses the maximum vehicle in the group; price metrics use weighted averages; valuation/funding are rough public-market parses for quick executive comparison rather than precise finance work.',
       benchmarkMode: 'Compare',
       benchmarkMetric: 'Metric',
+    benchmarkYear: 'Year',
+    benchmarkTopN: 'Rows',
+    benchmarkSort: 'Order',
+    benchmarkSortOptions: { desc: 'High to low', asc: 'Low to high' },
+    benchmarkTopOptions: { '10': 'Top 10', '20': 'Top 20', all: 'All' },
+    overviewSupplyLabel: 'Supply overview',
+    overviewSupplyGroup: 'Group by',
+    overviewSupplyYear: 'Year',
+    overviewSupplyGroups: { company: 'By company', country: 'By country', route: 'By route' },
+    siteZoomHint: 'Use the mouse wheel to zoom, drag to pan, and click a marker for detail.',
       benchmarkModes: { vehicle: 'Vehicle', company: 'Company', country: 'Country' },
       benchmarkTop: 'Top',
       listTitle: 'Company cards',
@@ -205,8 +225,8 @@
         model_price_selected_usd_m: 'Selected-year Excel price / launch',
         model_revenue_selected_usd_m: 'Selected-year Excel annual revenue',
         model_usd_per_kg_selected: 'Selected-year Excel $/kg',
-        valuation_est_usd_m: 'Valuation (estimated)',
-        funding_est_usd_m: 'Funding (estimated)'
+        valuation_est_usd_m: 'Valuation (USD bn)',
+        funding_est_usd_m: 'Funding (USD bn)'
       },
       drawerSections: {
         route: 'Route and role',
@@ -300,15 +320,25 @@
     siteMetricOptions: {
       best_estimate_supply_selected_kg: '年供给（最佳估算）',
       best_estimate_launches_selected: '年发射次数（最佳估算）',
-      vehicle_count: '覆盖火箭数'
+      vehicle_count: '覆盖载具数'
     },
     benchmarkTitle: '快速比较',
-    benchmarkSubtitle: '在火箭、公司和国家三个层级之间切换，快速比较规模、价格、发射次数和资本能力。',
+    benchmarkSubtitle: '在载具、公司和国家三个层级之间切换，并按年份、排序方式和显示范围快速比较规模、价格、发射次数和资本能力。',
     benchmarkMode: '比较对象',
     benchmarkMetric: '比较指标',
-    benchmarkModes: { vehicle: '火箭', company: '公司', country: '国家' },
-    listTitle: '公司与火箭',
-    listSubtitle: '按当前筛选结果显示。点击任意公司查看车辆组合、场地布局和关键数据。',
+    benchmarkYear: '比较年份',
+    benchmarkTopN: '显示范围',
+    benchmarkSort: '排序方式',
+    benchmarkSortOptions: { desc: '从高到低', asc: '从低到高' },
+    benchmarkTopOptions: { '10': 'Top 10', '20': 'Top 20', all: '全部' },
+    overviewSupplyLabel: '供给概览',
+    overviewSupplyGroup: '分组方式',
+    overviewSupplyYear: '查看年份',
+    overviewSupplyGroups: { company: '按公司', country: '按国家', route: '按路线' },
+    siteZoomHint: '滚轮缩放，拖动画布，点击点位查看详情。',
+    benchmarkModes: { vehicle: '载具', company: '公司', country: '国家' },
+    listTitle: '公司与载具',
+    listSubtitle: '按当前筛选结果显示。点击任意公司查看载具组合、发射场布局和关键数据。',
     dataTitle: '数据更新',
     dataSubtitle: '支持手动编辑、导入更新文件、导出当前数据，并预留给 AI / API 的更新接口。',
     benchmarkMetrics: {
@@ -317,10 +347,10 @@
       best_estimate_launches_selected: '年发射次数（最佳估算）',
       model_cum_launches_selected: '累计发射次数',
       model_price_selected_usd_m: '单次价格',
-      model_revenue_selected_usd_m: '年收入',
+      model_revenue_selected_usd_m: '年收入（USD bn）',
       model_usd_per_kg_selected: '$/kg',
-      valuation_est_usd_m: '估值（估算）',
-      funding_est_usd_m: '融资额（估算）'
+      valuation_est_usd_m: '估值（USD bn）',
+      funding_est_usd_m: '融资额（USD bn）'
     },
     drawerSections: {
       route: '定位与约束',
@@ -334,7 +364,7 @@
     labels: {
       country: '国家',
       company: '公司',
-      vehicle: '火箭',
+      vehicle: '载具',
       route: '路线',
       payload: '单发能力',
       strategicSupply: '年供给',
@@ -349,7 +379,7 @@
       mainSites: '主要发射场',
       operator: '运营方',
       accessCategory: '场地类型',
-      vehicleCount: '覆盖火箭数',
+      vehicleCount: '覆盖载具数',
       companyCount: '覆盖公司数',
       firstFlight: '首飞',
       totalFlights: '历史飞行',
@@ -392,7 +422,7 @@
     editorTitle: '编辑数据',
     editorNote: '下面是常用字段。保存后会立即更新页面；如需自动化，也可以走下方的 JSON / API 接口。',
     apiPortTitle: 'AI / API 更新接口',
-    apiPortBody: '可调用 window.RocketMarketMap.applyPatch(...) 或 setData(...)，也可上传 JSON patch / 全量数据文件。',
+    apiPortBody: '可调用 window.RocketMarketMap.applyPatch(...)、setData(...)、saveToServer() 或 serverApplyPatch(...)，也可上传 JSON patch / 全量数据文件。',
     apiExampleTitle: '示例 patch',
     bestEstimateNote: '最佳估算 = 能拿到的最佳公开数据；优先使用更完整的模型值，缺失时回退到基础估算。',
     hoverHint: '悬浮预览，点击看详情',
@@ -433,9 +463,19 @@
       vehicle_count: 'Vehicle count'
     },
     benchmarkTitle: 'Compare quickly',
-    benchmarkSubtitle: 'Switch between vehicle, company and country views to compare scale, price, launches and capital strength.',
+    benchmarkSubtitle: 'Switch between vehicle, company and country views, then choose the year, ordering and number of rows to compare scale, price, launches and capital strength.',
     benchmarkMode: 'Compare',
     benchmarkMetric: 'Metric',
+    benchmarkYear: 'Year',
+    benchmarkTopN: 'Rows',
+    benchmarkSort: 'Order',
+    benchmarkSortOptions: { desc: 'High to low', asc: 'Low to high' },
+    benchmarkTopOptions: { '10': 'Top 10', '20': 'Top 20', all: 'All' },
+    overviewSupplyLabel: 'Supply overview',
+    overviewSupplyGroup: 'Group by',
+    overviewSupplyYear: 'Year',
+    overviewSupplyGroups: { company: 'By company', country: 'By country', route: 'By route' },
+    siteZoomHint: 'Use the mouse wheel to zoom, drag to pan, and click a marker for detail.',
     benchmarkModes: { vehicle: 'Vehicle', company: 'Company', country: 'Country' },
     listTitle: 'Companies and vehicles',
     listSubtitle: 'Cards react to the current filter set. Open any company to see fleet mix, launch footprint and key numbers.',
@@ -447,10 +487,10 @@
       best_estimate_launches_selected: 'Launches (best estimate)',
       model_cum_launches_selected: 'Cumulative launches',
       model_price_selected_usd_m: 'Price / launch',
-      model_revenue_selected_usd_m: 'Annual revenue',
+      model_revenue_selected_usd_m: 'Annual revenue (USD bn)',
       model_usd_per_kg_selected: '$ / kg',
-      valuation_est_usd_m: 'Valuation (estimated)',
-      funding_est_usd_m: 'Funding (estimated)'
+      valuation_est_usd_m: 'Valuation (USD bn)',
+      funding_est_usd_m: 'Funding (USD bn)'
     },
     drawerSections: {
       route: 'Role and constraints',
@@ -522,7 +562,7 @@
     editorTitle: 'Edit data',
     editorNote: 'These are the most common fields. Saving updates the page immediately; for automation, you can also use the JSON / API hooks below.',
     apiPortTitle: 'AI / API update interface',
-    apiPortBody: 'Call window.RocketMarketMap.applyPatch(...) or setData(...), or upload a JSON patch / full dataset file.',
+    apiPortBody: 'Call window.RocketMarketMap.applyPatch(...), setData(...), saveToServer(), or serverApplyPatch(...), or upload a JSON patch / full dataset file.',
     apiExampleTitle: 'Example patch',
     bestEstimateNote: 'Best estimate = the best public information available; it prefers the richer model values and falls back to baseline estimates when needed.',
     hoverHint: 'Hover to preview, click for detail',
@@ -552,13 +592,24 @@
     search: '',
     benchmarkMode: 'vehicle',
     benchmarkMetric: 'best_estimate_supply_selected_kg',
+    benchmarkYear: 2030,
+    benchmarkTopN: '10',
+    benchmarkSort: 'desc',
+    overviewSupplyGroup: 'company',
+    overviewSupplyYear: 2030,
     siteMetric: 'best_estimate_supply_selected_kg',
+    siteZoom: 1,
+    sitePanX: 0,
+    sitePanY: 0,
     topN: 12,
     drawer: null,
     editing: false
   };
 
-  const LOCAL_STORAGE_KEY = 'rocket-market-map-user-data-v4';
+  const LOCAL_STORAGE_KEY = 'rocket-market-map-user-data-v5';
+  const CHART_YEARS = [2026, 2027, 2028, 2029, 2030];
+  const SITE_MAP_DIM = { width: 980, height: 460, minZoom: 1, maxZoom: 6 };
+  let DATA_FROM_API = false;
 
   const els = {};
 
@@ -574,18 +625,31 @@
     return `${y}E`;
   }
 
-  function currentKeys() {
+  function yearKeys(year = state.year) {
     return {
-      strategicSupply: `supply_${state.year}_kg`,
-      strategicLaunches: state.year === 2026 ? 'flights_2026_base' : 'flights_2030_base',
-      modelPayload: `model_payload_${state.year}_kg`,
-      modelSupply: `model_supply_${state.year}_kg`,
-      modelLaunches: `model_launches_${state.year}`,
-      modelCumLaunches: `model_cum_launches_${state.year}`,
-      modelPrice: `model_price_${state.year}_usd_m`,
-      modelRevenue: `model_revenue_${state.year}_usd_m`,
-      modelUsdPerKg: `model_usd_per_kg_${state.year}`
+      strategicSupply: `supply_${year}_kg`,
+      strategicLaunches: year === 2026 ? 'flights_2026_base' : year === 2030 ? 'flights_2030_base' : `model_launches_${year}`,
+      modelPayload: `model_payload_${year}_kg`,
+      modelSupply: `model_supply_${year}_kg`,
+      modelLaunches: `model_launches_${year}`,
+      modelCumLaunches: `model_cum_launches_${year}`,
+      modelPrice: `model_price_${year}_usd_m`,
+      modelRevenue: `model_revenue_${year}_usd_m`,
+      modelUsdPerKg: `model_usd_per_kg_${year}`
     };
+  }
+
+  function currentKeys() {
+    return yearKeys(state.year);
+  }
+
+  function interpolatePositive(a, b, ratio) {
+    const aNum = num(a);
+    const bNum = num(b);
+    if (aNum > 0 && bNum > 0) return aNum + (bNum - aNum) * ratio;
+    if (aNum > 0) return aNum;
+    if (bNum > 0) return bNum;
+    return 0;
   }
 
   function fmtInt(v) {
@@ -611,6 +675,13 @@
     const n = Number(v);
     if (Math.abs(n) >= 1000) return `$${fmtFloat(n / 1000, 2)}bn`;
     return `$${fmtFloat(n, 1)}m`;
+  }
+
+  function fmtMoneyCapital(v) {
+    if (v == null || Number.isNaN(Number(v)) || Number(v) === 0) return t('unknown');
+    const bn = Number(v) / 1000;
+    const digits = Math.abs(bn) >= 100 ? 0 : Math.abs(bn) >= 10 ? 1 : 2;
+    return `$${fmtFloat(bn, digits)}bn`;
   }
 
   function fmtUsdPerKg(v) {
@@ -641,7 +712,51 @@
     return null;
   }
 
+  function apiBaseUrl() {
+    return (window.__API_BASE__ || '/api').replace(/\/$/, '');
+  }
+
+  async function fetchApiJson(path, options = {}) {
+    const res = await fetch(`${apiBaseUrl()}${path}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        ...(options.headers || {})
+      },
+      ...options
+    });
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}`);
+    }
+    return res.json();
+  }
+
+  async function saveCurrentDataToServer(data) {
+    return fetchApiJson('/data', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    });
+  }
+
+  async function applyPatchToServer(patch) {
+    return fetchApiJson('/patch', {
+      method: 'POST',
+      body: JSON.stringify(patch)
+    });
+  }
+
+  async function resetDataOnServer() {
+    return fetchApiJson('/reset', { method: 'POST' });
+  }
+
   async function loadData() {
+    try {
+      const serverData = await fetchApiJson('/data');
+      DATA_FROM_API = true;
+      return serverData;
+    } catch (error) {
+      DATA_FROM_API = false;
+      console.info('RocketMarketMap backend not available, falling back to bundled data.', error?.message || error);
+    }
     const inline = loadInlineData();
     if (inline) return inline;
     const path = window.__DATA_PATH__ || 'data/rocket_market_map_2026_2030_v3.json';
@@ -659,14 +774,26 @@
     if (!item) return 0;
     const model = num(item[`model_supply_${year}_kg`]);
     const baseline = num(item[`supply_${year}_kg`]);
-    return model > 0 ? model : baseline;
+    if (model > 0) return model;
+    if (baseline > 0) return baseline;
+    if (year > 2026 && year < 2030) {
+      const interpolated = interpolatePositive(item.supply_2026_kg, item.supply_2030_kg, (year - 2026) / 4);
+      if (interpolated > 0) return interpolated;
+    }
+    return 0;
   }
 
   function bestEstimateLaunches(item, year = state.year) {
     if (!item) return 0;
     const model = num(item[`model_launches_${year}`]);
-    const baseline = num(item[year === 2026 ? 'flights_2026_base' : 'flights_2030_base']);
-    return model > 0 ? model : baseline;
+    const baseline = num(item[year === 2026 ? 'flights_2026_base' : year === 2030 ? 'flights_2030_base' : `model_launches_${year}`]);
+    if (model > 0) return model;
+    if (baseline > 0) return baseline;
+    if (year > 2026 && year < 2030) {
+      const interpolated = interpolatePositive(item.flights_2026_base, item.flights_2030_base, (year - 2026) / 4);
+      if (interpolated > 0) return interpolated;
+    }
+    return 0;
   }
 
   function bestEstimateSupplyLabel(item, year = state.year) {
@@ -794,16 +921,21 @@
 
   async function uploadCurrentData() {
     const api = window.RocketMarketMapAPI;
-    if (!api || typeof api.saveCurrentData !== 'function') {
-      saveDataToLocal(t('statusText').uploadNoApi);
-      return;
+    if (api && typeof api.saveCurrentData === 'function') {
+      try {
+        await api.saveCurrentData(deepClone(state.data));
+        saveDataToLocal(t('statusText').uploadSuccess);
+        return;
+      } catch (error) {
+        console.error(error);
+      }
     }
     try {
-      await api.saveCurrentData(deepClone(state.data));
-      setDataStatus(t('statusText').uploadSuccess);
+      await saveCurrentDataToServer(deepClone(state.data));
+      saveDataToLocal(t('statusText').uploadSuccess);
     } catch (error) {
       console.error(error);
-      setDataStatus(`${t('statusText').uploadError}${error?.message ? `: ${error.message}` : ''}`);
+      saveDataToLocal(t('statusText').uploadNoApi);
     }
   }
 
@@ -822,7 +954,30 @@
         return deepClone(state.data);
       },
       saveLocally: () => saveDataToLocal(),
-      resetLocalData: () => resetLocalData()
+      resetLocalData: () => resetLocalData(),
+      saveToServer: async () => {
+        await saveCurrentDataToServer(deepClone(state.data));
+        saveDataToLocal(t('statusText').uploadSuccess);
+        return deepClone(state.data);
+      },
+      resetServerData: async () => {
+        const next = await resetDataOnServer();
+        state.data = deepClone(next);
+        state.defaultData = deepClone(next);
+        state.editing = false;
+        saveDataToLocal(t('statusText').resetSuccess);
+        renderAll();
+        if (state.drawer) renderDrawer();
+        return deepClone(state.data);
+      },
+      serverApplyPatch: async (patch) => {
+        const next = await applyPatchToServer(patch);
+        state.data = deepClone(next);
+        saveDataToLocal(t('statusText').uploadSuccess);
+        renderAll();
+        if (state.drawer) renderDrawer();
+        return deepClone(state.data);
+      }
     };
   }
 
@@ -884,20 +1039,20 @@
     return map;
   }
 
-  function buildCompanyRows(nodes) {
+  function buildCompanyRows(nodes, year = state.year) {
     const groups = groupBy(nodes, (n) => n.company);
-    const keys = currentKeys();
+    const keys = yearKeys(year);
     const rows = [];
     groups.forEach((members, company) => {
       const master = companyMaster(company) || {};
-      const dominant = [...members].sort((a, b) => bestEstimateSupply(b) - bestEstimateSupply(a))[0];
-      const memberBestSupply = members.reduce((sum, n) => sum + bestEstimateSupply(n), 0);
-      const memberBestLaunches = members.reduce((sum, n) => sum + bestEstimateLaunches(n), 0);
+      const dominant = [...members].sort((a, b) => bestEstimateSupply(b, year) - bestEstimateSupply(a, year))[0];
+      const memberBestSupply = members.reduce((sum, n) => sum + bestEstimateSupply(n, year), 0);
+      const memberBestLaunches = members.reduce((sum, n) => sum + bestEstimateLaunches(n, year), 0);
       const memberModelLaunches = members.reduce((sum, n) => sum + num(n[keys.modelLaunches]), 0);
       const memberModelSupply = members.reduce((sum, n) => sum + num(n[keys.modelSupply]), 0);
       const memberModelRevenue = members.reduce((sum, n) => sum + num(n[keys.modelRevenue]), 0);
-      const bestSupply = bestEstimateSupply(master) > 0 ? bestEstimateSupply(master) : memberBestSupply;
-      const bestLaunches = bestEstimateLaunches(master) > 0 ? bestEstimateLaunches(master) : memberBestLaunches;
+      const bestSupply = bestEstimateSupply(master, year) > 0 ? bestEstimateSupply(master, year) : memberBestSupply;
+      const bestLaunches = bestEstimateLaunches(master, year) > 0 ? bestEstimateLaunches(master, year) : memberBestLaunches;
       const modelLaunches = num(master[keys.modelLaunches]) > 0 ? num(master[keys.modelLaunches]) : memberModelLaunches;
       const modelSupply = num(master[keys.modelSupply]) > 0 ? num(master[keys.modelSupply]) : memberModelSupply;
       const modelRevenue = num(master[keys.modelRevenue]) > 0 ? num(master[keys.modelRevenue]) : memberModelRevenue;
@@ -924,7 +1079,7 @@
         model_supply_selected_kg: modelSupply,
         model_launches_selected: modelLaunches,
         model_cum_launches_selected: members.reduce((sum, n) => sum + num(n[keys.modelCumLaunches]), 0),
-        model_price_selected_usd_m: modelLaunches ? modelRevenue / modelLaunches : 0,
+        model_price_selected_usd_m: modelLaunches ? modelRevenue / modelLaunches : num(master[keys.modelPrice]),
         model_revenue_selected_usd_m: modelRevenue,
         model_usd_per_kg_selected: modelSupply ? (modelRevenue * 1_000_000 / modelSupply) : 0,
         valuation_est_usd_m: master.valuation_est_usd_m ?? null,
@@ -946,8 +1101,8 @@
   }
 
 
-  function buildCountryRows(nodes) {
-    const companyRows = buildCompanyRows(nodes);
+  function buildCountryRows(nodes, year = state.year) {
+    const companyRows = buildCompanyRows(nodes, year);
     const groups = groupBy(companyRows, (r) => r.country);
     const rows = [];
     groups.forEach((members, country) => {
@@ -995,18 +1150,18 @@
     },
     best_estimate_supply_selected_kg: {
       type: 'mass',
-      get: (row) => num(row.best_estimate_supply_selected_kg ?? bestEstimateSupply(row))
+      get: (row) => num(row.best_estimate_supply_selected_kg)
     },
     best_estimate_launches_selected: {
       type: 'count',
-      get: (row) => num(row.best_estimate_launches_selected ?? bestEstimateLaunches(row))
+      get: (row) => num(row.best_estimate_launches_selected)
     },
-    model_cum_launches_selected: { type: 'count', get: (row) => num(row.model_cum_launches_selected ?? row[currentKeys().modelCumLaunches]) },
-    model_price_selected_usd_m: { type: 'money', get: (row) => num(row.model_price_selected_usd_m ?? row[currentKeys().modelPrice]) },
-    model_revenue_selected_usd_m: { type: 'money', get: (row) => num(row.model_revenue_selected_usd_m ?? row[currentKeys().modelRevenue]) },
-    model_usd_per_kg_selected: { type: 'usdkg', get: (row) => num(row.model_usd_per_kg_selected ?? row[currentKeys().modelUsdPerKg]) },
-    valuation_est_usd_m: { type: 'money', get: (row) => num(row.valuation_est_usd_m) },
-    funding_est_usd_m: { type: 'money', get: (row) => num(row.funding_est_usd_m) }
+    model_cum_launches_selected: { type: 'count', get: (row) => num(row.model_cum_launches_selected) },
+    model_price_selected_usd_m: { type: 'price', get: (row) => num(row.model_price_selected_usd_m) },
+    model_revenue_selected_usd_m: { type: 'capital', get: (row) => num(row.model_revenue_selected_usd_m) },
+    model_usd_per_kg_selected: { type: 'usdkg', get: (row) => num(row.model_usd_per_kg_selected) },
+    valuation_est_usd_m: { type: 'capital', get: (row) => num(row.valuation_est_usd_m) },
+    funding_est_usd_m: { type: 'capital', get: (row) => num(row.funding_est_usd_m) }
   };
 
   const SITE_METRICS = {
@@ -1028,22 +1183,32 @@
   function formatMetricValue(metricKey, value) {
     const type = (BENCHMARK_METRICS[metricKey] || SITE_METRICS[metricKey] || {}).type;
     if (type === 'mass') return fmtMass(value);
-    if (type === 'money') return fmtMoneyM(value);
+    if (type === 'capital') return fmtMoneyCapital(value);
+    if (type === 'price') return fmtMoneyM(value);
     if (type === 'usdkg') return fmtUsdPerKg(value);
     return fmtInt(value);
   }
 
-  function buildBenchmarkRows(nodes) {
+  function buildBenchmarkRows(nodes, year = state.benchmarkYear) {
+    const keys = yearKeys(year);
     if (state.benchmarkMode === 'vehicle') {
       return nodes.map((n) => ({
         ...n,
         type: 'vehicle',
         name: isZh ? (n.vehicleZh || n.vehicle) : n.vehicle,
-        label: isZh ? `${n.companyZh || n.company} · ${n.vehicleZh || n.vehicle}` : `${n.company} · ${n.vehicle}`
+        label: isZh ? `${n.companyZh || n.company} · ${n.vehicleZh || n.vehicle}` : `${n.company} · ${n.vehicle}`,
+        best_estimate_supply_selected_kg: bestEstimateSupply(n, year),
+        best_estimate_launches_selected: bestEstimateLaunches(n, year),
+        model_cum_launches_selected: num(n[keys.modelCumLaunches]),
+        model_price_selected_usd_m: num(n[keys.modelPrice]),
+        model_revenue_selected_usd_m: num(n[keys.modelRevenue]),
+        model_usd_per_kg_selected: num(n[keys.modelUsdPerKg]),
+        valuation_est_usd_m: num(n.valuation_est_usd_m),
+        funding_est_usd_m: num(n.funding_est_usd_m)
       }));
     }
-    if (state.benchmarkMode === 'company') return buildCompanyRows(nodes);
-    return buildCountryRows(nodes);
+    if (state.benchmarkMode === 'company') return buildCompanyRows(nodes, year);
+    return buildCountryRows(nodes, year);
   }
 
   function buildSiteRows(nodes) {
@@ -1110,6 +1275,7 @@
     if (document.getElementById('heroPrimaryAction')) document.getElementById('heroPrimaryAction').textContent = t('heroPrimaryAction');
     if (document.getElementById('heroSecondaryAction')) document.getElementById('heroSecondaryAction').textContent = t('heroSecondaryAction');
     document.getElementById('overviewTitle').textContent = t('overviewTitle');
+    if (els.overviewSupplyLabel) els.overviewSupplyLabel.textContent = t('overviewSupplyLabel');
     document.getElementById('routeTitle').textContent = t('routeTitle');
     document.getElementById('routeSubtitle').textContent = t('routeSubtitle');
     document.getElementById('mapTitle').textContent = t('mapTitle');
@@ -1134,6 +1300,92 @@
     els.heroTakeaways.innerHTML = takeaways.map(([title, body]) => `<div class="takeaway"><h3>${title}</h3><p>${body}</p></div>`).join('');
   }
 
+
+  function buildRouteOverviewRows(year = state.overviewSupplyYear) {
+    const rows = [];
+    const groups = groupBy(state.data.nodes, (node) => node.route_class);
+    groups.forEach((members, route) => {
+      rows.push({
+        type: 'route',
+        id: route,
+        label: routeInfo(route).name,
+        route_class: route,
+        metricValue: members.reduce((sum, node) => sum + bestEstimateSupply(node, year), 0),
+        launches: members.reduce((sum, node) => sum + bestEstimateLaunches(node, year), 0),
+        companyCount: new Set(members.map((node) => node.company)).size
+      });
+    });
+    return rows;
+  }
+
+  function buildOverviewSupplyRows() {
+    if (state.overviewSupplyGroup === 'company') return buildCompanyRows(state.data.nodes, state.overviewSupplyYear).map((row) => ({ ...row, metricValue: row.best_estimate_supply_selected_kg }));
+    if (state.overviewSupplyGroup === 'country') return buildCountryRows(state.data.nodes, state.overviewSupplyYear).map((row) => ({ ...row, metricValue: row.best_estimate_supply_selected_kg }));
+    return buildRouteOverviewRows(state.overviewSupplyYear);
+  }
+
+  function renderOverviewSupplyChart() {
+    if (!els.overviewSupplyChart) return;
+    const rows = buildOverviewSupplyRows()
+      .filter((row) => num(row.metricValue) > 0)
+      .sort((a, b) => num(b.metricValue) - num(a.metricValue))
+      .slice(0, 12);
+
+    const svg = els.overviewSupplyChart;
+    const width = 980;
+    const barH = 34;
+    const gap = 12;
+    const margin = { top: 24, right: 80, bottom: 24, left: 260 };
+    const height = Math.max(240, margin.top + margin.bottom + rows.length * (barH + gap));
+    const innerW = width - margin.left - margin.right;
+    const maxVal = Math.max(...rows.map((row) => num(row.metricValue)), 1);
+    const xScale = (v) => margin.left + (num(v) / maxVal) * innerW;
+    const parts = [`<rect x="0" y="0" width="${width}" height="${height}" fill="transparent"></rect>`];
+
+    rows.forEach((row, index) => {
+      const y = margin.top + index * (barH + gap);
+      const color = row.route_class ? routeInfo(row.route_class).color : '#214ed3';
+      const x = xScale(row.metricValue);
+      parts.push(`<text class="svg-axis" x="${margin.left - 12}" y="${y + 23}" text-anchor="end">${row.label}</text>`);
+      parts.push(`<g class="bar-row" data-id="${row.id}" data-type="${row.type}" tabindex="0" role="button" aria-label="${row.label}">
+        <rect x="${margin.left}" y="${y}" width="${innerW}" height="${barH}" rx="10" fill="#eef3fa"></rect>
+        <rect x="${margin.left}" y="${y}" width="${Math.max(4, x - margin.left)}" height="${barH}" rx="10" fill="${color}" fill-opacity="0.84"></rect>
+        <text class="svg-bar-value" x="${Math.min(width - margin.right + 12, x + 10)}" y="${y + 23}">${fmtMass(row.metricValue)}</text>
+      </g>`);
+    });
+
+    svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+    svg.innerHTML = parts.join('');
+
+    const rowMap = new Map(rows.map((row) => [row.id, row]));
+    const pickRow = (target) => target?.closest ? target.closest('.bar-row') : null;
+    svg.onpointermove = (event) => {
+      const rowEl = pickRow(event.target);
+      if (!rowEl) {
+        hideTooltip();
+        return;
+      }
+      const row = rowMap.get(rowEl.dataset.id);
+      if (!row) return;
+      const extra = row.type === 'route'
+        ? `${isZh ? '覆盖公司' : 'Companies'}: ${fmtInt(row.companyCount)}`
+        : `${yearLabel(state.overviewSupplyYear)} ${t('labels').modelLaunches}: ${fmtInt(row.best_estimate_launches_selected || row.launches || 0)}`;
+      showTooltip(event, `<strong>${row.label}</strong><div class="tooltip-meta">${yearLabel(state.overviewSupplyYear)} ${t('labels').modelSupply}</div><div>${fmtMass(row.metricValue)}</div><div>${extra}</div>`);
+    };
+    svg.onpointerleave = hideTooltip;
+    svg.onclick = (event) => {
+      const rowEl = pickRow(event.target);
+      if (!rowEl) return;
+      const row = rowMap.get(rowEl.dataset.id);
+      if (!row) return;
+      if (row.type === 'company') state.company = row.id;
+      if (row.type === 'country') state.country = row.id;
+      if (row.type === 'route') state.route = row.id;
+      syncSelectOptions();
+      renderAll();
+      document.getElementById('map')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+  }
 
   function renderOverview() {
     const supply2026 = state.data.nodes.reduce((sum, node) => sum + bestEstimateSupply(node, 2026), 0);
@@ -1169,8 +1421,9 @@
         <div class="metric-meta">${card.meta}</div>
       </article>
     `).join('');
-  }
 
+    renderOverviewSupplyChart();
+  }
 
   function routeFilterCounts() {
     const counts = {};
@@ -1269,8 +1522,14 @@
     els.clearBtn.textContent = t('clear');
 
     els.benchmarkMode.innerHTML = Object.entries(t('benchmarkModes')).map(([value, label]) => makeOption(value, label, state.benchmarkMode === value)).join('');
-    els.siteMetricSelect.innerHTML = Object.entries(t('siteMetricOptions')).map(([value, label]) => makeOption(value, label, state.siteMetric === value)).join('');
     els.benchmarkMetric.innerHTML = Object.entries(t('benchmarkMetrics')).map(([value, label]) => makeOption(value, label, state.benchmarkMetric === value)).join('');
+    if (els.benchmarkYear) els.benchmarkYear.innerHTML = CHART_YEARS.map((year) => makeOption(year, yearLabel(year), state.benchmarkYear === year)).join('');
+    if (els.benchmarkTopN) els.benchmarkTopN.innerHTML = Object.entries(t('benchmarkTopOptions')).map(([value, label]) => makeOption(value, label, state.benchmarkTopN === value)).join('');
+    if (els.benchmarkSort) els.benchmarkSort.innerHTML = Object.entries(t('benchmarkSortOptions')).map(([value, label]) => makeOption(value, label, state.benchmarkSort === value)).join('');
+    if (els.overviewSupplyGroup) els.overviewSupplyGroup.innerHTML = Object.entries(t('overviewSupplyGroups')).map(([value, label]) => makeOption(value, label, state.overviewSupplyGroup === value)).join('');
+    if (els.overviewSupplyYear) els.overviewSupplyYear.innerHTML = [2026, 2030].map((year) => makeOption(year, yearLabel(year), state.overviewSupplyYear === year)).join('');
+    els.siteMetricSelect.innerHTML = Object.entries(t('siteMetricOptions')).map(([value, label]) => makeOption(value, label, state.siteMetric === value)).join('');
+    if (els.siteZoomReset) els.siteZoomReset.textContent = `${fmtFloat(state.siteZoom, 1)}×`;
   }
 
 
@@ -1363,22 +1622,34 @@
 
     svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
     svg.innerHTML = parts.join('');
-    [...svg.querySelectorAll('.bubble')].forEach((el) => {
-      const node = nodes.find((n) => n.id === el.dataset.id);
+
+    const nodeMap = new Map(nodes.map((node) => [node.id, node]));
+    const pickBubble = (target) => target?.closest ? target.closest('.bubble') : null;
+    svg.onpointermove = (event) => {
+      const bubble = pickBubble(event.target);
+      if (!bubble) {
+        hideTooltip();
+        return;
+      }
+      const node = nodeMap.get(bubble.dataset.id);
       if (!node) return;
-      el.addEventListener('mouseenter', (e) => showNodeTooltip(e, node));
-      el.addEventListener('mousemove', moveTooltip);
-      el.addEventListener('mouseleave', hideTooltip);
-      el.addEventListener('click', () => openDrawer({ type: 'vehicle', id: node.id }));
-      el.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          openDrawer({ type: 'vehicle', id: node.id });
+      showNodeTooltip(event, node);
+    };
+    svg.onpointerleave = hideTooltip;
+    svg.onclick = (event) => {
+      const bubble = pickBubble(event.target);
+      if (!bubble) return;
+      openDrawer({ type: 'vehicle', id: bubble.dataset.id });
+    };
+    [...svg.querySelectorAll('.bubble')].forEach((bubble) => {
+      bubble.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          openDrawer({ type: 'vehicle', id: bubble.dataset.id });
         }
       });
     });
   }
-
 
   function showNodeTooltip(event, node) {
     const html = `
@@ -1424,10 +1695,48 @@
     els.tooltip.hidden = true;
   }
 
+  function clamp(value, min, max) {
+    return Math.max(min, Math.min(max, value));
+  }
+
+  function clampSitePan() {
+    const minX = SITE_MAP_DIM.width - SITE_MAP_DIM.width * state.siteZoom;
+    const minY = SITE_MAP_DIM.height - SITE_MAP_DIM.height * state.siteZoom;
+    state.sitePanX = clamp(state.sitePanX, minX, 0);
+    state.sitePanY = clamp(state.sitePanY, minY, 0);
+  }
+
+  function applySiteMapTransform() {
+    clampSitePan();
+    const layer = els.siteMap?.querySelector('[data-site-viewport]');
+    if (!layer) return;
+    layer.setAttribute('transform', `translate(${state.sitePanX} ${state.sitePanY}) scale(${state.siteZoom})`);
+    if (els.siteZoomReset) els.siteZoomReset.textContent = `${fmtFloat(state.siteZoom, 1)}×`;
+  }
+
+  function setSiteZoom(nextZoom, anchor = { x: SITE_MAP_DIM.width / 2, y: SITE_MAP_DIM.height / 2 }) {
+    const prevZoom = state.siteZoom;
+    const clampedZoom = clamp(nextZoom, SITE_MAP_DIM.minZoom, SITE_MAP_DIM.maxZoom);
+    if (Math.abs(clampedZoom - prevZoom) < 1e-6) return;
+    const worldX = (anchor.x - state.sitePanX) / prevZoom;
+    const worldY = (anchor.y - state.sitePanY) / prevZoom;
+    state.siteZoom = clampedZoom;
+    state.sitePanX = anchor.x - worldX * clampedZoom;
+    state.sitePanY = anchor.y - worldY * clampedZoom;
+    applySiteMapTransform();
+  }
+
+  function resetSiteMapView() {
+    state.siteZoom = 1;
+    state.sitePanX = 0;
+    state.sitePanY = 0;
+    applySiteMapTransform();
+  }
+
   function renderSiteMap(rows) {
     const svg = els.siteMap;
-    const width = 980;
-    const height = 460;
+    const width = SITE_MAP_DIM.width;
+    const height = SITE_MAP_DIM.height;
     const margin = { top: 20, right: 20, bottom: 20, left: 20 };
     const innerW = width - margin.left - margin.right;
     const innerH = height - margin.top - margin.bottom;
@@ -1436,7 +1745,9 @@
     const maxVal = Math.max(...rows.map((r) => SITE_METRICS[state.siteMetric].get(r)), 1);
     const rScale = (v) => 5 + Math.sqrt(Math.max(num(v), 0) / maxVal) * 18;
     const parts = [];
+    parts.push(`<defs><clipPath id="siteMapClip"><rect x="0" y="0" width="${width}" height="${height}" rx="18"></rect></clipPath></defs>`);
     parts.push(`<rect x="0" y="0" width="${width}" height="${height}" rx="18" fill="#eef5ff" stroke="#d6dfeb"></rect>`);
+    parts.push(`<g data-site-viewport clip-path="url(#siteMapClip)">`);
     parts.push(`<image href="${WORLD_MAP_BG}" x="0" y="0" width="${width}" height="${height}" preserveAspectRatio="none" opacity="0.95"></image>`);
     for (let lon = -120; lon <= 120; lon += 60) {
       const x = xScale(lon);
@@ -1465,23 +1776,87 @@
     rows.filter((r) => labels.includes(r.site)).forEach((row) => {
       const cx = xScale(row.lon);
       const cy = yScale(row.lat);
-      const label = row.label;
-      parts.push(`<text class="svg-bubble-label" x="${cx + 10}" y="${cy - 10}">${label}</text>`);
+      parts.push(`<text class="svg-bubble-label" x="${cx + 10}" y="${cy - 10}">${row.label}</text>`);
     });
+    parts.push(`</g>`);
 
     svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
     svg.innerHTML = parts.join('');
-    [...svg.querySelectorAll('.site-marker')].forEach((el) => {
-      const row = rows.find((r) => r.site === el.dataset.site);
+    applySiteMapTransform();
+
+    const rowMap = new Map(rows.map((row) => [row.site, row]));
+    const pickMarker = (target) => target?.closest ? target.closest('.site-marker') : null;
+    const drag = { active: false, pointerId: null, startX: 0, startY: 0, panX: 0, panY: 0, moved: false };
+
+    svg.onwheel = (event) => {
+      event.preventDefault();
+      const rect = svg.getBoundingClientRect();
+      const anchor = {
+        x: ((event.clientX - rect.left) / rect.width) * width,
+        y: ((event.clientY - rect.top) / rect.height) * height
+      };
+      const factor = event.deltaY < 0 ? 1.18 : 1 / 1.18;
+      setSiteZoom(state.siteZoom * factor, anchor);
+    };
+
+    svg.onpointerdown = (event) => {
+      if (event.button !== 0) return;
+      drag.active = true;
+      drag.pointerId = event.pointerId;
+      drag.startX = event.clientX;
+      drag.startY = event.clientY;
+      drag.panX = state.sitePanX;
+      drag.panY = state.sitePanY;
+      drag.moved = false;
+      svg.setPointerCapture(event.pointerId);
+      svg.parentElement?.classList.add('dragging');
+    };
+
+    svg.onpointermove = (event) => {
+      if (drag.active && drag.pointerId === event.pointerId) {
+        const dx = event.clientX - drag.startX;
+        const dy = event.clientY - drag.startY;
+        if (Math.abs(dx) > 3 || Math.abs(dy) > 3) drag.moved = true;
+        state.sitePanX = drag.panX + dx;
+        state.sitePanY = drag.panY + dy;
+        applySiteMapTransform();
+        hideTooltip();
+        return;
+      }
+      const marker = pickMarker(event.target);
+      if (!marker) {
+        hideTooltip();
+        return;
+      }
+      const row = rowMap.get(marker.dataset.site);
       if (!row) return;
-      el.addEventListener('mouseenter', (e) => showSiteTooltip(e, row));
-      el.addEventListener('mousemove', moveTooltip);
-      el.addEventListener('mouseleave', hideTooltip);
-      el.addEventListener('click', () => openDrawer({ type: 'site', id: row.site }));
-      el.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          openDrawer({ type: 'site', id: row.site });
+      showSiteTooltip(event, row);
+    };
+
+    const endDrag = (event) => {
+      if (drag.active && drag.pointerId === event.pointerId) {
+        drag.active = false;
+        svg.releasePointerCapture(event.pointerId);
+        svg.parentElement?.classList.remove('dragging');
+        setTimeout(() => { drag.moved = false; }, 0);
+      }
+    };
+    svg.onpointerup = endDrag;
+    svg.onpointercancel = endDrag;
+    svg.onpointerleave = () => { if (!drag.active) hideTooltip(); };
+
+    svg.onclick = (event) => {
+      if (drag.moved) return;
+      const marker = pickMarker(event.target);
+      if (!marker) return;
+      openDrawer({ type: 'site', id: marker.dataset.site });
+    };
+
+    [...svg.querySelectorAll('.site-marker')].forEach((marker) => {
+      marker.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          openDrawer({ type: 'site', id: marker.dataset.site });
         }
       });
     });
@@ -1497,7 +1872,7 @@
           <span>${accessLabel(key)}</span>
         </div>
       `),
-      `<div class="summary-pill muted-pill"><span>${t('hoverHint')}</span></div>`
+      `<div class="summary-pill muted-pill"><span>${t('siteZoomHint')}</span></div>`
     ].join('');
   }
 
@@ -1509,13 +1884,13 @@
 
 
   function benchmarkRowsAndMetric(nodes) {
-    const rows = buildBenchmarkRows(nodes);
+    const rows = buildBenchmarkRows(nodes, state.benchmarkYear);
     const metricDef = BENCHMARK_METRICS[state.benchmarkMetric];
-    return rows
+    const sorted = rows
       .map((row) => ({ ...row, metricValue: metricDef.get(row) }))
       .filter((row) => num(row.metricValue) > 0)
-      .sort((a, b) => num(b.metricValue) - num(a.metricValue))
-      .slice(0, state.topN);
+      .sort((a, b) => state.benchmarkSort === 'asc' ? num(a.metricValue) - num(b.metricValue) : num(b.metricValue) - num(a.metricValue));
+    return state.benchmarkTopN === 'all' ? sorted : sorted.slice(0, Number(state.benchmarkTopN || 10));
   }
 
   function renderBenchmark(nodes) {
@@ -1536,7 +1911,7 @@
       const infoColor = row.route_class ? routeInfo(row.route_class).color : '#64748b';
       const x = xScale(row.metricValue);
       parts.push(`<text class="svg-axis" x="${margin.left - 12}" y="${y + 24}" text-anchor="end">${row.label}</text>`);
-      parts.push(`<g class="bar-row" data-id="${row.id}" data-type="${row.type}">
+      parts.push(`<g class="bar-row" data-id="${row.id}" data-type="${row.type}" tabindex="0" role="button" aria-label="${row.label}">
         <rect x="${margin.left}" y="${y}" width="${innerW}" height="${barH}" rx="10" fill="#eef3fa"></rect>
         <rect x="${margin.left}" y="${y}" width="${Math.max(4, x - margin.left)}" height="${barH}" rx="10" fill="${infoColor}" fill-opacity="0.82"></rect>
         <text class="svg-bar-value" x="${Math.min(width - margin.right + 12, x + 10)}" y="${y + 24}">${formatMetricValue(state.benchmarkMetric, row.metricValue)}</text>
@@ -1545,35 +1920,56 @@
     svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
     svg.innerHTML = parts.join('');
 
-    [...svg.querySelectorAll('.bar-row')].forEach((el) => {
-      const type = el.dataset.type;
-      const id = el.dataset.id;
-      el.addEventListener('click', () => {
-        if (type === 'vehicle') openDrawer({ type: 'vehicle', id });
-        if (type === 'company') {
-          state.company = id;
-          syncSelectOptions();
-          renderAll();
-        }
-        if (type === 'country') {
-          state.country = id;
-          syncSelectOptions();
-          renderAll();
+    const rowMap = new Map(rows.map((row) => [row.id, row]));
+    const pickRow = (target) => target?.closest ? target.closest('.bar-row') : null;
+    svg.onpointermove = (event) => {
+      const rowEl = pickRow(event.target);
+      if (!rowEl) {
+        hideTooltip();
+        return;
+      }
+      const row = rowMap.get(rowEl.dataset.id);
+      if (!row) return;
+      showTooltip(event, `<strong>${row.label}</strong><div class="tooltip-meta">${yearLabel(state.benchmarkYear)} · ${t('benchmarkMetrics')[state.benchmarkMetric]}</div><div>${formatMetricValue(state.benchmarkMetric, row.metricValue)}</div></div>`);
+    };
+    svg.onpointerleave = hideTooltip;
+    svg.onclick = (event) => {
+      const rowEl = pickRow(event.target);
+      if (!rowEl) return;
+      const type = rowEl.dataset.type;
+      const id = rowEl.dataset.id;
+      if (type === 'vehicle') openDrawer({ type: 'vehicle', id });
+      if (type === 'company') {
+        state.company = id;
+        syncSelectOptions();
+        renderAll();
+      }
+      if (type === 'country') {
+        state.country = id;
+        syncSelectOptions();
+        renderAll();
+      }
+    };
+    [...svg.querySelectorAll('.bar-row')].forEach((rowEl) => {
+      rowEl.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          rowEl.click();
         }
       });
     });
 
     const visible = filteredNodes();
-    const supply = visible.reduce((sum, n) => sum + bestEstimateSupply(n), 0);
-    const launches = visible.reduce((sum, n) => sum + bestEstimateLaunches(n), 0);
+    const supply = visible.reduce((sum, n) => sum + bestEstimateSupply(n, state.benchmarkYear), 0);
+    const launches = visible.reduce((sum, n) => sum + bestEstimateLaunches(n, state.benchmarkYear), 0);
     const companies = new Set(visible.map((n) => n.company)).size;
     els.benchmarkSummary.innerHTML = `
       <div class="metric-card compact">
-        <div class="metric-title">${yearLabel()} ${t('labels').modelSupply}</div>
+        <div class="metric-title">${yearLabel(state.benchmarkYear)} ${t('labels').modelSupply}</div>
         <div class="metric-value">${fmtMass(supply)}</div>
       </div>
       <div class="metric-card compact">
-        <div class="metric-title">${yearLabel()} ${t('labels').modelLaunches}</div>
+        <div class="metric-title">${yearLabel(state.benchmarkYear)} ${t('labels').modelLaunches}</div>
         <div class="metric-value">${fmtInt(launches)}</div>
       </div>
       <div class="metric-card compact">
@@ -1607,8 +2003,8 @@
         <div class="stats-grid">
           <div class="stat-box"><span>${yearLabel()} ${t('labels').modelLaunches}</span><strong>${fmtInt(row.best_estimate_launches_selected)}</strong></div>
           <div class="stat-box"><span>${isZh ? '最大单发能力' : 'Max single-launch'}</span><strong>${fmtMass(row.max_single_launch_kg)}</strong></div>
-          <div class="stat-box"><span>${isZh ? '估值' : 'Valuation'}</span><strong>${fmtMoneyM(row.valuation_est_usd_m)}</strong></div>
-          <div class="stat-box"><span>${isZh ? '融资额' : 'Funding'}</span><strong>${fmtMoneyM(row.funding_est_usd_m)}</strong></div>
+          <div class="stat-box"><span>${isZh ? '估值（USD bn）' : 'Valuation (USD bn)'}</span><strong>${fmtMoneyCapital(row.valuation_est_usd_m)}</strong></div>
+          <div class="stat-box"><span>${isZh ? '融资额（USD bn）' : 'Funding (USD bn)'}</span><strong>${fmtMoneyCapital(row.funding_est_usd_m)}</strong></div>
         </div>
       </article>
     `).join('') : `<div class="empty-state">${t('empty')}</div>`;
@@ -1622,12 +2018,12 @@
   function renderDataPort() {
     const countries = new Set(state.data.nodes.map((node) => node.country)).size;
     const gridItems = [
-      { k: isZh ? '覆盖火箭' : 'Vehicles covered', v: fmtInt(state.data.nodes.length) },
+      { k: isZh ? '覆盖载具' : 'Vehicles covered', v: fmtInt(state.data.nodes.length) },
       { k: isZh ? '覆盖公司' : 'Companies covered', v: fmtInt(state.data.companies.length) },
       { k: isZh ? '发射场' : 'Launch sites', v: fmtInt(Object.keys(state.data.launchSites).length) },
       { k: isZh ? '覆盖国家' : 'Countries covered', v: fmtInt(countries) },
       { k: isZh ? '最近更新' : 'Last update', v: state.data.meta_v3.updated_at || t('unknown') },
-      { k: isZh ? '保存方式' : 'Persistence', v: isZh ? '浏览器本地 + JSON 导入导出' : 'Browser local + JSON import/export' }
+      { k: isZh ? '保存方式' : 'Persistence', v: DATA_FROM_API ? (isZh ? '后端 API + 浏览器本地缓存' : 'Backend API + browser cache') : (isZh ? '浏览器本地 + JSON 导入导出' : 'Browser local + JSON import/export') }
     ];
     const examplePatch = {
       type: 'vehicle',
@@ -1700,7 +2096,7 @@
         <td>${fmtMass(item[`model_payload_${y}_kg`])}</td>
         <td>${fmtMass(item[`model_supply_${y}_kg`])}</td>
         <td>${fmtMoneyM(item[`model_price_${y}_usd_m`])}</td>
-        <td>${fmtMoneyM(item[`model_revenue_${y}_usd_m`])}</td>
+        <td>${fmtMoneyCapital(item[`model_revenue_${y}_usd_m`])}</td>
         <td>${fmtUsdPerKg(item[`model_usd_per_kg_${y}`])}</td>
         <td>${fmtInt(item[`model_cum_launches_${y}`])}</td>
       </tr>
@@ -1708,7 +2104,7 @@
     const note = item.excel_model_notes || item.excel_model_key_models || item.excel_model_company || t('unknown');
     return `
       <div class="info-card soft">
-        <div class="metric-title">${isAggregate ? (isZh ? '公司层 5 年预测' : 'Company 5-year outlook') : (isZh ? '火箭 5 年预测' : 'Vehicle 5-year outlook')}</div>
+        <div class="metric-title">${isAggregate ? (isZh ? '公司层 5 年预测' : 'Company 5-year outlook') : (isZh ? '载具 5 年预测' : 'Vehicle 5-year outlook')}</div>
         <div class="metric-meta">${note}</div>
       </div>
       <div class="table-wrap">
@@ -1720,7 +2116,7 @@
               <th>${isZh ? '单次有效载荷' : 'Payload / launch'}</th>
               <th>${isZh ? '年供给' : 'Annual supply'}</th>
               <th>${isZh ? '单次价格' : 'Price / launch'}</th>
-              <th>${isZh ? '年收入' : 'Annual revenue'}</th>
+              <th>${isZh ? '年收入（USD bn）' : 'Annual revenue (USD bn)'}</th>
               <th>$ / kg</th>
               <th>${isZh ? '累计发射次数' : 'Cumulative launches'}</th>
             </tr>
@@ -1807,8 +2203,8 @@
         formField({ label: (isZh ? '2030E 发射次数' : '2030E launches'), name: 'best_launches_2030', value: bestEstimateLaunches(record, 2030), type: 'number' }),
         formField({ label: (isZh ? '2026E 单次价格' : '2026E price / launch') + ' (USD m)', name: 'model_price_2026_usd_m', value: record.model_price_2026_usd_m || '', type: 'number' }),
         formField({ label: (isZh ? '2030E 单次价格' : '2030E price / launch') + ' (USD m)', name: 'model_price_2030_usd_m', value: record.model_price_2030_usd_m || '', type: 'number' }),
-        formField({ label: (isZh ? '估值' : 'Valuation') + ' (USD m)', name: 'valuation_est_usd_m', value: record.valuation_est_usd_m || '', type: 'number' }),
-        formField({ label: (isZh ? '融资额' : 'Funding') + ' (USD m)', name: 'funding_est_usd_m', value: record.funding_est_usd_m || '', type: 'number' }),
+        formField({ label: (isZh ? '估值' : 'Valuation') + ' (USD bn)', name: 'valuation_est_usd_m', value: record.valuation_est_usd_m ? record.valuation_est_usd_m / 1000 : '', type: 'number' }),
+        formField({ label: (isZh ? '融资额' : 'Funding') + ' (USD bn)', name: 'funding_est_usd_m', value: record.funding_est_usd_m ? record.funding_est_usd_m / 1000 : '', type: 'number' }),
         formField({ label: t('labels').mainSites, name: 'launchSites', value: (record.launchSites || []).join(', ') }),
         formField({ label: isZh ? '当前状态（中文）' : 'Current status (ZH)', name: 'currentRealityZh', value: record.currentRealityZh || '', textarea: true }),
         formField({ label: 'Current status (EN)', name: 'current_reality', value: record.current_reality || '', textarea: true })
@@ -1823,8 +2219,8 @@
         formField({ label: (isZh ? '2026E 发射次数' : '2026E launches'), name: 'best_launches_2026', value: Number(record.model_launches_2026 || 0), type: 'number' }),
         formField({ label: (isZh ? '2030E 年供给' : '2030E annual supply') + ' (kg)', name: 'best_supply_2030', value: Number(record.model_supply_2030_kg || record.supply_2030_kg || 0), type: 'number' }),
         formField({ label: (isZh ? '2030E 发射次数' : '2030E launches'), name: 'best_launches_2030', value: Number(record.model_launches_2030 || 0), type: 'number' }),
-        formField({ label: (isZh ? '估值' : 'Valuation') + ' (USD m)', name: 'valuation_est_usd_m', value: record.valuation_est_usd_m || '', type: 'number' }),
-        formField({ label: (isZh ? '融资额' : 'Funding') + ' (USD m)', name: 'funding_est_usd_m', value: record.funding_est_usd_m || '', type: 'number' }),
+        formField({ label: (isZh ? '估值' : 'Valuation') + ' (USD bn)', name: 'valuation_est_usd_m', value: record.valuation_est_usd_m ? record.valuation_est_usd_m / 1000 : '', type: 'number' }),
+        formField({ label: (isZh ? '融资额' : 'Funding') + ' (USD bn)', name: 'funding_est_usd_m', value: record.funding_est_usd_m ? record.funding_est_usd_m / 1000 : '', type: 'number' }),
         formField({ label: t('labels').mainSites, name: 'mainLaunchSites', value: (record.mainLaunchSites || []).join(', ') }),
         formField({ label: isZh ? '发射方式（中文）' : 'Launch methods (ZH)', name: 'launchMethodsZh', value: (record.launchMethodsZh || []).join(', ') }),
         formField({ label: 'Launch methods (EN)', name: 'launchMethodsEn', value: (record.launchMethodsEn || []).join(', ') }),
@@ -1908,8 +2304,8 @@
       });
       const valuation = number('valuation_est_usd_m');
       const funding = number('funding_est_usd_m');
-      if (valuation != null) record.valuation_est_usd_m = valuation;
-      if (funding != null) record.funding_est_usd_m = funding;
+      if (valuation != null) record.valuation_est_usd_m = valuation * 1000;
+      if (funding != null) record.funding_est_usd_m = funding * 1000;
     }
 
     if (state.drawer.type === 'company') {
@@ -1934,8 +2330,8 @@
       });
       const valuation = number('valuation_est_usd_m');
       const funding = number('funding_est_usd_m');
-      if (valuation != null) companyMeta.valuation_est_usd_m = valuation;
-      if (funding != null) companyMeta.funding_est_usd_m = funding;
+      if (valuation != null) companyMeta.valuation_est_usd_m = valuation * 1000;
+      if (funding != null) companyMeta.funding_est_usd_m = funding * 1000;
     }
 
     if (state.drawer.type === 'site') {
@@ -1984,8 +2380,8 @@
           <div class="stat-box"><span>${yearLabel()} ${t('labels').modelSupply}</span><strong>${bestEstimateSupplyLabel(node)}</strong></div>
           <div class="stat-box"><span>${yearLabel()} ${t('labels').modelLaunches}</span><strong>${bestEstimateLaunchesLabel(node)}</strong></div>
           <div class="stat-box"><span>${t('labels').price}</span><strong>${fmtMoneyM(node[currentKeys().modelPrice])}</strong></div>
-          <div class="stat-box"><span>${t('labels').valuation}</span><strong>${fmtMoneyM(node.valuation_est_usd_m)}</strong></div>
-          <div class="stat-box"><span>${t('labels').funding}</span><strong>${fmtMoneyM(node.funding_est_usd_m)}</strong></div>
+          <div class="stat-box"><span>${isZh ? '估值（USD bn）' : 'Valuation (USD bn)'}</span><strong>${fmtMoneyCapital(node.valuation_est_usd_m)}</strong></div>
+          <div class="stat-box"><span>${isZh ? '融资额（USD bn）' : 'Funding (USD bn)'}</span><strong>${fmtMoneyCapital(node.funding_est_usd_m)}</strong></div>
         </div>
       </section>
       <section class="drawer-section">
@@ -2041,11 +2437,11 @@
       <section class="drawer-section">
         <h3>${t('drawerSections').summary}</h3>
         <div class="stats-grid wide">
-          <div class="stat-box"><span>${isZh ? '车辆数' : 'Vehicles'}</span><strong>${fmtInt(nodes.length)}</strong></div>
+          <div class="stat-box"><span>${isZh ? '载具数' : 'Vehicles'}</span><strong>${fmtInt(nodes.length)}</strong></div>
           <div class="stat-box"><span>${yearLabel()} ${t('labels').modelSupply}</span><strong>${fmtMass(view.best_estimate_supply_selected_kg || Number(view[`model_supply_${state.year}_kg`] || view[`supply_${state.year}_kg`] || 0))}</strong></div>
           <div class="stat-box"><span>${yearLabel()} ${t('labels').modelLaunches}</span><strong>${fmtInt(view.best_estimate_launches_selected || Number(view[`model_launches_${state.year}`] || 0))}</strong></div>
-          <div class="stat-box"><span>${t('labels').valuation}</span><strong>${fmtMoneyM(view.valuation_est_usd_m)}</strong></div>
-          <div class="stat-box"><span>${t('labels').funding}</span><strong>${fmtMoneyM(view.funding_est_usd_m)}</strong></div>
+          <div class="stat-box"><span>${isZh ? '估值（USD bn）' : 'Valuation (USD bn)'}</span><strong>${fmtMoneyCapital(view.valuation_est_usd_m)}</strong></div>
+          <div class="stat-box"><span>${isZh ? '融资额（USD bn）' : 'Funding (USD bn)'}</span><strong>${fmtMoneyCapital(view.funding_est_usd_m)}</strong></div>
           <div class="stat-box"><span>${isZh ? '最大单发能力' : 'Max single-launch'}</span><strong>${fmtMass(Math.max(...nodes.map((n) => Number(n.single_launch_kg || 0)), 0))}</strong></div>
         </div>
       </section>
@@ -2090,7 +2486,7 @@
         <div class="info-card"><span class="info-label">${t('labels').accessCategory}</span><span class="info-value">${accessLabel(site.access_category)}</span></div>
         <div class="info-card"><span class="info-label">${isZh ? '场地类型' : 'Site type'}</span><span class="info-value">${site.site_type}</span></div>
         <div class="info-card"><span class="info-label">${isZh ? '覆盖公司' : 'Companies'}</span><span class="info-value">${(site.companies || []).join(' / ') || t('unknown')}</span></div>
-        <div class="info-card"><span class="info-label">${isZh ? '覆盖火箭' : 'Vehicles'}</span><span class="info-value">${(site.vehicles || []).join(' / ') || t('unknown')}</span></div>
+        <div class="info-card"><span class="info-label">${isZh ? '覆盖载具' : 'Vehicles'}</span><span class="info-value">${(site.vehicles || []).join(' / ') || t('unknown')}</span></div>
       </section>
     `;
   }
@@ -2195,10 +2591,43 @@
       state.benchmarkMetric = e.target.value;
       renderAll();
     });
+    if (els.benchmarkYear) {
+      els.benchmarkYear.addEventListener('change', (e) => {
+        state.benchmarkYear = Number(e.target.value);
+        renderAll();
+      });
+    }
+    if (els.benchmarkTopN) {
+      els.benchmarkTopN.addEventListener('change', (e) => {
+        state.benchmarkTopN = e.target.value;
+        renderAll();
+      });
+    }
+    if (els.benchmarkSort) {
+      els.benchmarkSort.addEventListener('change', (e) => {
+        state.benchmarkSort = e.target.value;
+        renderAll();
+      });
+    }
+    if (els.overviewSupplyGroup) {
+      els.overviewSupplyGroup.addEventListener('change', (e) => {
+        state.overviewSupplyGroup = e.target.value;
+        renderAll();
+      });
+    }
+    if (els.overviewSupplyYear) {
+      els.overviewSupplyYear.addEventListener('change', (e) => {
+        state.overviewSupplyYear = Number(e.target.value);
+        renderAll();
+      });
+    }
     els.siteMetricSelect.addEventListener('change', (e) => {
       state.siteMetric = e.target.value;
       renderAll();
     });
+    if (els.siteZoomIn) els.siteZoomIn.addEventListener('click', () => setSiteZoom(state.siteZoom * 1.2));
+    if (els.siteZoomOut) els.siteZoomOut.addEventListener('click', () => setSiteZoom(state.siteZoom / 1.2));
+    if (els.siteZoomReset) els.siteZoomReset.addEventListener('click', resetSiteMapView);
     els.closeDrawer.addEventListener('click', closeDrawer);
     els.drawerBackdrop.addEventListener('click', closeDrawer);
     if (els.editRecordBtn) {
@@ -2230,7 +2659,23 @@
       });
     }
     if (els.resetDataBtn) {
-      els.resetDataBtn.addEventListener('click', resetLocalData);
+      els.resetDataBtn.addEventListener('click', async () => {
+        if (DATA_FROM_API) {
+          try {
+            const next = await resetDataOnServer();
+            state.data = deepClone(next);
+            state.defaultData = deepClone(next);
+            state.editing = false;
+            saveDataToLocal(t('statusText').resetSuccess);
+            renderAll();
+            if (state.drawer) renderDrawer();
+            return;
+          } catch (error) {
+            console.error(error);
+          }
+        }
+        resetLocalData();
+      });
     }
     if (els.uploadDataBtn) {
       els.uploadDataBtn.addEventListener('click', uploadCurrentData);
@@ -2244,10 +2689,10 @@
   async function init() {
     [
       'brandTitle','heroEyebrow','heroTitle','heroSubtitle','heroTakeaways','heroPrimaryAction','heroSecondaryAction',
-      'navMap','navSites','navBenchmark','navData','overviewTitle','overviewGrid','routeTitle','routeSubtitle','routeGrid',
+      'navMap','navSites','navBenchmark','navData','overviewTitle','overviewGrid','overviewSupplyLabel','overviewSupplyGroup','overviewSupplyYear','overviewSupplyChart','routeTitle','routeSubtitle','routeGrid',
       'year2026','year2030','hideZeroBtn','regionSelect','countrySelect','companySelect','searchInput','clearBtn',
-      'mapTitle','mapSubtitle','mapSummary','bubbleChart','mapLegend','sitesTitle','sitesSubtitle','siteMetricLabel','siteMetricSelect','siteMap','siteLegend',
-      'benchmarkTitle','benchmarkSubtitle','benchmarkMode','benchmarkMetric','benchmarkSummary','benchmarkChart',
+      'mapTitle','mapSubtitle','mapSummary','bubbleChart','mapLegend','sitesTitle','sitesSubtitle','siteMetricLabel','siteMetricSelect','siteZoomOut','siteZoomReset','siteZoomIn','siteMap','siteLegend',
+      'benchmarkTitle','benchmarkSubtitle','benchmarkMode','benchmarkMetric','benchmarkYear','benchmarkTopN','benchmarkSort','benchmarkSummary','benchmarkChart',
       'listTitle','listSubtitle','companyGrid','dataTitle','dataSubtitle','dataPortGrid','downloadDataBtn','importDataBtn','uploadDataBtn','resetDataBtn','importDataInput','dataStatus',
       'drawerBackdrop','detailDrawer','closeDrawer','editRecordBtn','drawerBody','tooltip','tooltipHost'
     ].forEach((id) => {
@@ -2255,7 +2700,8 @@
     });
     const baseData = await loadData();
     state.defaultData = deepClone(baseData);
-    state.data = savedDataFromLocal() || deepClone(baseData);
+    const localData = savedDataFromLocal();
+    state.data = DATA_FROM_API ? deepClone(baseData) : (localData || deepClone(baseData));
     bindEvents();
     exposePublicApi();
     renderAll();

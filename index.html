@@ -38,6 +38,16 @@
           <h2 id="overviewTitle">一眼看懂</h2>
         </div>
         <div class="overview-grid" id="overviewGrid"></div>
+        <div class="chart-toolbar overview-toolbar">
+          <div class="metric-title" id="overviewSupplyLabel">供给概览</div>
+          <div class="toolbar-controls">
+            <select id="overviewSupplyGroup" class="select-inline" style="width:min(240px,100%)"></select>
+            <select id="overviewSupplyYear" class="select-inline" style="width:min(180px,100%)"></select>
+          </div>
+        </div>
+        <div class="chart-shell">
+          <svg id="overviewSupplyChart" role="img" aria-label="overview supply chart"></svg>
+        </div>
       </section>
 
       <section class="section-card card" id="routes">
@@ -83,7 +93,14 @@
         </div>
         <div class="chart-toolbar">
           <div class="metric-title" id="siteMetricLabel">地图大小</div>
-          <select id="siteMetricSelect" class="select-inline" style="width:min(360px,100%)"></select>
+          <div class="toolbar-controls">
+            <select id="siteMetricSelect" class="select-inline" style="width:min(320px,100%)"></select>
+            <div class="zoom-controls">
+              <button class="ghost-button zoom-btn" id="siteZoomOut" type="button">−</button>
+              <button class="ghost-button zoom-btn" id="siteZoomReset" type="button">1×</button>
+              <button class="ghost-button zoom-btn" id="siteZoomIn" type="button">+</button>
+            </div>
+          </div>
         </div>
         <div class="chart-shell wide-map-shell">
           <svg id="siteMap" role="img" aria-label="launch site map"></svg>
@@ -96,10 +113,12 @@
           <h2 id="benchmarkTitle">快速比较</h2>
           <p class="section-subtitle" id="benchmarkSubtitle"></p>
         </div>
-        <div class="control-grid" style="grid-template-columns: 1fr 1.4fr auto auto auto auto;">
+        <div class="control-grid benchmark-control-grid">
           <select id="benchmarkMode" aria-label="mode"></select>
           <select id="benchmarkMetric" aria-label="metric"></select>
-          <div></div><div></div><div></div><div></div>
+          <select id="benchmarkYear" aria-label="benchmark year"></select>
+          <select id="benchmarkTopN" aria-label="benchmark count"></select>
+          <select id="benchmarkSort" aria-label="benchmark sort"></select>
         </div>
         <div class="benchmark-summary" id="benchmarkSummary"></div>
         <div class="chart-shell"><svg id="benchmarkChart" role="img" aria-label="benchmark chart"></svg></div>
