@@ -907,3 +907,84 @@ svg {
     justify-content: flex-start;
   }
 }
+
+
+
+.control-field {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+}
+
+.control-label {
+  font-size: 12px;
+  color: var(--ink-soft);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.zoom-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap;
+}
+
+.zoom-slider {
+  width: min(180px, 36vw);
+  accent-color: var(--brand);
+}
+
+.wide-map-shell {
+  min-height: 520px;
+}
+
+#siteMap {
+  touch-action: none;
+}
+
+.wide-map-shell.dragging,
+.wide-map-shell.dragging * {
+  cursor: grabbing !important;
+}
+
+#siteMap,
+.site-marker,
+.bubble,
+.bar-row,
+.bubble-label,
+.bar-label,
+.site-label,
+.company-card,
+.route-card,
+.chip[data-vehicle-link] {
+  cursor: pointer;
+}
+
+.tooltip-host {
+  position: relative;
+  overflow: visible;
+}
+
+.tooltip {
+  z-index: 60;
+  max-width: min(320px, calc(100vw - 40px));
+}
+
+.svg-axis.bar-label,
+.svg-bubble-label.bubble-label,
+.svg-bubble-label.site-label {
+  fill: #45607f;
+  font-weight: 600;
+}
+
+@media (max-width: 840px) {
+  .zoom-controls {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .zoom-slider {
+    width: 120px;
+  }
+}

@@ -1,75 +1,57 @@
-# Rocket Market Map — full-stack refresh
+# Rocket Market Map — v6 iteration
 
-## This round of work
+## What was fixed in this round
 
-This build turns the site from a static interactive page into a **front-end + back-end** package.
+This iteration focused on the parts that still felt broken in the deployed site, especially the user-facing interaction layer.
 
-## What changed
+### 1) Hover previews were fixed at the root cause
+The main issue was not only event binding. The shared tooltip element was mounted inside the first chart container, so even when events fired, the tooltip could be positioned relative to the wrong box and appear broken or invisible.
 
-### 1) Hover previews now exist across the key views
-- Main market map bubbles support hover preview.
-- Launch-site markers support hover preview.
-- The new supply overview bar chart supports hover preview.
-- The benchmark chart supports hover preview.
+This round:
+- moved the shared tooltip to the global page host
+- kept pointer tracking, but also added direct hover bindings to interactive SVG elements
+- added hover support for bubble labels, site labels, and benchmark / overview row labels
+- added keyboard focus previews for the main interactive targets
 
-Implementation note: the hover logic was moved to SVG event delegation so it works more reliably on the actual circle / bar elements instead of depending on group-level hover behavior.
+### 2) Launch-site map zoom is clearer and easier to use
+The map already had wheel + drag logic, but it was not obvious enough and was still easy to miss.
 
-### 2) Launch-site map now supports zoom and pan
-- Added zoom in / reset / zoom out controls.
-- Added mouse-wheel zoom.
-- Added drag-to-pan.
-- Kept click-through detail behavior.
+This round:
+- enlarged the site map canvas
+- added a zoom slider
+- kept wheel zoom, drag-to-pan, and +/- controls
+- added double-click zoom
+- improved cursor and drag feedback
 
-### 3) “Quick compare” is now user-controllable
-Users can now choose:
-- comparison level: vehicle / company / country
+### 3) Quick compare controls are more explicit
+The controls now show visible field labels instead of unlabeled dropdowns only.
+
+Users can choose:
+- comparison level
 - metric
-- year: 2026E–2030E
-- range: Top 10 / Top 20 / All
-- order: high → low or low → high
+- year
+- display range: Top 5 / Top 10 / Top 20 / All
+- sort order
 
-### 4) Chinese terminology was corrected
-- `Vehicle` is now translated as **载具** in the user-facing Chinese UI.
+### 4) User-facing wording stayed aligned
+- Chinese user-facing terminology remains **载具**
+- capital-style metrics remain unified in **USD bn**
 
-### 5) “先看整体” now has an interactive supply bar chart
-- Added a supply overview chart under the top summary cards.
-- Supports grouping by company / country / route.
-- Supports year switching.
-- Hover shows details.
-- Clicking a bar applies the corresponding filter and jumps the user into the market view.
+## Validation done
 
-### 6) Revenue / valuation / funding now use one unit
-- Unified user-facing display for capital-style metrics to **USD bn**.
-- Price per launch is still shown separately as price, since it is a different concept.
+### Static validation
+- checked the patched HTML for duplicate IDs
+- verified the tooltip is now mounted at the page host instead of inside the map chart container
+- verified the new controls exist in the DOM
+- ran `node --check assets/app.js`
 
-### 7) A real backend was added
-New FastAPI backend in `backend/`:
+### Backend validation
+Validated with FastAPI `TestClient`:
 - `GET /api/health`
 - `GET /api/data`
-- `POST /api/data`
 - `POST /api/patch`
 - `POST /api/reset`
 - `GET /api/history`
-
-Behavior:
-- stores current live data in `backend/storage/current/rocket_market_map_current.json`
-- keeps timestamped backups in `backend/storage/history/`
-- serves the static site and API from the same process
-- front-end automatically prefers `/api/data` when the backend is available
-- **上传保存** now actually persists data server-side when the backend is running
-
-## Public front-end API
-
-```js
-window.RocketMarketMap.getData()
-window.RocketMarketMap.setData(nextData)
-window.RocketMarketMap.applyPatch(patch)
-window.RocketMarketMap.saveLocally()
-window.RocketMarketMap.resetLocalData()
-window.RocketMarketMap.saveToServer()
-window.RocketMarketMap.serverApplyPatch(patch)
-window.RocketMarketMap.resetServerData()
-```
 
 ## Run locally
 

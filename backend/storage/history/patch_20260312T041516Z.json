@@ -1,6 +1,6 @@
 {
   "meta": {
-    "version": "2026-03-12T04:15:16+00:00",
+    "version": "2026-03-06-v2",
     "title": "Global Launch Market Map 2026 / 2027-2030",
     "titleZh": "全球火箭市场地图 2026 / 2027-2030",
     "subtitle": "Interactive strategic dashboard for launch supply, technology routes, competitive economics and capital structure across the U.S., Europe and China.",
@@ -73,7 +73,7 @@
     "data_port": "data/rocket_market_map_2026_2030_v3.json",
     "schema_port": "data/update_contract.json",
     "manifest_port": "data/manifest.json",
-    "updated_at": "2026-03-12T04:15:16+00:00",
+    "updated_at": "2026-03-10",
     "routeDefinitions": {
       "scaled_reuse": {
         "zh": "规模化复用主力",
@@ -1381,8 +1381,7 @@
       "launch-site map + launch-method + site-assurance notes",
       "flexible benchmarking bar chart",
       "excel-model metrics integrated into vehicles and companies"
-    ],
-    "last_write_source": "reset"
+    ]
   },
   "nodes": [
     {

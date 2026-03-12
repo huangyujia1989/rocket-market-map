@@ -55,7 +55,7 @@
     benchmarkTopN: '显示范围',
     benchmarkSort: '排序方式',
     benchmarkSortOptions: { desc: '从高到低', asc: '从低到高' },
-    benchmarkTopOptions: { '10': 'Top 10', '20': 'Top 20', all: '全部' },
+    benchmarkTopOptions: { '5': 'Top 5', '10': 'Top 10', '20': 'Top 20', all: '全部' },
     overviewSupplyLabel: '供给概览',
     overviewSupplyGroup: '分组方式',
     overviewSupplyYear: '查看年份',
@@ -196,7 +196,7 @@
     benchmarkTopN: 'Rows',
     benchmarkSort: 'Order',
     benchmarkSortOptions: { desc: 'High to low', asc: 'Low to high' },
-    benchmarkTopOptions: { '10': 'Top 10', '20': 'Top 20', all: 'All' },
+    benchmarkTopOptions: { '5': 'Top 5', '10': 'Top 10', '20': 'Top 20', all: 'All' },
     overviewSupplyLabel: 'Supply overview',
     overviewSupplyGroup: 'Group by',
     overviewSupplyYear: 'Year',
@@ -330,7 +330,7 @@
     benchmarkTopN: '显示范围',
     benchmarkSort: '排序方式',
     benchmarkSortOptions: { desc: '从高到低', asc: '从低到高' },
-    benchmarkTopOptions: { '10': 'Top 10', '20': 'Top 20', all: '全部' },
+    benchmarkTopOptions: { '5': 'Top 5', '10': 'Top 10', '20': 'Top 20', all: '全部' },
     overviewSupplyLabel: '供给概览',
     overviewSupplyGroup: '分组方式',
     overviewSupplyYear: '查看年份',
@@ -470,7 +470,7 @@
     benchmarkTopN: 'Rows',
     benchmarkSort: 'Order',
     benchmarkSortOptions: { desc: 'High to low', asc: 'Low to high' },
-    benchmarkTopOptions: { '10': 'Top 10', '20': 'Top 20', all: 'All' },
+    benchmarkTopOptions: { '5': 'Top 5', '10': 'Top 10', '20': 'Top 20', all: 'All' },
     overviewSupplyLabel: 'Supply overview',
     overviewSupplyGroup: 'Group by',
     overviewSupplyYear: 'Year',
@@ -608,7 +608,7 @@
 
   const LOCAL_STORAGE_KEY = 'rocket-market-map-user-data-v5';
   const CHART_YEARS = [2026, 2027, 2028, 2029, 2030];
-  const SITE_MAP_DIM = { width: 980, height: 460, minZoom: 1, maxZoom: 6 };
+  const SITE_MAP_DIM = { width: 1100, height: 560, minZoom: 1, maxZoom: 6 };
   let DATA_FROM_API = false;
 
   const els = {};
@@ -1284,6 +1284,11 @@
     document.getElementById('sitesSubtitle').textContent = t('sitesSubtitle');
     document.getElementById('benchmarkTitle').textContent = t('benchmarkTitle');
     document.getElementById('benchmarkSubtitle').textContent = t('benchmarkSubtitle');
+    if (document.getElementById('benchmarkModeLabel')) document.getElementById('benchmarkModeLabel').textContent = t('benchmarkMode');
+    if (document.getElementById('benchmarkMetricLabel')) document.getElementById('benchmarkMetricLabel').textContent = t('benchmarkMetric');
+    if (document.getElementById('benchmarkYearLabel')) document.getElementById('benchmarkYearLabel').textContent = t('benchmarkYear');
+    if (document.getElementById('benchmarkTopNLabel')) document.getElementById('benchmarkTopNLabel').textContent = t('benchmarkTopN');
+    if (document.getElementById('benchmarkSortLabel')) document.getElementById('benchmarkSortLabel').textContent = t('benchmarkSort');
     document.getElementById('listTitle').textContent = t('listTitle');
     document.getElementById('listSubtitle').textContent = t('listSubtitle');
     document.getElementById('dataTitle').textContent = t('dataTitle');
@@ -1295,6 +1300,7 @@
     if (els.uploadDataBtn) els.uploadDataBtn.textContent = t('dataButtons').upload;
     if (els.resetDataBtn) els.resetDataBtn.textContent = t('dataButtons').reset;
     if (els.siteMetricLabel) els.siteMetricLabel.textContent = t('siteMetric');
+    if (els.siteZoomReset) els.siteZoomReset.title = isZh ? '重置地图缩放' : 'Reset map zoom';
 
     const takeaways = t('heroTakeaways');
     els.heroTakeaways.innerHTML = takeaways.map(([title, body]) => `<div class="takeaway"><h3>${title}</h3><p>${body}</p></div>`).join('');
@@ -1346,7 +1352,7 @@
       const y = margin.top + index * (barH + gap);
       const color = row.route_class ? routeInfo(row.route_class).color : '#214ed3';
       const x = xScale(row.metricValue);
-      parts.push(`<text class="svg-axis" x="${margin.left - 12}" y="${y + 23}" text-anchor="end">${row.label}</text>`);
+      parts.push(`<text class="svg-axis bar-label" data-id="${row.id}" data-type="${row.type}" x="${margin.left - 12}" y="${y + 23}" text-anchor="end">${row.label}</text>`);
       parts.push(`<g class="bar-row" data-id="${row.id}" data-type="${row.type}" tabindex="0" role="button" aria-label="${row.label}">
         <rect x="${margin.left}" y="${y}" width="${innerW}" height="${barH}" rx="10" fill="#eef3fa"></rect>
         <rect x="${margin.left}" y="${y}" width="${Math.max(4, x - margin.left)}" height="${barH}" rx="10" fill="${color}" fill-opacity="0.84"></rect>
@@ -1358,25 +1364,20 @@
     svg.innerHTML = parts.join('');
 
     const rowMap = new Map(rows.map((row) => [row.id, row]));
-    const pickRow = (target) => target?.closest ? target.closest('.bar-row') : null;
-    svg.onpointermove = (event) => {
-      const rowEl = pickRow(event.target);
-      if (!rowEl) {
-        hideTooltip();
-        return;
-      }
-      const row = rowMap.get(rowEl.dataset.id);
-      if (!row) return;
+    const resolveRow = (target) => {
+      if (!target) return null;
+      const rowEl = target.closest ? target.closest('.bar-row') : null;
+      if (rowEl?.dataset?.id) return rowMap.get(rowEl.dataset.id);
+      if (target.dataset?.id) return rowMap.get(target.dataset.id);
+      return null;
+    };
+    const tooltipHtml = (row) => {
       const extra = row.type === 'route'
         ? `${isZh ? '覆盖公司' : 'Companies'}: ${fmtInt(row.companyCount)}`
         : `${yearLabel(state.overviewSupplyYear)} ${t('labels').modelLaunches}: ${fmtInt(row.best_estimate_launches_selected || row.launches || 0)}`;
-      showTooltip(event, `<strong>${row.label}</strong><div class="tooltip-meta">${yearLabel(state.overviewSupplyYear)} ${t('labels').modelSupply}</div><div>${fmtMass(row.metricValue)}</div><div>${extra}</div>`);
+      return `<strong>${row.label}</strong><div class="tooltip-meta">${yearLabel(state.overviewSupplyYear)} ${t('labels').modelSupply}</div><div>${fmtMass(row.metricValue)}</div><div>${extra}</div>`;
     };
-    svg.onpointerleave = hideTooltip;
-    svg.onclick = (event) => {
-      const rowEl = pickRow(event.target);
-      if (!rowEl) return;
-      const row = rowMap.get(rowEl.dataset.id);
+    const activateRow = (row) => {
       if (!row) return;
       if (row.type === 'company') state.company = row.id;
       if (row.type === 'country') state.country = row.id;
@@ -1385,6 +1386,41 @@
       renderAll();
       document.getElementById('map')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
+
+    svg.onpointermove = (event) => {
+      const row = resolveRow(event.target);
+      if (!row) {
+        hideTooltip();
+        return;
+      }
+      showTooltip(event, tooltipHtml(row));
+    };
+    svg.onpointerleave = hideTooltip;
+    svg.onclick = (event) => {
+      const row = resolveRow(event.target);
+      if (row) activateRow(row);
+    };
+    [...svg.querySelectorAll('.bar-row')].forEach((rowEl) => {
+      const row = rowMap.get(rowEl.dataset.id);
+      rowEl.addEventListener('focus', () => row && showTooltipForElement(rowEl, tooltipHtml(row)));
+      rowEl.addEventListener('blur', hideTooltip);
+      rowEl.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          activateRow(row);
+        }
+      });
+    });
+    [...svg.querySelectorAll('.bar-label')].forEach((labelEl) => {
+      labelEl.addEventListener('pointerenter', (event) => {
+        const row = rowMap.get(labelEl.dataset.id);
+        if (row) showTooltip(event, tooltipHtml(row));
+      });
+      labelEl.addEventListener('pointermove', (event) => {
+        const row = rowMap.get(labelEl.dataset.id);
+        if (row) showTooltip(event, tooltipHtml(row));
+      });
+    });
   }
 
   function renderOverview() {
@@ -1617,42 +1653,66 @@
         tries += 1;
       }
       taken.push({ x: lx, y: ly - 12, w, h });
-      parts.push(`<text class="svg-bubble-label" x="${lx}" y="${ly}">${label}</text>`);
+      parts.push(`<text class="svg-bubble-label bubble-label" data-id="${node.id}" x="${lx}" y="${ly}">${label}</text>`);
     });
 
     svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
     svg.innerHTML = parts.join('');
 
     const nodeMap = new Map(nodes.map((node) => [node.id, node]));
-    const pickBubble = (target) => target?.closest ? target.closest('.bubble') : null;
-    svg.onpointermove = (event) => {
-      const bubble = pickBubble(event.target);
-      if (!bubble) {
-        hideTooltip();
-        return;
-      }
-      const node = nodeMap.get(bubble.dataset.id);
+    const resolveBubbleId = (target) => {
+      if (!target) return null;
+      const bubble = target.closest ? target.closest('.bubble') : null;
+      if (bubble?.dataset?.id) return bubble.dataset.id;
+      if (target.dataset?.id) return target.dataset.id;
+      return null;
+    };
+    const showBubbleTooltip = (event, id) => {
+      const node = nodeMap.get(id);
       if (!node) return;
       showNodeTooltip(event, node);
     };
+
+    svg.onpointermove = (event) => {
+      const id = resolveBubbleId(event.target);
+      if (!id) {
+        hideTooltip();
+        return;
+      }
+      showBubbleTooltip(event, id);
+    };
     svg.onpointerleave = hideTooltip;
     svg.onclick = (event) => {
-      const bubble = pickBubble(event.target);
-      if (!bubble) return;
-      openDrawer({ type: 'vehicle', id: bubble.dataset.id });
+      const id = resolveBubbleId(event.target);
+      if (!id) return;
+      openDrawer({ type: 'vehicle', id });
     };
-    [...svg.querySelectorAll('.bubble')].forEach((bubble) => {
-      bubble.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault();
-          openDrawer({ type: 'vehicle', id: bubble.dataset.id });
-        }
+    [...svg.querySelectorAll('.bubble, .bubble-label')].forEach((el) => {
+      if (el.classList.contains('bubble')) {
+        el.addEventListener('focus', () => {
+          const node = nodeMap.get(el.dataset.id);
+          if (node) showTooltipForElement(el, nodeTooltipHtml(node));
+        });
+        el.addEventListener('blur', hideTooltip);
+        el.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            openDrawer({ type: 'vehicle', id: el.dataset.id });
+          }
+        });
+      }
+      el.addEventListener('pointerenter', (event) => {
+        const id = el.dataset.id;
+        if (id) showBubbleTooltip(event, id);
+      });
+      el.addEventListener('pointermove', (event) => {
+        const id = el.dataset.id;
+        if (id) showBubbleTooltip(event, id);
       });
     });
   }
-
-  function showNodeTooltip(event, node) {
-    const html = `
+  function nodeTooltipHtml(node) {
+    return `
       <strong>${isZh ? (node.companyZh || node.company) : node.company} · ${isZh ? (node.vehicleZh || node.vehicle) : node.vehicle}</strong>
       <div class="tooltip-meta">${routeTag(node)} · ${node.country}</div>
       <div>${t('labels').payload}: ${fmtMass(node.single_launch_kg)}</div>
@@ -1660,39 +1720,59 @@
       <div>${yearLabel()} ${t('labels').modelLaunches}: ${bestEstimateLaunchesLabel(node)}</div>
       <div>${t('labels').price}: ${fmtMoneyM(node[currentKeys().modelPrice])}</div>
     `;
-    showTooltip(event, html);
+  }
+
+  function showNodeTooltip(event, node) {
+    showTooltip(event, nodeTooltipHtml(node));
   }
 
 
-  function showSiteTooltip(event, row) {
+  function siteTooltipHtml(row) {
     const metricVal = SITE_METRICS[state.siteMetric].get(row);
-    const html = `
+    return `
       <strong>${row.label}</strong>
       <div class="tooltip-meta">${row.country} · ${accessLabel(row.access_category)}</div>
       <div>${t('labels').operator}: ${row.operator}</div>
       <div>${t('labels').companyCount}: ${fmtInt(row.company_count)}</div>
       <div>${t('siteMetric')}: ${formatMetricValue(state.siteMetric, metricVal)}</div>
     `;
-    showTooltip(event, html);
+  }
+
+  function showSiteTooltip(event, row) {
+    showTooltip(event, siteTooltipHtml(row));
   }
 
 
   function showTooltip(event, html) {
+    if (!els.tooltip) return;
     els.tooltip.innerHTML = html;
     els.tooltip.hidden = false;
     moveTooltip(event);
   }
 
+  function showTooltipForElement(element, html) {
+    if (!element) return;
+    const rect = element.getBoundingClientRect();
+    showTooltip({
+      clientX: rect.left + rect.width / 2,
+      clientY: rect.top + Math.min(rect.height / 2, 24)
+    }, html);
+  }
+
   function moveTooltip(event) {
+    if (!els.tooltip || !els.tooltipHost || !event) return;
     const box = els.tooltipHost.getBoundingClientRect();
-    const x = Math.min(box.width - 320, Math.max(12, event.clientX - box.left + 12));
-    const y = Math.max(12, event.clientY - box.top + 12);
+    const tooltipRect = els.tooltip.getBoundingClientRect();
+    const tooltipW = tooltipRect.width || 300;
+    const tooltipH = tooltipRect.height || 120;
+    const x = clamp(event.clientX - box.left + 16, 12, Math.max(12, box.width - tooltipW - 12));
+    const y = clamp(event.clientY - box.top + 16, 12, Math.max(12, box.height - tooltipH - 12));
     els.tooltip.style.left = `${x}px`;
     els.tooltip.style.top = `${y}px`;
   }
 
   function hideTooltip() {
-    els.tooltip.hidden = true;
+    if (els.tooltip) els.tooltip.hidden = true;
   }
 
   function clamp(value, min, max) {
@@ -1708,10 +1788,11 @@
 
   function applySiteMapTransform() {
     clampSitePan();
+    if (els.siteZoomReset) els.siteZoomReset.textContent = `${fmtFloat(state.siteZoom, 1)}×`;
+    if (els.siteZoomSlider) els.siteZoomSlider.value = state.siteZoom.toFixed(1);
     const layer = els.siteMap?.querySelector('[data-site-viewport]');
     if (!layer) return;
     layer.setAttribute('transform', `translate(${state.sitePanX} ${state.sitePanY}) scale(${state.siteZoom})`);
-    if (els.siteZoomReset) els.siteZoomReset.textContent = `${fmtFloat(state.siteZoom, 1)}×`;
   }
 
   function setSiteZoom(nextZoom, anchor = { x: SITE_MAP_DIM.width / 2, y: SITE_MAP_DIM.height / 2 }) {
@@ -1759,7 +1840,7 @@
     }
     parts.push(`<text class="svg-note" x="${width - margin.right}" y="18" text-anchor="end">${t('siteMetric')}: ${t('siteMetricOptions')[state.siteMetric]}</text>`);
 
-    const labels = rows.slice(0, 10).map((r) => r.site);
+    const labels = rows.slice(0, 12).map((r) => r.site);
     rows.forEach((row) => {
       const color = ACCESS_COLORS[row.access_category] || ACCESS_COLORS.unknown;
       const cx = xScale(row.lon);
@@ -1776,7 +1857,7 @@
     rows.filter((r) => labels.includes(r.site)).forEach((row) => {
       const cx = xScale(row.lon);
       const cy = yScale(row.lat);
-      parts.push(`<text class="svg-bubble-label" x="${cx + 10}" y="${cy - 10}">${row.label}</text>`);
+      parts.push(`<text class="svg-bubble-label site-label" data-site="${row.site}" x="${cx + 10}" y="${cy - 10}">${row.label}</text>`);
     });
     parts.push(`</g>`);
 
@@ -1785,7 +1866,13 @@
     applySiteMapTransform();
 
     const rowMap = new Map(rows.map((row) => [row.site, row]));
-    const pickMarker = (target) => target?.closest ? target.closest('.site-marker') : null;
+    const resolveSite = (target) => {
+      if (!target) return null;
+      const marker = target.closest ? target.closest('.site-marker') : null;
+      if (marker?.dataset?.site) return rowMap.get(marker.dataset.site);
+      if (target.dataset?.site) return rowMap.get(target.dataset.site);
+      return null;
+    };
     const drag = { active: false, pointerId: null, startX: 0, startY: 0, panX: 0, panY: 0, moved: false };
 
     svg.onwheel = (event) => {
@@ -1797,6 +1884,15 @@
       };
       const factor = event.deltaY < 0 ? 1.18 : 1 / 1.18;
       setSiteZoom(state.siteZoom * factor, anchor);
+    };
+
+    svg.ondblclick = (event) => {
+      const rect = svg.getBoundingClientRect();
+      const anchor = {
+        x: ((event.clientX - rect.left) / rect.width) * width,
+        y: ((event.clientY - rect.top) / rect.height) * height
+      };
+      setSiteZoom(state.siteZoom * 1.35, anchor);
     };
 
     svg.onpointerdown = (event) => {
@@ -1823,13 +1919,11 @@
         hideTooltip();
         return;
       }
-      const marker = pickMarker(event.target);
-      if (!marker) {
+      const row = resolveSite(event.target);
+      if (!row) {
         hideTooltip();
         return;
       }
-      const row = rowMap.get(marker.dataset.site);
-      if (!row) return;
       showSiteTooltip(event, row);
     };
 
@@ -1847,17 +1941,30 @@
 
     svg.onclick = (event) => {
       if (drag.moved) return;
-      const marker = pickMarker(event.target);
-      if (!marker) return;
-      openDrawer({ type: 'site', id: marker.dataset.site });
+      const row = resolveSite(event.target);
+      if (!row) return;
+      openDrawer({ type: 'site', id: row.site });
     };
 
     [...svg.querySelectorAll('.site-marker')].forEach((marker) => {
+      const row = rowMap.get(marker.dataset.site);
+      marker.addEventListener('focus', () => row && showTooltipForElement(marker, siteTooltipHtml(row)));
+      marker.addEventListener('blur', hideTooltip);
       marker.addEventListener('keydown', (event) => {
         if (event.key === 'Enter' || event.key === ' ') {
           event.preventDefault();
           openDrawer({ type: 'site', id: marker.dataset.site });
         }
+      });
+    });
+    [...svg.querySelectorAll('.site-label')].forEach((labelEl) => {
+      labelEl.addEventListener('pointerenter', (event) => {
+        const row = rowMap.get(labelEl.dataset.site);
+        if (row) showTooltip(event, siteTooltipHtml(row));
+      });
+      labelEl.addEventListener('pointermove', (event) => {
+        const row = rowMap.get(labelEl.dataset.site);
+        if (row) showTooltip(event, siteTooltipHtml(row));
       });
     });
   }
@@ -1910,7 +2017,7 @@
       const y = margin.top + i * (barH + gap);
       const infoColor = row.route_class ? routeInfo(row.route_class).color : '#64748b';
       const x = xScale(row.metricValue);
-      parts.push(`<text class="svg-axis" x="${margin.left - 12}" y="${y + 24}" text-anchor="end">${row.label}</text>`);
+      parts.push(`<text class="svg-axis bar-label" data-id="${row.id}" data-type="${row.type}" x="${margin.left - 12}" y="${y + 24}" text-anchor="end">${row.label}</text>`);
       parts.push(`<g class="bar-row" data-id="${row.id}" data-type="${row.type}" tabindex="0" role="button" aria-label="${row.label}">
         <rect x="${margin.left}" y="${y}" width="${innerW}" height="${barH}" rx="10" fill="#eef3fa"></rect>
         <rect x="${margin.left}" y="${y}" width="${Math.max(4, x - margin.left)}" height="${barH}" rx="10" fill="${infoColor}" fill-opacity="0.82"></rect>
@@ -1921,41 +2028,61 @@
     svg.innerHTML = parts.join('');
 
     const rowMap = new Map(rows.map((row) => [row.id, row]));
-    const pickRow = (target) => target?.closest ? target.closest('.bar-row') : null;
+    const resolveRow = (target) => {
+      if (!target) return null;
+      const rowEl = target.closest ? target.closest('.bar-row') : null;
+      if (rowEl?.dataset?.id) return rowMap.get(rowEl.dataset.id);
+      if (target.dataset?.id) return rowMap.get(target.dataset.id);
+      return null;
+    };
+    const tooltipHtml = (row) => `<strong>${row.label}</strong><div class="tooltip-meta">${yearLabel(state.benchmarkYear)} · ${t('benchmarkMetrics')[state.benchmarkMetric]}</div><div>${formatMetricValue(state.benchmarkMetric, row.metricValue)}</div>`;
+    const activateRow = (row) => {
+      if (!row) return;
+      if (row.type === 'vehicle') openDrawer({ type: 'vehicle', id: row.id });
+      if (row.type === 'company') {
+        state.company = row.id;
+        syncSelectOptions();
+        renderAll();
+      }
+      if (row.type === 'country') {
+        state.country = row.id;
+        syncSelectOptions();
+        renderAll();
+      }
+    };
+
     svg.onpointermove = (event) => {
-      const rowEl = pickRow(event.target);
-      if (!rowEl) {
+      const row = resolveRow(event.target);
+      if (!row) {
         hideTooltip();
         return;
       }
-      const row = rowMap.get(rowEl.dataset.id);
-      if (!row) return;
-      showTooltip(event, `<strong>${row.label}</strong><div class="tooltip-meta">${yearLabel(state.benchmarkYear)} · ${t('benchmarkMetrics')[state.benchmarkMetric]}</div><div>${formatMetricValue(state.benchmarkMetric, row.metricValue)}</div></div>`);
+      showTooltip(event, tooltipHtml(row));
     };
     svg.onpointerleave = hideTooltip;
     svg.onclick = (event) => {
-      const rowEl = pickRow(event.target);
-      if (!rowEl) return;
-      const type = rowEl.dataset.type;
-      const id = rowEl.dataset.id;
-      if (type === 'vehicle') openDrawer({ type: 'vehicle', id });
-      if (type === 'company') {
-        state.company = id;
-        syncSelectOptions();
-        renderAll();
-      }
-      if (type === 'country') {
-        state.country = id;
-        syncSelectOptions();
-        renderAll();
-      }
+      const row = resolveRow(event.target);
+      if (row) activateRow(row);
     };
     [...svg.querySelectorAll('.bar-row')].forEach((rowEl) => {
+      const row = rowMap.get(rowEl.dataset.id);
+      rowEl.addEventListener('focus', () => row && showTooltipForElement(rowEl, tooltipHtml(row)));
+      rowEl.addEventListener('blur', hideTooltip);
       rowEl.addEventListener('keydown', (event) => {
         if (event.key === 'Enter' || event.key === ' ') {
           event.preventDefault();
-          rowEl.click();
+          activateRow(row);
         }
+      });
+    });
+    [...svg.querySelectorAll('.bar-label')].forEach((labelEl) => {
+      labelEl.addEventListener('pointerenter', (event) => {
+        const row = rowMap.get(labelEl.dataset.id);
+        if (row) showTooltip(event, tooltipHtml(row));
+      });
+      labelEl.addEventListener('pointermove', (event) => {
+        const row = rowMap.get(labelEl.dataset.id);
+        if (row) showTooltip(event, tooltipHtml(row));
       });
     });
 
@@ -2628,6 +2755,10 @@
     if (els.siteZoomIn) els.siteZoomIn.addEventListener('click', () => setSiteZoom(state.siteZoom * 1.2));
     if (els.siteZoomOut) els.siteZoomOut.addEventListener('click', () => setSiteZoom(state.siteZoom / 1.2));
     if (els.siteZoomReset) els.siteZoomReset.addEventListener('click', resetSiteMapView);
+    if (els.siteZoomSlider) {
+      els.siteZoomSlider.addEventListener('input', (e) => setSiteZoom(Number(e.target.value)));
+      els.siteZoomSlider.addEventListener('change', (e) => setSiteZoom(Number(e.target.value)));
+    }
     els.closeDrawer.addEventListener('click', closeDrawer);
     els.drawerBackdrop.addEventListener('click', closeDrawer);
     if (els.editRecordBtn) {
@@ -2691,13 +2822,16 @@
       'brandTitle','heroEyebrow','heroTitle','heroSubtitle','heroTakeaways','heroPrimaryAction','heroSecondaryAction',
       'navMap','navSites','navBenchmark','navData','overviewTitle','overviewGrid','overviewSupplyLabel','overviewSupplyGroup','overviewSupplyYear','overviewSupplyChart','routeTitle','routeSubtitle','routeGrid',
       'year2026','year2030','hideZeroBtn','regionSelect','countrySelect','companySelect','searchInput','clearBtn',
-      'mapTitle','mapSubtitle','mapSummary','bubbleChart','mapLegend','sitesTitle','sitesSubtitle','siteMetricLabel','siteMetricSelect','siteZoomOut','siteZoomReset','siteZoomIn','siteMap','siteLegend',
-      'benchmarkTitle','benchmarkSubtitle','benchmarkMode','benchmarkMetric','benchmarkYear','benchmarkTopN','benchmarkSort','benchmarkSummary','benchmarkChart',
+      'mapTitle','mapSubtitle','mapSummary','bubbleChart','mapLegend','sitesTitle','sitesSubtitle','siteMetricLabel','siteMetricSelect','siteZoomOut','siteZoomReset','siteZoomSlider','siteZoomIn','siteMap','siteLegend',
+      'benchmarkTitle','benchmarkSubtitle','benchmarkModeLabel','benchmarkMetricLabel','benchmarkYearLabel','benchmarkTopNLabel','benchmarkSortLabel','benchmarkMode','benchmarkMetric','benchmarkYear','benchmarkTopN','benchmarkSort','benchmarkSummary','benchmarkChart',
       'listTitle','listSubtitle','companyGrid','dataTitle','dataSubtitle','dataPortGrid','downloadDataBtn','importDataBtn','uploadDataBtn','resetDataBtn','importDataInput','dataStatus',
       'drawerBackdrop','detailDrawer','closeDrawer','editRecordBtn','drawerBody','tooltip','tooltipHost'
     ].forEach((id) => {
       els[id] = document.getElementById(id);
     });
+    if (els.tooltip && els.tooltipHost && els.tooltip.parentElement !== els.tooltipHost) {
+      els.tooltipHost.appendChild(els.tooltip);
+    }
     const baseData = await loadData();
     state.defaultData = deepClone(baseData);
     const localData = savedDataFromLocal();

@@ -1382,7 +1382,7 @@
       "flexible benchmarking bar chart",
       "excel-model metrics integrated into vehicles and companies"
     ],
-    "last_write_source": "reset"
+    "last_write_source": "patch"
   },
   "nodes": [
     {
@@ -1423,7 +1423,7 @@
         }
       ],
       "vehicleZh": "星舰",
-      "companyZh": "太空探索技术公司",
+      "companyZh": "测试公司",
       "firstFlightYear": 2023,
       "firstFlightStatus": "actual",
       "totalFlights": 7,
